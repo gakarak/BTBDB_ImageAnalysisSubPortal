@@ -1,0 +1,10 @@
+Flask
+Jinja2
+SQLAlchemy
+pandas
+scikit-image
+theano
+tensorflow
+keras
+scikit-learn
+matplotlib
