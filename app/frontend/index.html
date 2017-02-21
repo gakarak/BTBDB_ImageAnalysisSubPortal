@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>BTBDB Image Analysis SubPortal</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/frontend/assets/css/angular-material.css"/>
+    <link rel="stylesheet" href="/frontend/assets/css/app.css"/>
+    <link rel="stylesheet" href="/frontend/assets/css/designer.css"/>
+</head>
+
+<body ng-app="mainApp" ng-controller="mainCtrl" layout="column">
+<md-toolbar layout="row">
+    <h3>Image Analysis SubPortal (Demo)</h3>
+</md-toolbar>
+
+<md-tabs id="main-tab" md-selected="selectedIndex" md-border-bottom  md-dynamic-height>
+    <md-tab class="unselectable">
+        <md-tab-label>
+            <md-icon md-font-library="material-icons" aria-label="demo">Demo</md-icon>
+            Demo
+        </md-tab-label>
+    </md-tab>
+    <md-tab class="unselectable" layout-fill>
+        <md-tab-label>
+            <md-icon md-font-library="material-icons" aria-label="settings">Settings</md-icon>
+            Settings
+        </md-tab-label>
+    </md-tab>
+</md-tabs>
+
+<script src="/frontend/lib/angular.js"></script>
+<script src="/frontend/lib/angular-animate.js"></script>
+<script src="/frontend/lib/angular-aria.js"></script>
+<script src="/frontend/lib/angular-messages.js"></script>
+<script src="/frontend/lib/angular-material.js"></script>
+
+<script src="/frontend/app.js"></script>
+
+</body>
+</html>
