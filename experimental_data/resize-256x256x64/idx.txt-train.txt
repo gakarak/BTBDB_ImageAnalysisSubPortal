@@ -1,0 +1,3 @@
+path,pathmsk
+0026-256x256x64.nii.gz,0026-256x256x64-msk.nii.gz
+0177-256x256x64.nii.gz,0177-256x256x64-msk.nii.gz

@@ -1,0 +1,2 @@
+path,pathmsk
+0009-256x256x64.nii.gz,0009-256x256x64-msk.nii.gz
