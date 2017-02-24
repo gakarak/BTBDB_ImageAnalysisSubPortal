@@ -1,3 +1,5 @@
 *.nii.gz-lungs.nii.gz
 *.nii.gz-preview.png
 *.nii.gz-info.json
+*.txt-train.txt-mean.pkl
+*.txt-shuf.txt
