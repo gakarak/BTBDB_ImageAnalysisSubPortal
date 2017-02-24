@@ -3,3 +3,7 @@
 *.nii.gz-info.json
 *.txt-train.txt-mean.pkl
 *.txt-shuf.txt
+*.txt-mean.pkl
+*.nii.gz-segm-InterpolatedUpSampling2D-slc1.nii.gz
+*.txt-opt.adam.InterpolatedUpSampling2D-slc1-e030.h5
+*.txt-opt.adam.InterpolatedUpSampling2D-slc1-e030.json
