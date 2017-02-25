@@ -161,7 +161,7 @@ if __name__ == '__main__':
         parOptimizer = 'adam'
         # (1) UsSampled2D
         # parModelType = 'UpSampling2D'
-        parNumSlices = 1
+        parNumSlices = 2
         parModelType = 'InterpolatedUpSampling2D'
         # (2) Interpolated2D:
         # parModelType = 'InterpolatedUpSampling2D'
