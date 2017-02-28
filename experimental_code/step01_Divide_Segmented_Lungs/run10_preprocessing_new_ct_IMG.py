@@ -6,9 +6,12 @@ import os
 import glob
 import nibabel as nib
 import numpy as np
+import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
     wdirInp = '../../experimental_data/data_analyze/original'
+    # wdirInp = '/mnt/data1T/datasets/CRDF/CT_with_segm_mask_v3/00data_in_analyze/original_test'
+    # wdirInp = '/mnt/data1T/datasets/CRDF/CT_with_segm_mask_v3/00data_in_analyze/original'
     wdirOut = '%s-nii' % wdirInp
     if not os.path.isdir(wdirOut):
         os.mkdir(wdirOut)
@@ -18,7 +21,7 @@ if __name__ == '__main__':
         fout = '%s/%s.nii.gz' % (wdirOut, os.path.splitext(os.path.basename(pp))[0])
         print ('[%d/%d] : %s --> %s' % (ii, numAnalyze, os.path.basename(pp), os.path.basename(fout)))
         tdataInp  = nib.load(pp)
-        newData   = tdataInp.get_data() + 0*tdataInp.header['scl_inter']
+        newData   = tdataInp.get_data() #+ 0*tdataInp.header['scl_inter']
         taffine = tdataInp.affine
         newHeader = nib.Nifti1Header.from_header(tdataInp.header)
         newHeader['scl_inter'] = float('nan')
