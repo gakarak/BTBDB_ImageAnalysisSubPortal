@@ -161,9 +161,19 @@ class BatcherOnImageCT3D:
     numCh = 1
     numImg = -1
     numSlices = -1
-    def __init__(self, pathDataIdx, pathMeanData=None, numSlices=-1, isRecalculateMeanIfExist=False,
+    def __init__(self, pathDataIdx=None, pathMeanData=None, numSlices=-1, isRecalculateMeanIfExist=False,
                  isTheanoShape=True,
                  isLoadIntoMemory=False):
+        if pathDataIdx is not None:
+            self.loadDataset(pathDataIdx=pathDataIdx,
+                             pathMeanData=pathMeanData,
+                             numSlices=numSlices,
+                             isRecalculateMeanIfExist=isRecalculateMeanIfExist,
+                             isTheanoShape=isTheanoShape,
+                             isLoadIntoMemory=isLoadIntoMemory)
+    def loadDataset(self, pathDataIdx, pathMeanData=None, numSlices=-1, isRecalculateMeanIfExist=False,
+                    isTheanoShape=True,
+                    isLoadIntoMemory=False):
         self.isTheanoShape=isTheanoShape
         # self.isRemoveMeanImage=isRemoveMeanImage
         # (1) Check input Image
