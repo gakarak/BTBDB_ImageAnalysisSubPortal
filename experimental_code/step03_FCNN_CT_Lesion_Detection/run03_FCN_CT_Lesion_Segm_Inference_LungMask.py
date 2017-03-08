@@ -24,7 +24,7 @@ except:
 import keras
 from keras.utils.visualize_util import plot as kplot
 
-from run00_common_onimage_tf import BatcherOnImageCT3D, buildModelOnImageCT_TF, split_list_by_blocks
+from run00_common import BatcherOnImageCT3D, split_list_by_blocks
 
 ######################################################
 if __name__=='__main__':
@@ -49,7 +49,7 @@ if __name__=='__main__':
     # modelTrained = BatcherOnImageCT3D.loadModelFromDir(wdir, paramFilter='950')
     # modelTrained = BatcherOnImageCT3D.loadModelFromDir(wdir)
     # modelTrained = BatcherOnImageCT3D.loadModelFromDir(wdir, paramFilter='adagrad')
-    modelTrained = BatcherOnImageCT3D.loadModelFromDir(wdir, paramFilter='adam')
+    modelTrained = BatcherOnImageCT3D().loadModelFromDir(wdir, paramFilter='adam')
     modelTrained.summary()
     #
     t0 = time.time()

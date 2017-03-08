@@ -53,7 +53,21 @@ class BatcherOnImageCT3D:
     shapeImg = None
     numCh = 1
     numImg = -1
-    def __init__(self, pathDataIdx, pathMeanData=None, isRecalculateMeanIfExist=False,
+    # for inference
+    model = None
+    modelPath = None
+    def __init__(self, pathDataIdx=None, pathMeanData=None, isRecalculateMeanIfExist=False,
+                 isTheanoShape=True,
+                 isRemoveMeanImage=False,
+                 isLoadIntoMemory=False):
+        if pathDataIdx is not None:
+            self.loadDataset(pathDataIdx=pathDataIdx,
+                             pathMeanData=pathMeanData,
+                             isRecalculateMeanIfExist=isRecalculateMeanIfExist,
+                             isTheanoShape=isTheanoShape,
+                             isRemoveMeanImage=isRemoveMeanImage,
+                             isLoadIntoMemory=isLoadIntoMemory)
+    def loadDataset(self, pathDataIdx, pathMeanData=None, isRecalculateMeanIfExist=False,
                  isTheanoShape=True,
                  isRemoveMeanImage=False,
                  isLoadIntoMemory=False):
@@ -162,12 +176,21 @@ class BatcherOnImageCT3D:
             raise Exception('class Batcher() is not correctly initialized')
     def toString(self):
         if self.isInitialized():
-            if self.meanData is not None:
-                tstr = 'Shape=%s, #Samples=%d, #Labels=%d, meanValuePerCh=%s' % (self.shapeImg, self.numImg, self.numCls, self.meanData['meanCh'])
-            else:
-                tstr = 'Shape=%s, #Samples=%d, #Labels=%d, meanValuePerCh= is Not Calculated' % (self.shapeImg, self.numImg, self.numCls)
+            tstr = '#Samples=%d' % (self.numImg)
         else:
-            tstr = "BatcherOnImage2D() is not initialized"
+            tstr = "BatcherOnImage3D() is not initialized"
+        # (1) number of classes
+        if self.numCls is not None:
+            tstr = '%s, #Cls=%d' % (tstr, self.numCls)
+        # (2) input/output shapes
+        tstr = '%s, InpShape=%s, OutShape=%s' % (tstr, self.shapeImg, self.shapeMsk)
+        #
+        if self.meanData is not None:
+            tstr = '%s, meanValuePerCh=%s' % (tstr, self.meanData['meanCh'])
+        else:
+            tstr = '%s, meanValuePerCh= is Not Calculated' % (tstr)
+        if (self.model is not None) and (self.modelPath is not None):
+            tstr = '%s, model is loaded [%s]' % (tstr, os.path.basename(self.modelPath))
         return tstr
     def __str__(self):
         return self.toString()
@@ -286,21 +309,126 @@ class BatcherOnImageCT3D:
             model = keras.models.model_from_json(tmpStr)
             model.load_weights(tpathModelWeights)
         return model
-    @staticmethod
-    def loadModelFromDir(pathDirWithModels, paramFilter=None):
+    def loadModelFromDir(self, pathDirWithModels, paramFilter=None):
         if paramFilter is None:
             lstModels = glob.glob('%s/*.json' % pathDirWithModels)
         else:
             lstModels = glob.glob('%s/*%s*.json' % (pathDirWithModels, paramFilter))
         pathJson  = os.path.abspath(sorted(lstModels)[-1])
         print (':: found model [%s] in directory [%s]' % (os.path.basename(pathJson), pathDirWithModels))
+        self.modelPath = pathJson
         return BatcherOnImageCT3D.loadModelFromJson(pathJson)
+    def loadModelForInference(self, pathModelJson, pathMeanData, paramFilter=None):
+        if os.path.isdir(pathModelJson):
+            self.model = self.loadModelFromDir(pathModelJson)
+        else:
+            self.model = BatcherOnImageCT3D.loadModelFromJson(pathModelJson)
+        if os.path.isdir(pathMeanData):
+            if paramFilter is None:
+                lstMean = sorted(glob.glob('%s/*mean.pkl' % pathMeanData))
+            else:
+                lstMean = sorted(glob.glob('%s/*%s*mean.pkl' % (pathMeanData, paramFilter)))
+            if len(lstMean)<1:
+                raise Exception('Cant find mean-file in directory [%s]' % pathMeanData)
+            self.pathMeanData = lstMean[0]
+        else:
+            self.pathMeanData = pathMeanData
+        self.precalculateAndLoadMean(isRecalculateMean=False)
+        self.numCls = self.model.output_shape[-1]
+        self.shapeImg = self.model.input_shape[1:]
+        self.isTheanoShape = (K.image_dim_ordering()=='th')
+        if self.isTheanoShape:
+            self.shapeMsk = tuple([self.numCls] + list(self.shapeImg[1:]))
+        else:
+            self.shapeMsk = tuple(list(self.shapeImg[:-1]) + [self.numCls])
+    def inference(self, lstData, batchSize=2):
+        if self.model is None:
+            raise Exception('Model is not loaded... load model before call inferece()')
+        if len(lstData)>0:
+            tmpListOfImg = []
+            # (1) load into memory
+            if isinstance(lstData[0],str) or isinstance(lstData[0],unicode):
+                for ii in lstData:
+                    tmpListOfImg.append(nib.load(ii).get_data())
+            # (2) check shapes
+            tsetShapes = set()
+            for ii in tmpListOfImg:
+                tsetShapes.add(ii.shape)
+            if len(tsetShapes)>1:
+                raise Exception('Shapes of images must be equal sized')
+            tmpShape = self.shapeImg[1:]
+            if tmpShape not in tsetShapes:
+                raise Exception('Model input shape and shapes of input images is not equal!')
+            # (3) convert data
+            self.isDataInMemory = True
+            numImg = len(tmpListOfImg)
+            self.dataImg = np.zeros([numImg] + list(self.shapeImg), dtype=np.float)
+            for ii in range(numImg):
+                tdataImg = self.adjustImage(tmpListOfImg[ii])
+                tdataImg = self.transformImageFromOriginal(tdataImg, isRemoveMean=True)
+                self.dataImg[ii] = tdataImg
+            # (4) inference
+            lstIdx = range(numImg)
+            splitIdx = split_list_by_blocks(lstIdx, batchSize)
+            ret = []
+            for ss in splitIdx:
+                dataX = np.zeros([len(ss)] + list(self.shapeImg), dtype=np.float)
+                for ii,ssi in enumerate(ss):
+                    dataX[ii] = self.dataImg[ssi]
+                retY = self.model.predict_on_batch(dataX)
+                if self.isTheanoShape:
+                    retY = retY.transpose((0,2,1))
+                for ii in range(retY.shape[0]):
+                    ret.append(retY[ii].reshape(self.shapeMsk))
+            self.isDataInMemory = False
+            self.dataImg = None
+            return ret
+        else:
+            return []
 
 ######################################################
-if __name__=='__main__':
-    fidxTrain = '/mnt/data1T/datasets/CRDF/TB_5_Classes/TB_sub_1_5-resize-128x128x64/idx.txt-train.txt'
-    fidxVal   = '/mnt/data1T/datasets/CRDF/TB_5_Classes/TB_sub_1_5-resize-128x128x64/idx.txt-val.txt'
+def test_batcher_load_dataset():
+    fidxTrain = '../../experimental_data/resize-256x256x64/idx.txt'
     isTheanoShape = (K.image_dim_ordering() == 'th')
     batcherTrain = BatcherOnImageCT3D(pathDataIdx=fidxTrain, isTheanoShape=isTheanoShape, isLoadIntoMemory=True)
     print (batcherTrain)
+
+def test_batcher_load_model():
+    pathToModel = '../../experimental_data/models/fcnn_ct_lesion_segm_3d'
+    batcherInfer = BatcherOnImageCT3D()
+    batcherInfer.loadModelForInference(pathModelJson=pathToModel, pathMeanData=pathToModel)
+    print (batcherInfer)
+
+def test_batcher_inference():
+    pathToModel = '../../experimental_data/models/fcnn_ct_lesion_segm_3d'
+    batcherInfer = BatcherOnImageCT3D()
+    batcherInfer.loadModelForInference(pathModelJson=pathToModel, pathMeanData=pathToModel)
+    print (batcherInfer)
+    #
+    lstInp = glob.glob('../../experimental_data/TB_sub_1_5-resize-128x128x64_3case/data/*[0-9].nii.gz')
+    tret = batcherInfer.inference(lstInp)
+    nx = 2
+    ny = 2
+    numXY = nx*ny
+    if len(lstInp)<numXY:
+        numXY = len(lstInp)
+    plt.figure()
+    for ii in range(numXY):
+        plt.subplot(nx,ny,ii+1)
+        if batcherInfer.isTheanoShape:
+            tsiz = tret[ii].shape[0]
+            plt.imshow(tret[ii][1][:, :, tsiz/2])
+        else:
+            tsiz = tret[ii].shape[-1]
+            plt.imshow(tret[ii][1][:, :, tsiz/2])
+    plt.show()
+
+######################################################
+if __name__=='__main__':
+    # test_batcher_load_dataset()
+    # print ('------------------')
+    # test_batcher_load_model()
+    # print ('------------------')
+    test_batcher_inference()
+
 
