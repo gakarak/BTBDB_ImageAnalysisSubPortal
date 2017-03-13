@@ -445,7 +445,16 @@ class BatcherOnImageCT3D:
                     dataY[ii] = tout
                     dataM[ii] = tmsk
         return (dataX, dataY, dataM)
-    def
+    def  getSlice25DFromImg(self, pdataImg, zidx):
+        tnumSlices = len(zidx)
+        dataX = np.zeros([tnumSlices] + list(self.shapeImgSlc), dtype=np.float)
+        tnumBrd = self.numSlices + 1
+        for ii, tidx in enumerate(zidx):
+            if K.image_dim_ordering() == 'th':
+                dataX[ii] = pdataImg[0, :, :, tidx - tnumBrd + 1:tidx + tnumBrd]
+            else:
+                dataX[ii] = pdataImg[:, :, tidx - tnumBrd + 1:tidx + tnumBrd, 0]
+        return dataX
     def getBatchDataSlicedByIdx(self, dictImg2SliceIdx, isReturnDict=True):
         dictDataX = collections.OrderedDict()
         dictDataY = collections.OrderedDict()
@@ -593,17 +602,14 @@ class BatcherOnImageCT3D:
                 lstIdxScl = range(self.numSlices, numSlicesZ - self.numSlices)
                 lstIdxScl = split_list_by_blocks(lstIdxScl, batchSize)
                 for ss, sslst in enumerate(lstIdxScl):
-                    dataX, dataY = self.getBatchDataSlicedByIdx({
-                        ii: sslst
-                    }, isReturnDict=False)
+                    dataX = self.getSlice25DFromImg(tdataImg, sslst)
                     tret = self.model.predict_on_batch(dataX)
                     if K.image_dim_ordering() == 'th':
                         # raise NotImplementedError
-                        sizXY = self.shapeImg[1:-1]
-
-                    else:
-                        sizXY = self.shapeImg[:2]
                         tret = tret.transpose((1, 0, 2))
+                        sizXY = self.shapeImgSlc[1:]
+                    else:
+                        sizXY = self.shapeImgSlc[:1]
                         tret = tret.reshape(list(sizXY) + list(tret.shape[1:]))
                         tmskSlc = (tret[:, :, :, 1] > 0.5).astype(np.float)
                         tsegm3D[:, :, sslst] = tmskSlc
