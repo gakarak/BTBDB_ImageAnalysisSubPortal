@@ -154,13 +154,17 @@ class BatcherOnImageCT3D:
     isTheanoShape=True
     # isRemoveMeanImage=False
     isDataInMemory=False
-    shapeImg = None
+    shapeImg    = None
     shapeImgSlc = None
+    shapeMsk    = None
     shapeMskSlc = None
     sizeZ = -1
     numCh = 1
     numImg = -1
     numSlices = -1
+    #
+    modelPath = None
+    model = None
     def __init__(self, pathDataIdx=None, pathMeanData=None, numSlices=-1, isRecalculateMeanIfExist=False,
                  isTheanoShape=True,
                  isLoadIntoMemory=False):
@@ -293,16 +297,34 @@ class BatcherOnImageCT3D:
     def checkIsInitialized(self):
         if not self.isInitialized():
             raise Exception('class Batcher() is not correctly initialized')
+    # def toString(self):
+    #     if self.isInitialized():
+    #         tstr = 'Shape/Slice=%s/%s, #Samples=%d, #Labels=%d, #Slices=%s'\
+    #                % (self.shapeImg, self.shapeImgSlc, self.numImg, self.numCls, self.numSlices)
+    #         if self.meanData is not None:
+    #             tstr = '%s, meanValuePerCh=%s' % (tstr, self.meanData['meanCh'])
+    #         else:
+    #             tstr = '%s, meanValuePerCh= is Not Calculated' % (tstr)
+    #     else:
+    #         tstr = "BatcherOnImageCT3D() is not initialized"
+    #     return tstr
     def toString(self):
         if self.isInitialized():
-            tstr = 'Shape/Slice=%s/%s, #Samples=%d, #Labels=%d, #Slices=%s'\
-                   % (self.shapeImg, self.shapeImgSlc, self.numImg, self.numCls, self.numSlices)
-            if self.meanData is not None:
-                tstr = '%s, meanValuePerCh=%s' % (tstr, self.meanData['meanCh'])
-            else:
-                tstr = '%s, meanValuePerCh= is Not Calculated' % (tstr)
+            tstr = '#Samples=%d' % (self.numImg)
         else:
-            tstr = "BatcherOnImageCT3D() is not initialized"
+            tstr = "BatcherOnImage3D() is not initialized"
+        # (1) number of classes
+        if self.numCls is not None:
+            tstr = '%s, #Cls=%d' % (tstr, self.numCls)
+        # (2) input/output shapes
+        tstr = '%s, InpShape=%s, OutShape=%s' % (tstr, self.shapeImg, self.shapeMsk)
+        #
+        if self.meanData is not None:
+            tstr = '%s, meanValuePerCh=%s' % (tstr, self.meanData['meanCh'])
+        else:
+            tstr = '%s, meanValuePerCh= is Not Calculated' % (tstr)
+        if (self.model is not None) and (self.modelPath is not None):
+            tstr = '%s, model is loaded [%s]' % (tstr, os.path.basename(self.modelPath))
         return tstr
     def __str__(self):
         return self.toString()
@@ -423,6 +445,7 @@ class BatcherOnImageCT3D:
                     dataY[ii] = tout
                     dataM[ii] = tmsk
         return (dataX, dataY, dataM)
+    def
     def getBatchDataSlicedByIdx(self, dictImg2SliceIdx, isReturnDict=True):
         dictDataX = collections.OrderedDict()
         dictDataY = collections.OrderedDict()
@@ -500,15 +523,110 @@ class BatcherOnImageCT3D:
             model = keras.models.model_from_json(tmpStr, custom_objects={'UpSamplingInterpolated2D': UpSamplingInterpolated2D})
             model.load_weights(tpathModelWeights)
         return model
-    @staticmethod
-    def loadModelFromDir(pathDirWithModels, paramFilter=None):
+    def loadModelFromDir(self, pathDirWithModels, paramFilter=None):
         if paramFilter is None:
             lstModels = glob.glob('%s/*.json' % pathDirWithModels)
         else:
             lstModels = glob.glob('%s/*%s*.json' % (pathDirWithModels, paramFilter))
         pathJson  = os.path.abspath(sorted(lstModels)[-1])
         print (':: found model [%s] in directory [%s]' % (os.path.basename(pathJson), pathDirWithModels))
+        self.modelPath = pathJson
         return BatcherOnImageCT3D.loadModelFromJson(pathJson)
+    def loadModelForInference(self, pathModelJson, pathMeanData, paramFilter=None):
+        if os.path.isdir(pathModelJson):
+            self.model = self.loadModelFromDir(pathModelJson)
+        else:
+            self.model = BatcherOnImageCT3D.loadModelFromJson(pathModelJson)
+        if os.path.isdir(pathMeanData):
+            if paramFilter is None:
+                lstMean = sorted(glob.glob('%s/*mean.pkl' % pathMeanData))
+            else:
+                lstMean = sorted(glob.glob('%s/*%s*mean.pkl' % (pathMeanData, paramFilter)))
+            if len(lstMean) < 1:
+                raise Exception('Cant find mean-file in directory [%s]' % pathMeanData)
+            self.pathMeanData = lstMean[0]
+        else:
+            self.pathMeanData = pathMeanData
+        self.precalculateAndLoadMean(isRecalculateMean=False)
+        self.numCls = self.model.output_shape[-1]
+        self.shapeImgSlc = self.model.input_shape[1:]
+        self.isTheanoShape = (K.image_dim_ordering() == 'th')
+        if self.isTheanoShape:
+            self.shapeMskSlc = tuple([self.numCls] + list(self.shapeImgSlc[1:]))
+            self.numSlices = (self.model.input_shape[1] - 1) / 2
+        else:
+            self.shapeMskSlc = tuple(list(self.shapeImgSlc[:-1]) + [self.numCls])
+            self.numSlices = (self.model.input_shape[-1] - 1) / 2
+    def inference(self, lstData, batchSize=2):
+        if self.model is None:
+            raise Exception('Model is not loaded... load model before call inferece()')
+        if len(lstData) > 0:
+            tmpListOfImg = []
+            # (1) load into memory
+            if isinstance(lstData[0], str) or isinstance(lstData[0], unicode):
+                for ii in lstData:
+                    tmpListOfImg.append(nib.load(ii).get_data())
+            else:
+                tmpListOfImg = lstData
+            # (2) check shapes
+            tsetShapes = set()
+            for ii in tmpListOfImg:
+                tsetShapes.add(ii.shape[:-1])
+            if len(tsetShapes) > 1:
+                raise Exception('Shapes of images must be equal sized')
+            tmpShape = self.shapeImgSlc[:-1]
+            if tmpShape not in tsetShapes:
+                raise Exception('Model input shape and shapes of input images is not equal!')
+            # (3) convert data
+            self.isDataInMemory = True
+            numImg = len(tmpListOfImg)
+            # self.dataImg = np.zeros([numImg] + list(self.shapeImg), dtype=np.float)
+            for ii in range(numImg):
+                tdataImg = self.adjustImage(tmpListOfImg[ii])
+                tdataImg = self.transformImageFromOriginal(tdataImg, isRemoveMean=True)
+                if K.image_dim_ordering() == 'th':
+                    tsegm3D = np.zeros(tdataImg.shapeImg[+1:], np.float)
+                    numSlicesZ = tdataImg.shape[-1]
+                else:
+                    tsegm3D = np.zeros(tdataImg.shape[:-1], np.float)
+                    numSlicesZ = tdataImg.shape[-2]
+                lstIdxScl = range(self.numSlices, numSlicesZ - self.numSlices)
+                lstIdxScl = split_list_by_blocks(lstIdxScl, batchSize)
+                for ss, sslst in enumerate(lstIdxScl):
+                    dataX, dataY = self.getBatchDataSlicedByIdx({
+                        ii: sslst
+                    }, isReturnDict=False)
+                    tret = self.model.predict_on_batch(dataX)
+                    if K.image_dim_ordering() == 'th':
+                        # raise NotImplementedError
+                        sizXY = self.shapeImg[1:-1]
+
+                    else:
+                        sizXY = self.shapeImg[:2]
+                        tret = tret.transpose((1, 0, 2))
+                        tret = tret.reshape(list(sizXY) + list(tret.shape[1:]))
+                        tmskSlc = (tret[:, :, :, 1] > 0.5).astype(np.float)
+                        tsegm3D[:, :, sslst] = tmskSlc
+
+                # self.dataImg[ii] = tdataImg
+            # (4) inference
+            lstIdx = range(numImg)
+            splitIdx = split_list_by_blocks(lstIdx, batchSize)
+            ret = []
+            for ss in splitIdx:
+                dataX = np.zeros([len(ss)] + list(self.shapeImg), dtype=np.float)
+                for ii, ssi in enumerate(ss):
+                    dataX[ii] = self.dataImg[ssi]
+                retY = self.model.predict_on_batch(dataX)
+                if self.isTheanoShape:
+                    retY = retY.transpose((0, 2, 1))
+                for ii in range(retY.shape[0]):
+                    ret.append(retY[ii].reshape(self.shapeMsk))
+            self.isDataInMemory = False
+            self.dataImg = None
+            return ret
+        else:
+            return []
 
 
 ######################################################
