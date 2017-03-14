@@ -141,7 +141,7 @@ if __name__=='__main__':
     parBatchSizeVal   = parBatchSize
     # parIsTheanoShape  = True
     parIsTheanoShape = (K.image_dim_ordering()=='th')
-    parIsLoadIntoMemory = True
+    parIsLoadIntoMemory = False
     parClassWeights   = [1., 12.]
     # parClassWeights   = None
     batcherTrain = BatcherOnImageCT3D(pathDataIdx=fidxTrain,

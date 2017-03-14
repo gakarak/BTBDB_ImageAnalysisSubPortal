@@ -269,6 +269,9 @@ class BatcherOnImageCT3D:
             tshp = dataY.shape
             dataY = dataY.reshape([tshp[0], tshp[1], np.prod(tshp[-3:])]).transpose((0, 2, 1))
             # print (tshp)
+        else:
+            tshp = dataY.shape
+            dataY = dataY.reshape([tshp[0], np.prod(tshp[1:-1]), tshp[-1]])
         return (dataX, dataY)
     def getBatchData(self, parBatchSize=8):
         self.checkIsInitialized()
