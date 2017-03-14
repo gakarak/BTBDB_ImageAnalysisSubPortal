@@ -13,7 +13,7 @@ from keras.backend.tensorflow_backend import set_session
 
 from run00_common import BatcherOnImageCT3D, split_list_by_blocks
 
-
+#########################################
 if __name__ == '__main__':
     pathDirWithModels = '../../experimental_data/models/fcnn_ct_lung_segm_2.5d'
     batcherInfer = BatcherOnImageCT3D()
