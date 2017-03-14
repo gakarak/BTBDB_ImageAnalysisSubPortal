@@ -359,7 +359,10 @@ class BatcherOnImageCT3D:
                 tsetShapes.add(ii.shape)
             if len(tsetShapes)>1:
                 raise Exception('Shapes of images must be equal sized')
-            tmpShape = self.shapeImg[1:]
+            if K.image_dim_ordering()=='th':
+                tmpShape = self.shapeImg[+1:]
+            else:
+                tmpShape = self.shapeImg[:-1]
             if tmpShape not in tsetShapes:
                 raise Exception('Model input shape and shapes of input images is not equal!')
             # (3) convert data

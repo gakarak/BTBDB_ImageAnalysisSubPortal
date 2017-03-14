@@ -101,6 +101,7 @@ def buildModel_CT(inpShape=(1, 128, 128, 64), numCls=2, sizFlt=3):
         tmpShape = tmpModel.output_shape[1:-1]
         sizeReshape = np.prod(tmpShape)
         x = Reshape([sizeReshape, numCls])(x)
+        x = Activation('softmax')(x)
         retModel = Model(dataInput, x)
     retShape = retModel.output_shape[1:-1]
     return (retModel, retShape)
@@ -115,7 +116,7 @@ if __name__=='__main__':
     #
     if K.image_dim_ordering() == 'tf':
         config = tf.ConfigProto()
-        config.gpu_options.per_process_gpu_memory_fraction = 0.86
+        config.gpu_options.per_process_gpu_memory_fraction = 0.9
         set_session(tf.Session(config=config))
     #
     if len(sys.argv)>5:
@@ -126,8 +127,8 @@ if __name__=='__main__':
         fidxVal      = sys.argv[5]
     else:
         parOptimizer = 'adam'
-        parNumEpoch  = 100
-        parBatchSize = 8
+        parNumEpoch  = 30
+        parBatchSize = 16
         fidxTrain    = '/mnt/data1T/datasets/CRDF/TB_5_Classes/TB_sub_1_5-resize-128x128x64/idx.txt-train.txt'
         fidxVal      = '/mnt/data1T/datasets/CRDF/TB_5_Classes/TB_sub_1_5-resize-128x128x64/idx.txt-val.txt'
     if not os.path.isfile(fidxTrain):
@@ -141,7 +142,7 @@ if __name__=='__main__':
     parBatchSizeVal   = parBatchSize
     # parIsTheanoShape  = True
     parIsTheanoShape = (K.image_dim_ordering()=='th')
-    parIsLoadIntoMemory = False
+    parIsLoadIntoMemory = True
     parClassWeights   = [1., 12.]
     # parClassWeights   = None
     batcherTrain = BatcherOnImageCT3D(pathDataIdx=fidxTrain,

@@ -1,2 +1,3 @@
 *.pyc
 *.jpg
+*.nii.gz-msk.nii.gz
