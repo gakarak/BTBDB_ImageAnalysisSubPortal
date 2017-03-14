@@ -566,7 +566,7 @@ class BatcherOnImageCT3D:
         else:
             self.shapeMskSlc = tuple(list(self.shapeImgSlc[:-1]) + [self.numCls])
             self.numSlices = (self.model.input_shape[-1] - 1) / 2
-    def inference(self, lstData, batchSize=2):
+    def inference(self, lstData, batchSize=2, isDebug=False):
         if self.model is None:
             raise Exception('Model is not loaded... load model before call inferece()')
         if len(lstData) > 0:
@@ -586,11 +586,15 @@ class BatcherOnImageCT3D:
             tmpShape = self.shapeImgSlc[:-1]
             if tmpShape not in tsetShapes:
                 raise Exception('Model input shape and shapes of input images is not equal!')
-            # (3) convert data
-            self.isDataInMemory = True
+            # (3) inference
+            # self.isDataInMemory = True
             numImg = len(tmpListOfImg)
             # self.dataImg = np.zeros([numImg] + list(self.shapeImg), dtype=np.float)
+            ret = []
             for ii in range(numImg):
+                # (3.1) convert data
+                if isDebug:
+                    print (':: process: [%s]' % tmpListOfImg[ii])
                 tdataImg = self.adjustImage(tmpListOfImg[ii])
                 tdataImg = self.transformImageFromOriginal(tdataImg, isRemoveMean=True)
                 if K.image_dim_ordering() == 'th':
@@ -599,6 +603,7 @@ class BatcherOnImageCT3D:
                 else:
                     tsegm3D = np.zeros(tdataImg.shape[:-1], np.float)
                     numSlicesZ = tdataImg.shape[-2]
+                # (3.2) inference slide-by-slide
                 lstIdxScl = range(self.numSlices, numSlicesZ - self.numSlices)
                 lstIdxScl = split_list_by_blocks(lstIdxScl, batchSize)
                 for ss, sslst in enumerate(lstIdxScl):
@@ -607,33 +612,17 @@ class BatcherOnImageCT3D:
                     if K.image_dim_ordering() == 'th':
                         # raise NotImplementedError
                         tret = tret.transpose((1, 0, 2))
-                        sizXY = self.shapeImgSlc[1:]
+                        sizXY = self.shapeImgSlc[+1:]
                     else:
-                        sizXY = self.shapeImgSlc[:1]
+                        sizXY = self.shapeImgSlc[:-1]
+                        tret = tret.transpose((1, 0, 2))
                         tret = tret.reshape(list(sizXY) + list(tret.shape[1:]))
-                        tmskSlc = (tret[:, :, :, 1] > 0.5).astype(np.float)
-                        tsegm3D[:, :, sslst] = tmskSlc
-
-                # self.dataImg[ii] = tdataImg
-            # (4) inference
-            lstIdx = range(numImg)
-            splitIdx = split_list_by_blocks(lstIdx, batchSize)
-            ret = []
-            for ss in splitIdx:
-                dataX = np.zeros([len(ss)] + list(self.shapeImg), dtype=np.float)
-                for ii, ssi in enumerate(ss):
-                    dataX[ii] = self.dataImg[ssi]
-                retY = self.model.predict_on_batch(dataX)
-                if self.isTheanoShape:
-                    retY = retY.transpose((0, 2, 1))
-                for ii in range(retY.shape[0]):
-                    ret.append(retY[ii].reshape(self.shapeMsk))
-            self.isDataInMemory = False
-            self.dataImg = None
+                        # tmskSlc = (tret[:, :, :, 1] > 0.5).astype(np.float)
+                        tsegm3D[:, :, sslst] = tret[:,:,:,1]
+                ret.append(tsegm3D)
             return ret
         else:
             return []
-
 
 ######################################################
 if __name__=='__main__':
