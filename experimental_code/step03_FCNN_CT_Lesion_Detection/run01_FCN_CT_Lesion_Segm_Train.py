@@ -21,6 +21,9 @@ from keras.layers import Dense, Convolution3D, Activation, MaxPooling3D,\
     Flatten, BatchNormalization, InputLayer, Dropout, Reshape, Permute, Input, UpSampling3D, Lambda
 from keras.layers.normalization import BatchNormalization
 
+from keras.backend.tensorflow_backend import set_session
+import tensorflow as tf
+
 try:
    import cPickle as pickle
 except:
@@ -109,6 +112,12 @@ def usage(pargv):
 
 ######################################################
 if __name__=='__main__':
+    #
+    if K.image_dim_ordering() == 'tf':
+        config = tf.ConfigProto()
+        config.gpu_options.per_process_gpu_memory_fraction = 0.86
+        set_session(tf.Session(config=config))
+    #
     if len(sys.argv)>5:
         parNumEpoch  = int(sys.argv[1])
         parBatchSize = int(sys.argv[2])

@@ -47,4 +47,4 @@ if __name__ == '__main__':
     for ii,pp in enumerate(lstPathNifti):
         print ('[%d/%d] : %s' % (ii,len(lstPathNifti), pp))
         foutNii = '%s-msk.nii.gz' % (os.path.basename(pp))
-        createLungMask(pathInpNii=pp, dirWithModel=pathDirWithModels, pathOutNii=foutNii)
+        createLungMask(pathInpNii=pp, dirWithModel=pathDirWithModels, pathOutNii=foutNii, isDebug=True)
