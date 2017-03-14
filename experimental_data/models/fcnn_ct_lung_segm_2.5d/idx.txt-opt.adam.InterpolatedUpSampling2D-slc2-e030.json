@@ -1,0 +1,580 @@
+{
+   "class_name": "Model", 
+   "keras_version": "1.2.1", 
+   "config": {
+      "layers": [
+         {
+            "class_name": "InputLayer", 
+            "inbound_nodes": [], 
+            "config": {
+               "batch_input_shape": [
+                  null, 
+                  256, 
+                  256, 
+                  5
+               ], 
+               "sparse": false, 
+               "input_dtype": "float32", 
+               "name": "input_1"
+            }, 
+            "name": "input_1"
+         }, 
+         {
+            "class_name": "Convolution2D", 
+            "inbound_nodes": [
+               [
+                  [
+                     "input_1", 
+                     0, 
+                     0
+                  ]
+               ]
+            ], 
+            "config": {
+               "W_constraint": null, 
+               "b_constraint": null, 
+               "name": "convolution2d_1", 
+               "activity_regularizer": null, 
+               "trainable": true, 
+               "dim_ordering": "tf", 
+               "nb_col": 3, 
+               "subsample": [
+                  1, 
+                  1
+               ], 
+               "init": "glorot_uniform", 
+               "bias": true, 
+               "nb_filter": 16, 
+               "b_regularizer": null, 
+               "W_regularizer": null, 
+               "nb_row": 3, 
+               "activation": "relu", 
+               "border_mode": "same"
+            }, 
+            "name": "convolution2d_1"
+         }, 
+         {
+            "class_name": "MaxPooling2D", 
+            "inbound_nodes": [
+               [
+                  [
+                     "convolution2d_1", 
+                     0, 
+                     0
+                  ]
+               ]
+            ], 
+            "config": {
+               "name": "maxpooling2d_1", 
+               "trainable": true, 
+               "dim_ordering": "tf", 
+               "pool_size": [
+                  2, 
+                  2
+               ], 
+               "strides": [
+                  2, 
+                  2
+               ], 
+               "border_mode": "valid"
+            }, 
+            "name": "maxpooling2d_1"
+         }, 
+         {
+            "class_name": "Convolution2D", 
+            "inbound_nodes": [
+               [
+                  [
+                     "maxpooling2d_1", 
+                     0, 
+                     0
+                  ]
+               ]
+            ], 
+            "config": {
+               "W_constraint": null, 
+               "b_constraint": null, 
+               "name": "convolution2d_2", 
+               "activity_regularizer": null, 
+               "trainable": true, 
+               "dim_ordering": "tf", 
+               "nb_col": 3, 
+               "subsample": [
+                  1, 
+                  1
+               ], 
+               "init": "glorot_uniform", 
+               "bias": true, 
+               "nb_filter": 32, 
+               "b_regularizer": null, 
+               "W_regularizer": null, 
+               "nb_row": 3, 
+               "activation": "relu", 
+               "border_mode": "same"
+            }, 
+            "name": "convolution2d_2"
+         }, 
+         {
+            "class_name": "MaxPooling2D", 
+            "inbound_nodes": [
+               [
+                  [
+                     "convolution2d_2", 
+                     0, 
+                     0
+                  ]
+               ]
+            ], 
+            "config": {
+               "name": "maxpooling2d_2", 
+               "trainable": true, 
+               "dim_ordering": "tf", 
+               "pool_size": [
+                  2, 
+                  2
+               ], 
+               "strides": [
+                  2, 
+                  2
+               ], 
+               "border_mode": "valid"
+            }, 
+            "name": "maxpooling2d_2"
+         }, 
+         {
+            "class_name": "Convolution2D", 
+            "inbound_nodes": [
+               [
+                  [
+                     "maxpooling2d_2", 
+                     0, 
+                     0
+                  ]
+               ]
+            ], 
+            "config": {
+               "W_constraint": null, 
+               "b_constraint": null, 
+               "name": "convolution2d_3", 
+               "activity_regularizer": null, 
+               "trainable": true, 
+               "dim_ordering": "tf", 
+               "nb_col": 3, 
+               "subsample": [
+                  1, 
+                  1
+               ], 
+               "init": "glorot_uniform", 
+               "bias": true, 
+               "nb_filter": 64, 
+               "b_regularizer": null, 
+               "W_regularizer": null, 
+               "nb_row": 3, 
+               "activation": "relu", 
+               "border_mode": "same"
+            }, 
+            "name": "convolution2d_3"
+         }, 
+         {
+            "class_name": "MaxPooling2D", 
+            "inbound_nodes": [
+               [
+                  [
+                     "convolution2d_3", 
+                     0, 
+                     0
+                  ]
+               ]
+            ], 
+            "config": {
+               "name": "maxpooling2d_3", 
+               "trainable": true, 
+               "dim_ordering": "tf", 
+               "pool_size": [
+                  2, 
+                  2
+               ], 
+               "strides": [
+                  2, 
+                  2
+               ], 
+               "border_mode": "valid"
+            }, 
+            "name": "maxpooling2d_3"
+         }, 
+         {
+            "class_name": "Convolution2D", 
+            "inbound_nodes": [
+               [
+                  [
+                     "maxpooling2d_3", 
+                     0, 
+                     0
+                  ]
+               ]
+            ], 
+            "config": {
+               "W_constraint": null, 
+               "b_constraint": null, 
+               "name": "convolution2d_4", 
+               "activity_regularizer": null, 
+               "trainable": true, 
+               "dim_ordering": "tf", 
+               "nb_col": 3, 
+               "subsample": [
+                  1, 
+                  1
+               ], 
+               "init": "glorot_uniform", 
+               "bias": true, 
+               "nb_filter": 128, 
+               "b_regularizer": null, 
+               "W_regularizer": null, 
+               "nb_row": 3, 
+               "activation": "relu", 
+               "border_mode": "same"
+            }, 
+            "name": "convolution2d_4"
+         }, 
+         {
+            "class_name": "MaxPooling2D", 
+            "inbound_nodes": [
+               [
+                  [
+                     "convolution2d_4", 
+                     0, 
+                     0
+                  ]
+               ]
+            ], 
+            "config": {
+               "name": "maxpooling2d_4", 
+               "trainable": true, 
+               "dim_ordering": "tf", 
+               "pool_size": [
+                  2, 
+                  2
+               ], 
+               "strides": [
+                  2, 
+                  2
+               ], 
+               "border_mode": "valid"
+            }, 
+            "name": "maxpooling2d_4"
+         }, 
+         {
+            "class_name": "Convolution2D", 
+            "inbound_nodes": [
+               [
+                  [
+                     "maxpooling2d_4", 
+                     0, 
+                     0
+                  ]
+               ]
+            ], 
+            "config": {
+               "W_constraint": null, 
+               "b_constraint": null, 
+               "name": "convolution2d_5", 
+               "activity_regularizer": null, 
+               "trainable": true, 
+               "dim_ordering": "tf", 
+               "nb_col": 3, 
+               "subsample": [
+                  1, 
+                  1
+               ], 
+               "init": "glorot_uniform", 
+               "bias": true, 
+               "nb_filter": 128, 
+               "b_regularizer": null, 
+               "W_regularizer": null, 
+               "nb_row": 3, 
+               "activation": "relu", 
+               "border_mode": "same"
+            }, 
+            "name": "convolution2d_5"
+         }, 
+         {
+            "class_name": "UpSamplingInterpolated2D", 
+            "inbound_nodes": [
+               [
+                  [
+                     "convolution2d_5", 
+                     0, 
+                     0
+                  ]
+               ]
+            ], 
+            "config": {
+               "size": [
+                  2, 
+                  2
+               ], 
+               "trainable": true, 
+               "order": 1, 
+               "name": "upsamplinginterpolated2d_1"
+            }, 
+            "name": "upsamplinginterpolated2d_1"
+         }, 
+         {
+            "class_name": "Convolution2D", 
+            "inbound_nodes": [
+               [
+                  [
+                     "upsamplinginterpolated2d_1", 
+                     0, 
+                     0
+                  ]
+               ]
+            ], 
+            "config": {
+               "W_constraint": null, 
+               "b_constraint": null, 
+               "name": "convolution2d_6", 
+               "activity_regularizer": null, 
+               "trainable": true, 
+               "dim_ordering": "tf", 
+               "nb_col": 3, 
+               "subsample": [
+                  1, 
+                  1
+               ], 
+               "init": "glorot_uniform", 
+               "bias": true, 
+               "nb_filter": 64, 
+               "b_regularizer": null, 
+               "W_regularizer": null, 
+               "nb_row": 3, 
+               "activation": "relu", 
+               "border_mode": "same"
+            }, 
+            "name": "convolution2d_6"
+         }, 
+         {
+            "class_name": "UpSamplingInterpolated2D", 
+            "inbound_nodes": [
+               [
+                  [
+                     "convolution2d_6", 
+                     0, 
+                     0
+                  ]
+               ]
+            ], 
+            "config": {
+               "size": [
+                  2, 
+                  2
+               ], 
+               "trainable": true, 
+               "order": 1, 
+               "name": "upsamplinginterpolated2d_2"
+            }, 
+            "name": "upsamplinginterpolated2d_2"
+         }, 
+         {
+            "class_name": "Convolution2D", 
+            "inbound_nodes": [
+               [
+                  [
+                     "upsamplinginterpolated2d_2", 
+                     0, 
+                     0
+                  ]
+               ]
+            ], 
+            "config": {
+               "W_constraint": null, 
+               "b_constraint": null, 
+               "name": "convolution2d_7", 
+               "activity_regularizer": null, 
+               "trainable": true, 
+               "dim_ordering": "tf", 
+               "nb_col": 3, 
+               "subsample": [
+                  1, 
+                  1
+               ], 
+               "init": "glorot_uniform", 
+               "bias": true, 
+               "nb_filter": 32, 
+               "b_regularizer": null, 
+               "W_regularizer": null, 
+               "nb_row": 3, 
+               "activation": "relu", 
+               "border_mode": "same"
+            }, 
+            "name": "convolution2d_7"
+         }, 
+         {
+            "class_name": "UpSamplingInterpolated2D", 
+            "inbound_nodes": [
+               [
+                  [
+                     "convolution2d_7", 
+                     0, 
+                     0
+                  ]
+               ]
+            ], 
+            "config": {
+               "size": [
+                  2, 
+                  2
+               ], 
+               "trainable": true, 
+               "order": 1, 
+               "name": "upsamplinginterpolated2d_3"
+            }, 
+            "name": "upsamplinginterpolated2d_3"
+         }, 
+         {
+            "class_name": "Convolution2D", 
+            "inbound_nodes": [
+               [
+                  [
+                     "upsamplinginterpolated2d_3", 
+                     0, 
+                     0
+                  ]
+               ]
+            ], 
+            "config": {
+               "W_constraint": null, 
+               "b_constraint": null, 
+               "name": "convolution2d_8", 
+               "activity_regularizer": null, 
+               "trainable": true, 
+               "dim_ordering": "tf", 
+               "nb_col": 3, 
+               "subsample": [
+                  1, 
+                  1
+               ], 
+               "init": "glorot_uniform", 
+               "bias": true, 
+               "nb_filter": 16, 
+               "b_regularizer": null, 
+               "W_regularizer": null, 
+               "nb_row": 3, 
+               "activation": "relu", 
+               "border_mode": "same"
+            }, 
+            "name": "convolution2d_8"
+         }, 
+         {
+            "class_name": "UpSamplingInterpolated2D", 
+            "inbound_nodes": [
+               [
+                  [
+                     "convolution2d_8", 
+                     0, 
+                     0
+                  ]
+               ]
+            ], 
+            "config": {
+               "size": [
+                  2, 
+                  2
+               ], 
+               "trainable": true, 
+               "order": 1, 
+               "name": "upsamplinginterpolated2d_4"
+            }, 
+            "name": "upsamplinginterpolated2d_4"
+         }, 
+         {
+            "class_name": "Convolution2D", 
+            "inbound_nodes": [
+               [
+                  [
+                     "upsamplinginterpolated2d_4", 
+                     0, 
+                     0
+                  ]
+               ]
+            ], 
+            "config": {
+               "W_constraint": null, 
+               "b_constraint": null, 
+               "name": "convolution2d_9", 
+               "activity_regularizer": null, 
+               "trainable": true, 
+               "dim_ordering": "tf", 
+               "nb_col": 1, 
+               "subsample": [
+                  1, 
+                  1
+               ], 
+               "init": "glorot_uniform", 
+               "bias": true, 
+               "nb_filter": 2, 
+               "b_regularizer": null, 
+               "W_regularizer": null, 
+               "nb_row": 1, 
+               "activation": "linear", 
+               "border_mode": "valid"
+            }, 
+            "name": "convolution2d_9"
+         }, 
+         {
+            "class_name": "Reshape", 
+            "inbound_nodes": [
+               [
+                  [
+                     "convolution2d_9", 
+                     0, 
+                     0
+                  ]
+               ]
+            ], 
+            "config": {
+               "target_shape": [
+                  65536, 
+                  2
+               ], 
+               "trainable": true, 
+               "name": "reshape_1"
+            }, 
+            "name": "reshape_1"
+         }, 
+         {
+            "class_name": "Activation", 
+            "inbound_nodes": [
+               [
+                  [
+                     "reshape_1", 
+                     0, 
+                     0
+                  ]
+               ]
+            ], 
+            "config": {
+               "activation": "softmax", 
+               "trainable": true, 
+               "name": "activation_1"
+            }, 
+            "name": "activation_1"
+         }
+      ], 
+      "input_layers": [
+         [
+            "input_1", 
+            0, 
+            0
+         ]
+      ], 
+      "name": "model_3", 
+      "output_layers": [
+         [
+            "activation_1", 
+            0, 
+            0
+         ]
+      ]
+   }
+}
