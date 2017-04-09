@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+from __future__ import print_function
 __author__ = 'ar'
 
 import os
@@ -10,6 +11,9 @@ import json
 from pprint import pprint
 import errno
 
+import logging
+import logging.handlers
+
 try:
     from cStringIO import StringIO
 except:
@@ -18,7 +22,7 @@ except:
 #######################################
 dirData = 'data-cases'
 # urlTakeList="http://tbportal-dataentry-dev.ibrsp.org/api/cases?since=2000-01-01&take=%d&skip=%d"
-urlTakeList="http://tbportal-dataentry-dev.ibrsp.org/api/cases?since=2017-01-01&take=%d&skip=%d"
+urlTakeList="http://tbportal-dataentry-dev.ibrsp.org/api/cases?since=2017-02-01&take=%d&skip=%d"
 urlCaseInfo="http://tbportal-dataentry-dev.ibrsp.org/api/cases/%s"
 
 # PATIENT_ID - CASE_ID - STUDY_ID - STUDY_UID - SERIES_UID - INSTANCE_UID
@@ -26,6 +30,28 @@ urlCaseInfo="http://tbportal-dataentry-dev.ibrsp.org/api/cases/%s"
 # urlDicomFile="http://tbportal-dataentry-dev.ibrsp.org/patient/%s/case/%s/imaging/study/%s/%s/series/%s/%s.dcm"
 # urlDicomFile="http://tbportal-dataentry-prod.ibrsp.org/patient/%s/case/%s/imaging/study/%s/%s/series/%s/%s.dcm"
 urlDicomFile="http://data.tbportals.niaid.nih.gov/patient/%s/case/%s/imaging/study/%s/%s/series/%s/%s.dcm"
+# urlDicomFile="http://data.tbportals.niaid.nih.gov/patient/%s/case/%s/imaging/study/%s/%s/series/%s/%s"
+
+#######################################
+def get_logger(wdir, logName=None):
+    if logName is None:
+        logName = "dicom-log-%s" % (time.strftime('%Y.%m.%d-%H.%M.%S'))
+    else:
+        logName = "%s-%s" % (logName, time.strftime('%Y.%m.%d-%H.%M.%S'))
+    outLog = os.path.join(wdir, logName)
+    logger = logging.getLogger(logName)
+    logger.setLevel(logging.DEBUG)
+    #
+    formatter = logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
+    fh = logging.FileHandler("%s.log" % outLog)
+    fh.setLevel(logging.DEBUG)
+    fh.setFormatter(formatter)
+    logger.addHandler(fh)
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
+    return logger
 
 #######################################
 def mkdir_p(path):
@@ -81,12 +107,14 @@ if __name__ == '__main__':
     mkdir_p(dirData)
     reqInfo = getListOfCases()
     numTotal = int(reqInfo['total'])
+    ptrLogger = get_logger(wdir=dirData)
     for ii in range(numTotal):
         t0 = time.time()
         tretShort = getListOfCases(ptake=(ii + 1), pskip=ii)
         jsonInfoShort = tretShort['results'][0]
-        # conditionId = jsonInfoShort['conditionId']
-        conditionId = '2c396a3e-1900-4fb4-bd3a-6763dc3f2ec0'
+        conditionId = jsonInfoShort['conditionId']
+        # conditionId = '2c396a3e-1900-4fb4-bd3a-6763dc3f2ec0'
+        # conditionId = '3602e1da-03b0-416c-9aed-57f16d5cd5fc'
         jsonInfoCaseAll = getCaseInfo(condId=conditionId)
         imageStudyInfo = jsonInfoCaseAll['imagingStudies']
         dt = time.time() - t0
@@ -104,17 +132,22 @@ if __name__ == '__main__':
             print ('\t*** no image studies')
         else:
             print ('\t#ImageStudies = %d' % len(imageStudyInfo))
-            for imageStudy in imageStudyInfo:
+            numStudy = len(imageStudyInfo)
+            for iiStudy, imageStudy in enumerate(imageStudyInfo):
                 tpatientId = jsonInfoCaseAll['patient']['id']
                 tcaseId = jsonInfoCaseAll['id']
                 timageStudyId = imageStudy['id']
                 timageStudyUID = imageStudy['studyUid']
-                for imageSeries in imageStudy['series']:
+                numSeries = len(imageStudy['series'])
+                for iiSeries, imageSeries in enumerate(imageStudy['series']):
+                    T0 = time.time()
                     timageSeriesUID = imageSeries['uid']
-                    tmodality = imageSeries['modality']
-                    tnumInstances = imageSeries['numberOfInstances']
+                    tmodality = imageSeries['modality']['code']
+                    numInstances = imageSeries['numberOfInstances']
                     dirOutImageSeriesRaw = '%s/study-%s/series-%s/raw' % (dirOutCase, timageStudyId, timageSeriesUID)
                     mkdir_p(dirOutImageSeriesRaw)
+                    numI = len(imageSeries['instance'])
+                    print('\t\t[%d/%d * %d/%d] #Series = %d ...' % (iiStudy, numStudy, iiSeries, numSeries, numInstances), end='')
                     for imageInstance in imageSeries['instance']:
                         tinstanceUID = imageInstance['uid']
                         instanceNumber = imageInstance['number']
@@ -123,9 +156,15 @@ if __name__ == '__main__':
                                                           timageStudyId,
                                                           timageStudyUID,
                                                           timageSeriesUID, tinstanceUID)
-                        foutDicom = '%s/instance-%04d.dcm' % (dirOutImageSeriesRaw, instanceNumber)
+                        foutDicom = '%s/instance-%s-%04d.dcm' % (dirOutImageSeriesRaw, tmodality, instanceNumber)
                         try:
                             data = downloadDicom(currentDicomUrl)
                         except Exception as err:
-                            pass
-                        print ('---')
+                            ptrLogger.info("**ERROR** cant read url [%s] : %s" % (currentDicomUrl, err))
+                            continue
+                        with open(foutDicom, 'wb') as f:
+                            f.write(data.getvalue())
+                        # print ('---')
+                    dT = time.time() - T0
+                    print (' ... dT ~ %0.3f (s)' % dT)
+                    # print ('\t\t[%d/%d * %d/%d] : dT ~ %0.3f (s)' % (iiStudy, numStudy, iiSeries, iiSeries, dT))
