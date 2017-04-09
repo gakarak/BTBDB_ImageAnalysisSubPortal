@@ -7,4 +7,4 @@ tbportal-dataentry-dev.ibrsp.org/api/cases?since=2017-01-01T10:00
 tbportal-dataentry-dev.ibrsp.org/api/cases?since=2017-01-01&take=100
 tbportal-dataentry-dev.ibrsp.org/api/cases?since=2017-01-01&take=100&skip=10
 
-tbportal-dataentry-dev.ibrsp.org/api/cases /{conditionId}
+tbportal-dataentry-dev.ibrsp.org/api/cases/{conditionId}
