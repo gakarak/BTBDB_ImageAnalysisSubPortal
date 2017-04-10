@@ -1,33 +1,41 @@
 {
-  "retcode": 0,
-  "errorstr": "",
-  "study_report": {
+  "Input": {
     "case_id": "2c396a3e-1900-4fb4-bd3a-6763dc3f2ec0",
     "patient_id": "9caa9ff2-448a-4b8d-8b4e-a0458cec7839",
     "study_uid": "1.3.6.1.4.1.25403.163683357445804.11492.20131121044923.22",
-    "series_uid": "1.3.6.1.4.1.25403.163683357445804.11492.20131121044923.23",
-    "number_of_slices": 128,
-    "spacing": {
-      "x": 0.6,
-      "y": 0.6,
-      "z": 2.5
-    },
-    "bounding_box": [
-      {
-        "unit": "voxels",
-        "x": 512,
-        "y": 512,
-        "z": 128
+    "series_uid": "1.3.6.1.4.1.25403.163683357445804.11492.20131121044923.23"
+  },
+
+  "Output": {
+    "retcode": 0,
+    "errorstr": "",
+    "study_report": {
+      "case_id": "2c396a3e-1900-4fb4-bd3a-6763dc3f2ec0",
+      "patient_id": "9caa9ff2-448a-4b8d-8b4e-a0458cec7839",
+      "study_uid": "1.3.6.1.4.1.25403.163683357445804.11492.20131121044923.22",
+      "series_uid": "1.3.6.1.4.1.25403.163683357445804.11492.20131121044923.23",
+      "number_of_slices": 128,
+      "spacing": {
+        "x": 0.6,
+        "y": 0.6,
+        "z": 2.5
       },
-      {
-        "unit": "mm",
-        "x": 307.2,
-        "y": 307.2,
-        "z": 320
-      }
-    ],
-    "volume": {
-      "total": [
+      "bounding_box": [
+        {
+          "unit": "voxels",
+          "x": 512,
+          "y": 512,
+          "z": 128
+        },
+        {
+          "unit": "mm",
+          "x": 307.2,
+          "y": 307.2,
+          "z": 320
+        }
+      ],
+      "volume": {
+        "total": [
           {
             "unit": "voxels",
             "value": 33554432
@@ -37,7 +45,7 @@
             "value": 30198988.8
           }
         ],
-      "left": [
+        "left": [
           {
             "unit": "voxels",
             "value": 20132659
@@ -47,7 +55,7 @@
             "value": 18119393.1
           }
         ],
-      "right": [
+        "right": [
           {
             "unit": "voxels",
             "value": 13421773
@@ -57,16 +65,18 @@
             "value": 12079595.7
           }
         ]
-    },
-    "asymmetry": [{
-      "type" : "volume",
-      "value": 0.8
-    },
-    {
-      "type":"texture",
-      "value": 0.85
-    }],
-    "preview_images": [
+      },
+      "asymmetry": [
+        {
+          "type": "volume",
+          "value": 0.8
+        },
+        {
+          "type": "texture",
+          "value": 0.85
+        }
+      ],
+      "preview_images": [
         {
           "description": "Lung CT mask",
           "content-type": "image/png",
@@ -81,7 +91,10 @@
           "ysize": 512,
           "url": "http://blabla.org/case_id/study_id/image-report-2.jpeg"
         }
-    ],
-    "comment": "this is an extended optional comment"
+      ],
+      "comment": "this is an extended optional comment"
+    }
   }
 }
+
+

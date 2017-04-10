@@ -21,19 +21,12 @@ except:
 
 #######################################
 dirData = 'data-cases'
-# urlTakeList="http://tbportal-dataentry-dev.ibrsp.org/api/cases?since=2000-01-01&take=%d&skip=%d"
 
-# urlTakeList="http://tbportal-dataentry-dev.ibrsp.org/api/cases?since=2000-02-01&take=%d&skip=%d"
-# urlCaseInfo="http://tbportal-dataentry-dev.ibrsp.org/api/cases/%s"
-
-urlTakeList="http://data.tbportals.niaid.nih.gov/api/cases?since=2000-02-01&take=%d&skip=%d"
-urlCaseInfo="http://data.tbportals.niaid.nih.gov/api/cases/%s"
+urlTakeList="https://data.tbportals.niaid.nih.gov/api/cases?since=2000-02-01&take=%d&skip=%d"
+urlCaseInfo="https://data.tbportals.niaid.nih.gov/api/cases/%s"
 
 # PATIENT_ID - CASE_ID - STUDY_ID - STUDY_UID - SERIES_UID - INSTANCE_UID
-# urlDicomFile="http://data.tuberculosis.by/patient/%s/case/%s/imaging/study/%s/%s/series/%s/%s.dcm"
-# urlDicomFile="http://tbportal-dataentry-dev.ibrsp.org/patient/%s/case/%s/imaging/study/%s/%s/series/%s/%s.dcm"
-# urlDicomFile="http://tbportal-dataentry-prod.ibrsp.org/patient/%s/case/%s/imaging/study/%s/%s/series/%s/%s.dcm"
-urlDicomFile="http://data.tbportals.niaid.nih.gov/patient/%s/case/%s/imaging/study/%s/%s/series/%s/%s.dcm"
+urlDicomFile="https://data.tbportals.niaid.nih.gov/patient/%s/case/%s/imaging/study/%s/%s/series/%s/%s.dcm"
 # urlDicomFile="http://data.tbportals.niaid.nih.gov/patient/%s/case/%s/imaging/study/%s/%s/series/%s/%s"
 
 #######################################
