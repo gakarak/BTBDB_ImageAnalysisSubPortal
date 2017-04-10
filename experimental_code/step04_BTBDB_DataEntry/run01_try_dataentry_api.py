@@ -22,8 +22,12 @@ except:
 #######################################
 dirData = 'data-cases'
 # urlTakeList="http://tbportal-dataentry-dev.ibrsp.org/api/cases?since=2000-01-01&take=%d&skip=%d"
-urlTakeList="http://tbportal-dataentry-dev.ibrsp.org/api/cases?since=2017-02-01&take=%d&skip=%d"
-urlCaseInfo="http://tbportal-dataentry-dev.ibrsp.org/api/cases/%s"
+
+# urlTakeList="http://tbportal-dataentry-dev.ibrsp.org/api/cases?since=2000-02-01&take=%d&skip=%d"
+# urlCaseInfo="http://tbportal-dataentry-dev.ibrsp.org/api/cases/%s"
+
+urlTakeList="http://data.tbportals.niaid.nih.gov/api/cases?since=2000-02-01&take=%d&skip=%d"
+urlCaseInfo="http://data.tbportals.niaid.nih.gov/api/cases/%s"
 
 # PATIENT_ID - CASE_ID - STUDY_ID - STUDY_UID - SERIES_UID - INSTANCE_UID
 # urlDicomFile="http://data.tuberculosis.by/patient/%s/case/%s/imaging/study/%s/%s/series/%s/%s.dcm"
@@ -103,7 +107,8 @@ def downloadDicom(urlRequest, pauthTocken=None):
 
 #######################################
 if __name__ == '__main__':
-    shutil.rmtree(dirData)
+    # if os.path.isdir(dirData):
+    #     shutil.rmtree(dirData)
     mkdir_p(dirData)
     reqInfo = getListOfCases()
     numTotal = int(reqInfo['total'])
@@ -147,21 +152,29 @@ if __name__ == '__main__':
                     dirOutImageSeriesRaw = '%s/study-%s/series-%s/raw' % (dirOutCase, timageStudyId, timageSeriesUID)
                     mkdir_p(dirOutImageSeriesRaw)
                     numI = len(imageSeries['instance'])
+                    # isError = False
                     print('\t\t[%d/%d * %d/%d] #Series = %d ...' % (iiStudy, numStudy, iiSeries, numSeries, numInstances), end='')
                     for imageInstance in imageSeries['instance']:
                         tinstanceUID = imageInstance['uid']
-                        instanceNumber = imageInstance['number']
+                        try:
+                            instanceNumber = imageInstance['number']
+                        except Exception as err:
+                            # ptrLogger.error("**ERROR** invalid imageInstance structure for [%s] : %s" % (dirOutImageSeriesRaw, err))
+                            # break
+                            instanceNumber = 0
                         currentDicomUrl = getDicomFileUrl(tpatientId,
                                                           tcaseId,
                                                           timageStudyId,
                                                           timageStudyUID,
                                                           timageSeriesUID, tinstanceUID)
-                        foutDicom = '%s/instance-%s-%04d.dcm' % (dirOutImageSeriesRaw, tmodality, instanceNumber)
                         try:
+                            foutDicom = '%s/instance-%s-%04d.dcm' % (dirOutImageSeriesRaw, tmodality, instanceNumber)
+                            if os.path.isfile(foutDicom):
+                                ptrLogger.info("***WARNING*** file exist [%s], skip..." % foutDicom)
                             data = downloadDicom(currentDicomUrl)
                         except Exception as err:
-                            ptrLogger.info("**ERROR** cant read url [%s] : %s" % (currentDicomUrl, err))
-                            continue
+                            ptrLogger.error("**ERROR** cant read url [%s] : %s" % (currentDicomUrl, err))
+                            break
                         with open(foutDicom, 'wb') as f:
                             f.write(data.getvalue())
                         # print ('---')
