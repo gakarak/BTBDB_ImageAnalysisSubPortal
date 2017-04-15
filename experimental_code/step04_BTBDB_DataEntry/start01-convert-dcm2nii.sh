@@ -23,7 +23,7 @@ do
 	echo "------"
 	pwd
 	echo "------"
-	dcm2nii -r n -o ./ ./raw
+	dcm2nii -z y -r n -o ./ ./raw
 	finp=`find ./ -name '*.nii.gz' | sort -n | head -n 1`
 	if [ -n "${finp}" ]; then
 	    mv "${finp}" "${fout}" 
