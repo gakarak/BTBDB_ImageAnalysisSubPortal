@@ -1,0 +1,853 @@
+{
+    "status": "final", 
+    "updated": "2017-02-01T11:01:44.799721+03:00", 
+    "socialData": {
+        "riskFactors": [
+            {
+                "code": "exPrisoner", 
+                "system": "RiskFactor", 
+                "display": "The patient was imprisonedin the past"
+            }, 
+            {
+                "code": "tobacoUse", 
+                "system": "RiskFactor", 
+                "display": "Current smoker"
+            }, 
+            {
+                "code": "alcoholism", 
+                "system": "RiskFactor", 
+                "display": "Patient is registered with a psychiatrist by alcohol abuse"
+            }
+        ], 
+        "totalChildren": 2, 
+        "education": null, 
+        "employment": {
+            "code": "unemployed", 
+            "system": "Employment", 
+            "display": "No official work/position"
+        }, 
+        "totalContacts": 5
+    }, 
+    "patient": {
+        "gender": "male", 
+        "updated": "2017-02-01T13:59:56.491371+03:00", 
+        "identifier": "G-177", 
+        "id": "bc21f8ec-9f49-45bd-984f-c9802cfd9ae5", 
+        "managingOrganization": {
+            "shortName": "NCTBLD", 
+            "officialName": "National Center for Tuberculosis and Lung Diseases", 
+            "address": {
+                "city": "Tbilisi", 
+                "line": "50 Giorgi Maruashvili street, Tbilisi, 0101, Georgia", 
+                "country": "GE"
+            }
+        }
+    }, 
+    "anamnesis": {
+        "weight": 50.0, 
+        "dstProfile": {
+            "code": "XDR", 
+            "system": "DstProfile", 
+            "display": "Extensive drug resistance"
+        }, 
+        "localization": {
+            "code": "pulm", 
+            "system": "Localization", 
+            "display": "Pulmonary tuberculosis"
+        }, 
+        "comorbidity": null, 
+        "comments": null, 
+        "height": 170.0, 
+        "diagnosis": {
+            "code": "A15.0", 
+            "system": "Diagnosis", 
+            "display": "A15.0 - Tuberculosis of lung, confirmed by sputum microscopy with or without culture"
+        }
+    }, 
+    "treatment": {
+        "start": "2015-04-08T00:00:00", 
+        "outcome": {
+            "code": "died", 
+            "system": "Outcome", 
+            "display": "Died"
+        }, 
+        "end": "2015-10-26T00:00:00", 
+        "id": "16be4d39-9404-41ac-b61f-43fdce7e22f2", 
+        "activities": [
+            {
+                "start": "2015-04-08T00:00:00", 
+                "medications": [
+                    "Cm", 
+                    "Mfx", 
+                    "Pas", 
+                    "Pto", 
+                    "Cs"
+                ], 
+                "end": "2015-10-02T00:00:00", 
+                "statusReason": null
+            }, 
+            {
+                "start": "2015-10-02T00:00:00", 
+                "medications": [
+                    "Cm", 
+                    "Cs", 
+                    "Amx/Clv", 
+                    "Bdq", 
+                    "Ipm/Cln", 
+                    "Lzd"
+                ], 
+                "end": "2015-10-07T00:00:00", 
+                "statusReason": null
+            }, 
+            {
+                "start": "2015-10-07T00:00:00", 
+                "medications": [
+                    "Cm", 
+                    "Mfx", 
+                    "Pas", 
+                    "Pto", 
+                    "Amx/Clv", 
+                    "Cfz", 
+                    "Clr"
+                ], 
+                "end": "2015-10-26T00:00:00", 
+                "statusReason": null
+            }
+        ]
+    }, 
+    "specimens": [
+        {
+            "dst": [
+                {
+                    "drugs": [
+                        {
+                            "type": {
+                                "code": "H", 
+                                "system": "Drug", 
+                                "display": "Isoniazid (H, INH)"
+                            }, 
+                            "value": {
+                                "value": "R"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "R", 
+                                "system": "Drug", 
+                                "display": "Rifampicin (R, RIF)"
+                            }, 
+                            "value": {
+                                "value": "R"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "S", 
+                                "system": "Drug", 
+                                "display": "Streptomycin (S)"
+                            }, 
+                            "value": {
+                                "value": "R"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "E", 
+                                "system": "Drug", 
+                                "display": "Ethambutol (E, EMB)"
+                            }, 
+                            "value": {
+                                "value": "R"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Ofx", 
+                                "system": "Drug", 
+                                "display": "Ofloxacin (Ofx)"
+                            }, 
+                            "value": {
+                                "value": "R"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Cm", 
+                                "system": "Drug", 
+                                "display": "Capreomycin (Cm)"
+                            }, 
+                            "value": {
+                                "value": "R"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Am", 
+                                "system": "Drug", 
+                                "display": "Amikacin (Am)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Km", 
+                                "system": "Drug", 
+                                "display": "Kanamycin (Km)"
+                            }, 
+                            "value": {
+                                "value": "R"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Z", 
+                                "system": "Drug", 
+                                "display": "Pyrazinamide (Z, PZA)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Lfx", 
+                                "system": "Drug", 
+                                "display": "Levofloxacin (Lfx)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Mfx", 
+                                "system": "Drug", 
+                                "display": "Moxifloxacin (Mfx)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Pas", 
+                                "system": "Drug", 
+                                "display": "p-aminosalicylic acid (Pas, PAS)"
+                            }, 
+                            "value": {
+                                "value": "S"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Pto", 
+                                "system": "Drug", 
+                                "display": "Prothionamide (Pto)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Cs", 
+                                "system": "Drug", 
+                                "display": "Cycloserine (Cs)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Amx/Clv", 
+                                "system": "Drug", 
+                                "display": "Amoxicillin-clavulanate (Amx/Clv)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Mb", 
+                                "system": "Drug", 
+                                "display": "Mycobutin (Mb)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Dld", 
+                                "system": "Drug", 
+                                "display": "Delamanid (Dlm)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Bdq", 
+                                "system": "Drug", 
+                                "display": "Bedaquiline (Bdq)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Ipm/Cln", 
+                                "system": "Drug", 
+                                "display": "Imipenem-cilastatin (Ipm/Cln)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Lzd", 
+                                "system": "Drug", 
+                                "display": "Linezolid (Lzd)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Cfz", 
+                                "system": "Drug", 
+                                "display": "Clofazimine (Cfz)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Clr", 
+                                "system": "Drug", 
+                                "display": "Clarithromycin (Clr)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Ft", 
+                                "system": "Drug", 
+                                "display": "Fluoroquinolones (Ofx, Lfx or Mfx)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "AG/CP", 
+                                "system": "Drug", 
+                                "display": "Aminoglycosides - injectible agents (Cm, Km, Am)"
+                            }, 
+                            "value": {}
+                        }
+                    ], 
+                    "issued": "2015-12-17T00:00:00", 
+                    "dstTest": {
+                        "code": "le", 
+                        "system": "DstTest", 
+                        "display": "Lowenstein-Jensen"
+                    }, 
+                    "id": "fd41ba02-c3d8-4183-857a-ed8f31c8df78"
+                }
+            ], 
+            "sequences": [
+                {
+                    "ncbi": {
+                        "lineage": "Beijing", 
+                        "sra": [
+                            "SRR5152909"
+                        ], 
+                        "octalSpoligotype": "3771", 
+                        "sourceOrganism": "Mycobacterium tuberculosis 15-011925", 
+                        "bioProject": "PRJNA318002", 
+                        "bioSample": "SAMN06209937"
+                    }
+                }
+            ], 
+            "microscopy": [
+                {
+                    "issued": "2015-09-28T00:00:00", 
+                    "type": "Microscopy", 
+                    "id": "be182d63-91f5-440b-aa27-75896f9d8242", 
+                    "value": "Negative result"
+                }
+            ], 
+            "culture": [
+                {
+                    "issued": "2015-09-29T00:00:00", 
+                    "type": "Culture", 
+                    "id": "685a7029-a1c6-45fd-a12d-cb80223c5829", 
+                    "value": "20 to 100 colonies"
+                }
+            ], 
+            "bodySite": {
+                "code": "other", 
+                "system": "BodySite", 
+                "display": "Other sample"
+            }, 
+            "containerIdentifier": "G-177_S_1", 
+            "collected": "2015-09-28T00:00:00", 
+            "id": "d6d9d278-ebfb-4f8c-830b-77d87d57a7bc"
+        }, 
+        {
+            "dst": [
+                {
+                    "drugs": [
+                        {
+                            "type": {
+                                "code": "H", 
+                                "system": "Drug", 
+                                "display": "Isoniazid (H, INH)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": "R"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "R", 
+                                "system": "Drug", 
+                                "display": "Rifampicin (R, RIF)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": "R"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "S", 
+                                "system": "Drug", 
+                                "display": "Streptomycin (S)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": "R"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "E", 
+                                "system": "Drug", 
+                                "display": "Ethambutol (E, EMB)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": "R"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Ofx", 
+                                "system": "Drug", 
+                                "display": "Ofloxacin (Ofx)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": "R"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Cm", 
+                                "system": "Drug", 
+                                "display": "Capreomycin (Cm)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": "S"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Am", 
+                                "system": "Drug", 
+                                "display": "Amikacin (Am)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Km", 
+                                "system": "Drug", 
+                                "display": "Kanamycin (Km)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": "R"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Z", 
+                                "system": "Drug", 
+                                "display": "Pyrazinamide (Z, PZA)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Lfx", 
+                                "system": "Drug", 
+                                "display": "Levofloxacin (Lfx)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Mfx", 
+                                "system": "Drug", 
+                                "display": "Moxifloxacin (Mfx)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Pas", 
+                                "system": "Drug", 
+                                "display": "p-aminosalicylic acid (Pas, PAS)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Pto", 
+                                "system": "Drug", 
+                                "display": "Prothionamide (Pto)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Cs", 
+                                "system": "Drug", 
+                                "display": "Cycloserine (Cs)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Amx/Clv", 
+                                "system": "Drug", 
+                                "display": "Amoxicillin-clavulanate (Amx/Clv)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Mb", 
+                                "system": "Drug", 
+                                "display": "Mycobutin (Mb)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Dld", 
+                                "system": "Drug", 
+                                "display": "Delamanid (Dlm)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Bdq", 
+                                "system": "Drug", 
+                                "display": "Bedaquiline (Bdq)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Ipm/Cln", 
+                                "system": "Drug", 
+                                "display": "Imipenem-cilastatin (Ipm/Cln)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Lzd", 
+                                "system": "Drug", 
+                                "display": "Linezolid (Lzd)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Cfz", 
+                                "system": "Drug", 
+                                "display": "Clofazimine (Cfz)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Clr", 
+                                "system": "Drug", 
+                                "display": "Clarithromycin (Clr)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Ft", 
+                                "system": "Drug", 
+                                "display": "Fluoroquinolones (Ofx, Lfx or Mfx)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "AG/CP", 
+                                "system": "Drug", 
+                                "display": "Aminoglycosides - injectible agents (Cm, Km, Am)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }
+                    ], 
+                    "issued": "2015-05-28T00:00:00", 
+                    "dstTest": {
+                        "code": "le", 
+                        "system": "DstTest", 
+                        "display": "Lowenstein-Jensen"
+                    }, 
+                    "id": "016c5394-2452-43b9-a521-db498a5c5abd"
+                }
+            ], 
+            "sequences": null, 
+            "microscopy": [
+                {
+                    "issued": "2015-03-31T00:00:00", 
+                    "type": "Microscopy", 
+                    "id": "6a988ec3-272e-4bb8-94e4-655be09251f8", 
+                    "value": "10 to 99 acid-resistant bacteria in 1 fields of view when stained by Ziehl-Nielsen"
+                }
+            ], 
+            "culture": [
+                {
+                    "issued": "2015-04-01T00:00:00", 
+                    "type": "Culture", 
+                    "id": "4e522d72-da6c-43be-a164-18fb524db75c", 
+                    "value": "100 to 200 colonies"
+                }
+            ], 
+            "bodySite": {
+                "code": "sputum", 
+                "system": "BodySite", 
+                "display": "Sputum sample"
+            }, 
+            "containerIdentifier": "G-177_S_2", 
+            "collected": "2015-03-31T00:00:00", 
+            "id": "75f65ce5-056e-40d8-9c48-79f27802e29a"
+        }
+    ], 
+    "id": "1bcff980-4a55-46c1-9850-50b1b4f706a7", 
+    "imagingStudies": [
+        {
+            "studyDate": "2015-04-08T00:00:00", 
+            "series": [
+                {
+                    "uid": "2.25.237635103836304036846927816613834923464", 
+                    "started": "2015-04-08T00:00:00", 
+                    "numberOfInstances": 1, 
+                    "number": 1, 
+                    "instance": [
+                        {
+                            "content": {
+                                "url": "https://imagery.tbportal.org/bc21f8ec-9f49-45bd-984f-c9802cfd9ae5/2.25.111756738889492620712007806321367973340/2.25.237635103836304036846927816613834923464/2.25.268834484600975379546803804186834804417.dcm", 
+                                "size": "3453042"
+                            }, 
+                            "sopClass": "1.2.840.2.25", 
+                            "uid": "2.25.268834484600975379546803804186834804417", 
+                            "number": 1
+                        }
+                    ], 
+                    "modality": {
+                        "code": "CR", 
+                        "system": "Modality"
+                    }
+                }
+            ], 
+            "studyUid": "2.25.111756738889492620712007806321367973340", 
+            "imagesCount": "1", 
+            "report": {
+                "procedureCode": "CR", 
+                "used": null, 
+                "component": [
+                    {
+                        "value": {
+                            "code": "yes", 
+                            "system": "YesNo", 
+                            "display": "Yes"
+                        }, 
+                        "label": "Lung Capacity Decrease"
+                    }, 
+                    {
+                        "value": {
+                            "code": "more2", 
+                            "system": "ProcessPrevalence", 
+                            "display": "Prevalence of process  in more than or equal to 2 segments"
+                        }, 
+                        "label": "Process Prevalence"
+                    }, 
+                    {
+                        "value": null, 
+                        "label": "Affect Level"
+                    }, 
+                    {
+                        "value": {
+                            "code": "Total", 
+                            "system": "AffectedSegments", 
+                            "display": "Affected all segments"
+                        }, 
+                        "label": "Affected Segments"
+                    }, 
+                    {
+                        "value": {
+                            "code": "focal", 
+                            "system": "ShadowPattern", 
+                            "display": "Nodule <10mm"
+                        }, 
+                        "label": "Shadow Pattern"
+                    }, 
+                    {
+                        "value": {
+                            "code": "less10mm", 
+                            "system": "LungCavitySize", 
+                            "display": "Lung cavity size less than 10mm"
+                        }, 
+                        "label": "Lung Cavity Size"
+                    }, 
+                    {
+                        "value": {
+                            "code": "more3", 
+                            "system": "TotalCavities", 
+                            "display": "More than two cavities"
+                        }, 
+                        "label": "Total cavernum"
+                    }, 
+                    {
+                        "value": null, 
+                        "label": "Bronchial Obstruction"
+                    }, 
+                    {
+                        "value": {
+                            "code": "yes", 
+                            "system": "YesNo", 
+                            "display": "Yes"
+                        }, 
+                        "label": "Dissemination"
+                    }, 
+                    {
+                        "value": {
+                            "code": "no", 
+                            "system": "YesNo", 
+                            "display": "No"
+                        }, 
+                        "label": "Limfoadenopatia"
+                    }, 
+                    {
+                        "value": {
+                            "code": "no", 
+                            "system": "YesNo", 
+                            "display": "No"
+                        }, 
+                        "label": "Nodi Calcinatum"
+                    }, 
+                    {
+                        "value": {
+                            "code": "yes", 
+                            "system": "YesNo", 
+                            "display": "Yes"
+                        }, 
+                        "label": "Post TB Residuals"
+                    }, 
+                    {
+                        "value": {
+                            "code": "no", 
+                            "system": "YesNo", 
+                            "display": "No"
+                        }, 
+                        "label": "Plevritis"
+                    }, 
+                    {
+                        "value": null, 
+                        "label": "Affect Pleura"
+                    }, 
+                    {
+                        "value": {
+                            "code": "no", 
+                            "system": "YesNo", 
+                            "display": "No"
+                        }, 
+                        "label": "Pneumothorax"
+                    }, 
+                    {
+                        "value": null, 
+                        "label": "Accumulation of Contrast"
+                    }, 
+                    {
+                        "value": null, 
+                        "label": "Thromboembolism Of The Pulmonary Artery"
+                    }, 
+                    {
+                        "value": {
+                            "code": "no", 
+                            "system": "YesNo", 
+                            "display": "No"
+                        }, 
+                        "label": "Anomaly of lung develop"
+                    }, 
+                    {
+                        "value": null, 
+                        "label": "Anomaly Of Mediastinum Vessels Develop"
+                    }
+                ], 
+                "issued": "2015-04-08T00:00:00"
+            }, 
+            "id": "68152fd7-6462-45f3-a76c-a3b24058b9ac", 
+            "seriesCount": "1"
+        }
+    ]
+}

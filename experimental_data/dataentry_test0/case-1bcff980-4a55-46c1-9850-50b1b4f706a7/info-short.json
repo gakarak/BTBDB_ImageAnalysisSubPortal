@@ -1,0 +1,21 @@
+{
+    "status": "final", 
+    "ageOnset": 60, 
+    "updated": "2017-04-05T14:54:47.857609+03:00", 
+    "dstProfile": {
+        "code": "XDR", 
+        "system": "DstProfile", 
+        "display": "Extensive drug resistance"
+    }, 
+    "conditionId": "1bcff980-4a55-46c1-9850-50b1b4f706a7", 
+    "patientId": "bc21f8ec-9f49-45bd-984f-c9802cfd9ae5", 
+    "diagnosis": {
+        "code": "A15.0", 
+        "system": "Diagnosis", 
+        "display": "A15.0 - Tuberculosis of lung, confirmed by sputum microscopy with or without culture"
+    }, 
+    "patientIdentifier": "G-177", 
+    "patientGender": "male", 
+    "total": 0, 
+    "registrationDate": "2015-03-26T00:00:00"
+}
