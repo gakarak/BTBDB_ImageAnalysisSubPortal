@@ -22,7 +22,7 @@ except:
 #######################################
 dirData = 'data-cases'
 
-urlTakeList="https://data.tbportals.niaid.nih.gov/api/cases?since=2000-02-01&take=%d&skip=%d"
+urlTakeList="https://data.tbportals.niaid.nih.gov/api/cases?since=2017-02-01&take=%d&skip=%d"
 urlCaseInfo="https://data.tbportals.niaid.nih.gov/api/cases/%s"
 
 # PATIENT_ID - CASE_ID - STUDY_ID - STUDY_UID - SERIES_UID - INSTANCE_UID
@@ -164,6 +164,7 @@ if __name__ == '__main__':
                             foutDicom = '%s/instance-%s-%04d.dcm' % (dirOutImageSeriesRaw, tmodality, instanceNumber)
                             if os.path.isfile(foutDicom):
                                 ptrLogger.info("***WARNING*** file exist [%s], skip..." % foutDicom)
+                                continue
                             data = downloadDicom(currentDicomUrl)
                         except Exception as err:
                             ptrLogger.error("**ERROR** cant read url [%s] : %s" % (currentDicomUrl, err))
