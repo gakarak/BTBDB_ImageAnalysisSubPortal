@@ -1,0 +1,21 @@
+{
+    "status": "amended", 
+    "ageOnset": 42, 
+    "updated": "2017-04-14T20:19:46.268993+03:00", 
+    "dstProfile": {
+        "code": "XDR", 
+        "system": "DstProfile", 
+        "display": "Extensive drug resistance"
+    }, 
+    "conditionId": "99ee9e12-f004-4f79-a85a-570bf36f1600", 
+    "patientId": "adb97169-62a1-4660-96bd-18173a704b2b", 
+    "diagnosis": {
+        "code": "A15.1", 
+        "system": "Diagnosis", 
+        "display": "A15.1 - Tuberculosis of lung, confirmed by culture only"
+    }, 
+    "patientIdentifier": "MNI020", 
+    "patientGender": "male", 
+    "total": 0, 
+    "registrationDate": "2016-03-21T00:00:00"
+}

@@ -1,0 +1,21 @@
+{
+    "status": "final", 
+    "ageOnset": 33, 
+    "updated": "2017-02-22T15:54:41.06099+03:00", 
+    "dstProfile": {
+        "code": "sensitive", 
+        "system": "DstProfile", 
+        "display": "No resistance to TB drugs"
+    }, 
+    "conditionId": "2c396a3e-1900-4fb4-bd3a-6763dc3f2ec0", 
+    "patientId": "9caa9ff2-448a-4b8d-8b4e-a0458cec7839", 
+    "diagnosis": {
+        "code": "A15", 
+        "system": "Diagnosis", 
+        "display": "A15 - Respiratory tuberculosis, bacteriologically and histologically confirmed"
+    }, 
+    "patientIdentifier": "164", 
+    "patientGender": "female", 
+    "total": 0, 
+    "registrationDate": "2012-11-26T00:00:00"
+}

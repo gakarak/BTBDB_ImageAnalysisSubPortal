@@ -1,0 +1,745 @@
+{
+    "status": "final", 
+    "updated": "2017-03-02T17:35:39.42367+03:00", 
+    "socialData": {
+        "riskFactors": null, 
+        "totalChildren": null, 
+        "education": {
+            "code": "basicSchool", 
+            "system": "Education", 
+            "display": "Basic school (incl. primary)"
+        }, 
+        "employment": {
+            "code": "unemployed", 
+            "system": "Employment", 
+            "display": "No official work/position"
+        }, 
+        "totalContacts": null
+    }, 
+    "patient": {
+        "gender": "male", 
+        "updated": "2017-03-02T17:31:48.608723+03:00", 
+        "identifier": "STIG06011981", 
+        "id": "56f15132-4a86-49da-ae0e-fcbcbc5f6d27", 
+        "managingOrganization": {
+            "shortName": "IFP", 
+            "officialName": "Phthisiopneumology Institute", 
+            "address": {
+                "city": "Chisinau", 
+                "line": "13, C. Virnav street, MD 2025, Chisinau, the Republic of Moldova", 
+                "country": "MD"
+            }
+        }
+    }, 
+    "anamnesis": {
+        "weight": 42.0, 
+        "dstProfile": {
+            "code": "MDRnonXDR", 
+            "system": "DstProfile", 
+            "display": "Multidrug resistance"
+        }, 
+        "localization": {
+            "code": "pulm", 
+            "system": "Localization", 
+            "display": "Pulmonary tuberculosis"
+        }, 
+        "comorbidity": null, 
+        "comments": null, 
+        "height": 159.0, 
+        "diagnosis": {
+            "code": "A15.1", 
+            "system": "Diagnosis", 
+            "display": "A15.1 - Tuberculosis of lung, confirmed by culture only"
+        }
+    }, 
+    "treatment": {
+        "start": "2015-03-14T00:00:00", 
+        "outcome": {
+            "code": "stillOnTreatment", 
+            "system": "Outcome", 
+            "display": "Still on treatment"
+        }, 
+        "end": null, 
+        "id": "1a3d92e0-bcd2-4a13-9c2a-649742b365ee", 
+        "activities": []
+    }, 
+    "specimens": [
+        {
+            "dst": [
+                {
+                    "drugs": [
+                        {
+                            "type": {
+                                "code": "H", 
+                                "system": "Drug", 
+                                "display": "Isoniazid (H, INH)"
+                            }, 
+                            "value": {
+                                "value": "R"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "R", 
+                                "system": "Drug", 
+                                "display": "Rifampicin (R, RIF)"
+                            }, 
+                            "value": {
+                                "value": "R"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "S", 
+                                "system": "Drug", 
+                                "display": "Streptomycin (S)"
+                            }, 
+                            "value": {
+                                "value": "R"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "E", 
+                                "system": "Drug", 
+                                "display": "Ethambutol (E, EMB)"
+                            }, 
+                            "value": {
+                                "value": "S"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Ofx", 
+                                "system": "Drug", 
+                                "display": "Ofloxacin (Ofx)"
+                            }, 
+                            "value": {
+                                "value": "R"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Cm", 
+                                "system": "Drug", 
+                                "display": "Capreomycin (Cm)"
+                            }, 
+                            "value": {
+                                "value": "S"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Am", 
+                                "system": "Drug", 
+                                "display": "Amikacin (Am)"
+                            }, 
+                            "value": {
+                                "value": "S"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Km", 
+                                "system": "Drug", 
+                                "display": "Kanamycin (Km)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Z", 
+                                "system": "Drug", 
+                                "display": "Pyrazinamide (Z, PZA)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Lfx", 
+                                "system": "Drug", 
+                                "display": "Levofloxacin (Lfx)"
+                            }, 
+                            "value": {
+                                "value": "R"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Mfx", 
+                                "system": "Drug", 
+                                "display": "Moxifloxacin (Mfx)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Pas", 
+                                "system": "Drug", 
+                                "display": "p-aminosalicylic acid (Pas, PAS)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Pto", 
+                                "system": "Drug", 
+                                "display": "Prothionamide (Pto)"
+                            }, 
+                            "value": {
+                                "value": "S"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Cs", 
+                                "system": "Drug", 
+                                "display": "Cycloserine (Cs)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Amx/Clv", 
+                                "system": "Drug", 
+                                "display": "Amoxicillin-clavulanate (Amx/Clv)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Mb", 
+                                "system": "Drug", 
+                                "display": "Mycobutin (Mb)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Dld", 
+                                "system": "Drug", 
+                                "display": "Delamanid (Dlm)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Bdq", 
+                                "system": "Drug", 
+                                "display": "Bedaquiline (Bdq)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Ipm/Cln", 
+                                "system": "Drug", 
+                                "display": "Imipenem-cilastatin (Ipm/Cln)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Lzd", 
+                                "system": "Drug", 
+                                "display": "Linezolid (Lzd)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Cfz", 
+                                "system": "Drug", 
+                                "display": "Clofazimine (Cfz)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Clr", 
+                                "system": "Drug", 
+                                "display": "Clarithromycin (Clr)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Ft", 
+                                "system": "Drug", 
+                                "display": "Fluoroquinolones (Ofx, Lfx or Mfx)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "AG/CP", 
+                                "system": "Drug", 
+                                "display": "Aminoglycosides - injectible agents (Cm, Km, Am)"
+                            }, 
+                            "value": {}
+                        }
+                    ], 
+                    "issued": "2016-07-12T00:00:00", 
+                    "dstTest": {
+                        "code": "bactec", 
+                        "system": "DstTest", 
+                        "display": "Bactec"
+                    }, 
+                    "id": "79c6ad8a-690a-4a8d-99aa-379b69d324c4"
+                }, 
+                {
+                    "drugs": [
+                        {
+                            "type": {
+                                "code": "H", 
+                                "system": "Drug", 
+                                "display": "Isoniazid (H, INH)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "R", 
+                                "system": "Drug", 
+                                "display": "Rifampicin (R, RIF)"
+                            }, 
+                            "value": {
+                                "value": "R"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "S", 
+                                "system": "Drug", 
+                                "display": "Streptomycin (S)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "E", 
+                                "system": "Drug", 
+                                "display": "Ethambutol (E, EMB)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Ofx", 
+                                "system": "Drug", 
+                                "display": "Ofloxacin (Ofx)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Cm", 
+                                "system": "Drug", 
+                                "display": "Capreomycin (Cm)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Am", 
+                                "system": "Drug", 
+                                "display": "Amikacin (Am)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Km", 
+                                "system": "Drug", 
+                                "display": "Kanamycin (Km)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Z", 
+                                "system": "Drug", 
+                                "display": "Pyrazinamide (Z, PZA)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Lfx", 
+                                "system": "Drug", 
+                                "display": "Levofloxacin (Lfx)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Mfx", 
+                                "system": "Drug", 
+                                "display": "Moxifloxacin (Mfx)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Pas", 
+                                "system": "Drug", 
+                                "display": "p-aminosalicylic acid (Pas, PAS)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Pto", 
+                                "system": "Drug", 
+                                "display": "Prothionamide (Pto)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Cs", 
+                                "system": "Drug", 
+                                "display": "Cycloserine (Cs)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Amx/Clv", 
+                                "system": "Drug", 
+                                "display": "Amoxicillin-clavulanate (Amx/Clv)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Mb", 
+                                "system": "Drug", 
+                                "display": "Mycobutin (Mb)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Dld", 
+                                "system": "Drug", 
+                                "display": "Delamanid (Dlm)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Bdq", 
+                                "system": "Drug", 
+                                "display": "Bedaquiline (Bdq)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Ipm/Cln", 
+                                "system": "Drug", 
+                                "display": "Imipenem-cilastatin (Ipm/Cln)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Lzd", 
+                                "system": "Drug", 
+                                "display": "Linezolid (Lzd)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Cfz", 
+                                "system": "Drug", 
+                                "display": "Clofazimine (Cfz)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Clr", 
+                                "system": "Drug", 
+                                "display": "Clarithromycin (Clr)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Ft", 
+                                "system": "Drug", 
+                                "display": "Fluoroquinolones (Ofx, Lfx or Mfx)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "AG/CP", 
+                                "system": "Drug", 
+                                "display": "Aminoglycosides - injectible agents (Cm, Km, Am)"
+                            }, 
+                            "value": {}
+                        }
+                    ], 
+                    "issued": "2016-07-12T00:00:00", 
+                    "dstTest": {
+                        "code": "genexpert", 
+                        "system": "DstTest", 
+                        "display": "GeneXpert"
+                    }, 
+                    "id": "c74204bc-678d-4798-ad96-ec5405075260"
+                }, 
+                {
+                    "drugs": [
+                        {
+                            "type": {
+                                "code": "H", 
+                                "system": "Drug", 
+                                "display": "Isoniazid (H, INH)"
+                            }, 
+                            "value": {
+                                "value": "R"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "R", 
+                                "system": "Drug", 
+                                "display": "Rifampicin (R, RIF)"
+                            }, 
+                            "value": {
+                                "value": "R"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "S", 
+                                "system": "Drug", 
+                                "display": "Streptomycin (S)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "E", 
+                                "system": "Drug", 
+                                "display": "Ethambutol (E, EMB)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Ofx", 
+                                "system": "Drug", 
+                                "display": "Ofloxacin (Ofx)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Cm", 
+                                "system": "Drug", 
+                                "display": "Capreomycin (Cm)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Am", 
+                                "system": "Drug", 
+                                "display": "Amikacin (Am)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Km", 
+                                "system": "Drug", 
+                                "display": "Kanamycin (Km)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Z", 
+                                "system": "Drug", 
+                                "display": "Pyrazinamide (Z, PZA)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Lfx", 
+                                "system": "Drug", 
+                                "display": "Levofloxacin (Lfx)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Mfx", 
+                                "system": "Drug", 
+                                "display": "Moxifloxacin (Mfx)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Pas", 
+                                "system": "Drug", 
+                                "display": "p-aminosalicylic acid (Pas, PAS)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Pto", 
+                                "system": "Drug", 
+                                "display": "Prothionamide (Pto)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Cs", 
+                                "system": "Drug", 
+                                "display": "Cycloserine (Cs)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Amx/Clv", 
+                                "system": "Drug", 
+                                "display": "Amoxicillin-clavulanate (Amx/Clv)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Mb", 
+                                "system": "Drug", 
+                                "display": "Mycobutin (Mb)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Dld", 
+                                "system": "Drug", 
+                                "display": "Delamanid (Dlm)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Bdq", 
+                                "system": "Drug", 
+                                "display": "Bedaquiline (Bdq)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Ipm/Cln", 
+                                "system": "Drug", 
+                                "display": "Imipenem-cilastatin (Ipm/Cln)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Lzd", 
+                                "system": "Drug", 
+                                "display": "Linezolid (Lzd)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Cfz", 
+                                "system": "Drug", 
+                                "display": "Clofazimine (Cfz)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Clr", 
+                                "system": "Drug", 
+                                "display": "Clarithromycin (Clr)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "Ft", 
+                                "system": "Drug", 
+                                "display": "Fluoroquinolones (Ofx, Lfx or Mfx)"
+                            }, 
+                            "value": {}
+                        }, 
+                        {
+                            "type": {
+                                "code": "AG/CP", 
+                                "system": "Drug", 
+                                "display": "Aminoglycosides - injectible agents (Cm, Km, Am)"
+                            }, 
+                            "value": {}
+                        }
+                    ], 
+                    "issued": "2016-07-12T00:00:00", 
+                    "dstTest": {
+                        "code": "hain", 
+                        "system": "DstTest", 
+                        "display": "Hain"
+                    }, 
+                    "id": "737de73b-128a-498a-a9b5-7b93fc4fd163"
+                }
+            ], 
+            "sequences": [
+                {
+                    "ncbi": {
+                        "lineage": "H3", 
+                        "sra": [
+                            "SRR5153921"
+                        ], 
+                        "octalSpoligotype": "774777777420771", 
+                        "sourceOrganism": "13597", 
+                        "bioProject": "PRJNA318002", 
+                        "bioSample": "SAMN06210086"
+                    }
+                }
+            ], 
+            "microscopy": [
+                {
+                    "issued": "2016-07-12T00:00:00", 
+                    "type": "Microscopy", 
+                    "id": "63a2e366-5fb7-47cd-b333-f90cbef9efd7", 
+                    "value": "10 to 99 acid-resistant bacteria in 100 fields of view when stained by Ziehl-Nielsen"
+                }
+            ], 
+            "culture": [
+                {
+                    "issued": "2016-07-12T00:00:00", 
+                    "type": "Culture", 
+                    "id": "46aeb2e4-4cfa-4b4e-9e5f-08c83923cc85", 
+                    "value": "20 to 100 colonies"
+                }
+            ], 
+            "bodySite": {
+                "code": "sputum", 
+                "system": "BodySite", 
+                "display": "Sputum sample"
+            }, 
+            "containerIdentifier": "13597", 
+            "collected": "2016-07-12T00:00:00", 
+            "id": "8876486d-4369-4011-9e1f-ccf4a8ec7dbc"
+        }
+    ], 
+    "id": "282e11bf-e992-42a8-949c-463de4780791", 
+    "imagingStudies": null
+}

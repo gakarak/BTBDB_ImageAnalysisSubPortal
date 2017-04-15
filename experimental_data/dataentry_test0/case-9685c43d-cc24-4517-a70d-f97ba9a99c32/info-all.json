@@ -1,0 +1,87 @@
+{
+    "status": "final", 
+    "updated": "2016-02-28T20:28:57.240803+03:00", 
+    "socialData": {
+        "riskFactors": null, 
+        "totalChildren": 0, 
+        "education": {
+            "code": "completeSchool", 
+            "system": "Education", 
+            "display": "Complete school (a-level, gymnasium)"
+        }, 
+        "employment": {
+            "code": "employed", 
+            "system": "Employment", 
+            "display": "Official work/position"
+        }, 
+        "totalContacts": 3
+    }, 
+    "patient": {
+        "gender": "male", 
+        "updated": "2016-02-27T19:03:37.828902+03:00", 
+        "identifier": "BUAG05111977", 
+        "id": "2d49725d-a426-4a4b-824b-c933fd5f8123", 
+        "managingOrganization": {
+            "shortName": "IFP", 
+            "officialName": "Phthisiopneumology Institute", 
+            "address": {
+                "city": "Chisinau", 
+                "line": "13, C. Virnav street, MD 2025, Chisinau, the Republic of Moldova", 
+                "country": "MD"
+            }
+        }
+    }, 
+    "anamnesis": {
+        "weight": 67.0, 
+        "dstProfile": {
+            "code": "MDRnonXDR", 
+            "system": "DstProfile", 
+            "display": "Multidrug resistance"
+        }, 
+        "localization": {
+            "code": "pulm", 
+            "system": "Localization", 
+            "display": "Pulmonary tuberculosis"
+        }, 
+        "comorbidity": null, 
+        "comments": null, 
+        "height": 190.0, 
+        "diagnosis": {
+            "code": "A15.0", 
+            "system": "Diagnosis", 
+            "display": "A15.0 - Tuberculosis of lung, confirmed by sputum microscopy with or without culture"
+        }
+    }, 
+    "treatment": null, 
+    "specimens": [
+        {
+            "dst": null, 
+            "sequences": [
+                {
+                    "ncbi": {
+                        "lineage": "H3", 
+                        "sra": [
+                            "SRR5153817"
+                        ], 
+                        "octalSpoligotype": "774777777420771", 
+                        "sourceOrganism": "22496", 
+                        "bioProject": "PRJNA318002", 
+                        "bioSample": "SAMN06210016"
+                    }
+                }
+            ], 
+            "microscopy": null, 
+            "culture": null, 
+            "bodySite": {
+                "code": "sputum", 
+                "system": "BodySite", 
+                "display": "Sputum sample"
+            }, 
+            "containerIdentifier": "22496", 
+            "collected": "2015-11-20T00:00:00", 
+            "id": "92d254e6-ee2d-4dcf-b0f5-c9c385050238"
+        }
+    ], 
+    "id": "9685c43d-cc24-4517-a70d-f97ba9a99c32", 
+    "imagingStudies": null
+}

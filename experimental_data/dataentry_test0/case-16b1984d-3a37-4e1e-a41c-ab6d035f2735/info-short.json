@@ -1,0 +1,21 @@
+{
+    "status": "final", 
+    "ageOnset": 49, 
+    "updated": "2017-03-02T01:49:32.391794+03:00", 
+    "dstProfile": {
+        "code": null, 
+        "system": "DstProfile", 
+        "display": null
+    }, 
+    "conditionId": "16b1984d-3a37-4e1e-a41c-ab6d035f2735", 
+    "patientId": "3d43dac6-bb63-4bdb-ad31-369ef10d8087", 
+    "diagnosis": {
+        "code": "A15.1", 
+        "system": "Diagnosis", 
+        "display": "A15.1 - Tuberculosis of lung, confirmed by culture only"
+    }, 
+    "patientIdentifier": "ADVF03081962", 
+    "patientGender": "male", 
+    "total": 0, 
+    "registrationDate": "2017-03-02T00:00:00"
+}

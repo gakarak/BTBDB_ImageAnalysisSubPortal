@@ -1,0 +1,668 @@
+{
+    "status": "amended", 
+    "updated": "2016-03-21T23:24:14.43499+03:00", 
+    "socialData": {
+        "riskFactors": [
+            {
+                "code": "tobacoUse", 
+                "system": "RiskFactor", 
+                "display": "Current smoker"
+            }
+        ], 
+        "totalChildren": null, 
+        "education": {
+            "code": "college", 
+            "system": "Education", 
+            "display": "College (bachelor)"
+        }, 
+        "employment": {
+            "code": "unemployed", 
+            "system": "Employment", 
+            "display": "No official work/position"
+        }, 
+        "totalContacts": 1
+    }, 
+    "patient": {
+        "gender": "male", 
+        "updated": "2016-10-27T09:51:33.985956+03:00", 
+        "identifier": "MNI020", 
+        "id": "adb97169-62a1-4660-96bd-18173a704b2b", 
+        "managingOrganization": {
+            "shortName": "Marius Nasta", 
+            "officialName": "'Marius Nasta' Pneumoftiziology Institute", 
+            "address": {
+                "city": "Bucuresti", 
+                "line": "Sos. Viilor 90, sector 5, Bucuresti, Romania", 
+                "country": "RO"
+            }
+        }
+    }, 
+    "anamnesis": {
+        "weight": 68.0, 
+        "dstProfile": {
+            "code": "XDR", 
+            "system": "DstProfile", 
+            "display": "Extensive drug resistance"
+        }, 
+        "localization": {
+            "code": "pulm", 
+            "system": "Localization", 
+            "display": "Pulmonary tuberculosis"
+        }, 
+        "comorbidity": null, 
+        "comments": "Smoker, 10 packs-year; History of TB in the family, one brother with XDR-TB and one brother deceased with XDR-TB; personal TB history - 2007 - declared cured;\r\nFirst TB symptoms - 03.2015; Date of presentation to hospital - 09.2015;\r\nDate of current TB diagnosis: 09.2015;\r\nSymptoms: productive cough 6 months prior to presentation to hospital.\r\n\r\n", 
+        "height": 170.0, 
+        "diagnosis": {
+            "code": "A15.1", 
+            "system": "Diagnosis", 
+            "display": "A15.1 - Tuberculosis of lung, confirmed by culture only"
+        }
+    }, 
+    "treatment": {
+        "start": "2015-11-19T00:00:00", 
+        "outcome": {
+            "code": "stillOnTreatment", 
+            "system": "Outcome", 
+            "display": "Still on treatment"
+        }, 
+        "end": null, 
+        "id": "0f408a04-deb9-4e04-8637-05c666bc2d4c", 
+        "activities": [
+            {
+                "start": "2015-11-19T00:00:00", 
+                "medications": [
+                    "Amx/Clv", 
+                    "Cfz", 
+                    "Cm", 
+                    "Cs", 
+                    "Ipm/Cln", 
+                    "Lzd", 
+                    "Pto"
+                ], 
+                "end": null, 
+                "statusReason": null
+            }
+        ]
+    }, 
+    "specimens": [
+        {
+            "dst": [
+                {
+                    "drugs": [
+                        {
+                            "type": {
+                                "code": "H", 
+                                "system": "Drug", 
+                                "display": "Isoniazid (H, INH)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": "R"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "R", 
+                                "system": "Drug", 
+                                "display": "Rifampicin (R, RIF)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": "R"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "S", 
+                                "system": "Drug", 
+                                "display": "Streptomycin (S)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": "R"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "E", 
+                                "system": "Drug", 
+                                "display": "Ethambutol (E, EMB)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": "R"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Ofx", 
+                                "system": "Drug", 
+                                "display": "Ofloxacin (Ofx)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": "R"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Cm", 
+                                "system": "Drug", 
+                                "display": "Capreomycin (Cm)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": "R"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Am", 
+                                "system": "Drug", 
+                                "display": "Amikacin (Am)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": "R"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Km", 
+                                "system": "Drug", 
+                                "display": "Kanamycin (Km)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": "R"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Z", 
+                                "system": "Drug", 
+                                "display": "Pyrazinamide (Z, PZA)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Lfx", 
+                                "system": "Drug", 
+                                "display": "Levofloxacin (Lfx)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Mfx", 
+                                "system": "Drug", 
+                                "display": "Moxifloxacin (Mfx)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Pas", 
+                                "system": "Drug", 
+                                "display": "p-aminosalicylic acid (Pas, PAS)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Pto", 
+                                "system": "Drug", 
+                                "display": "Prothionamide (Pto)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": "S"
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Cs", 
+                                "system": "Drug", 
+                                "display": "Cycloserine (Cs)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Amx/Clv", 
+                                "system": "Drug", 
+                                "display": "Amoxicillin-clavulanate (Amx/Clv)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Mb", 
+                                "system": "Drug", 
+                                "display": "Mycobutin (Mb)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Dld", 
+                                "system": "Drug", 
+                                "display": "Delamanid (Dlm)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Bdq", 
+                                "system": "Drug", 
+                                "display": "Bedaquiline (Bdq)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Ipm/Cln", 
+                                "system": "Drug", 
+                                "display": "Imipenem-cilastatin (Ipm/Cln)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Lzd", 
+                                "system": "Drug", 
+                                "display": "Linezolid (Lzd)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Cfz", 
+                                "system": "Drug", 
+                                "display": "Clofazimine (Cfz)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Clr", 
+                                "system": "Drug", 
+                                "display": "Clarithromycin (Clr)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "Ft", 
+                                "system": "Drug", 
+                                "display": "Fluoroquinolones (Ofx, Lfx or Mfx)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }, 
+                        {
+                            "type": {
+                                "code": "AG/CP", 
+                                "system": "Drug", 
+                                "display": "Aminoglycosides - injectible agents (Cm, Km, Am)"
+                            }, 
+                            "value": {
+                                "units": null, 
+                                "value": null
+                            }
+                        }
+                    ], 
+                    "issued": "2016-02-22T00:00:00", 
+                    "dstTest": {
+                        "code": "DST", 
+                        "system": "DstTest", 
+                        "display": "DST"
+                    }, 
+                    "id": "c052fdc4-6bc1-42c2-a0a0-a340f64a3bb5"
+                }
+            ], 
+            "sequences": null, 
+            "microscopy": [
+                {
+                    "issued": "2015-11-23T00:00:00", 
+                    "type": "Microscopy", 
+                    "id": "bb7fd745-2430-4f2e-92aa-f27183c68832", 
+                    "value": "Negative result"
+                }
+            ], 
+            "culture": [
+                {
+                    "issued": "2016-01-21T00:00:00", 
+                    "type": "Culture", 
+                    "id": "ac8cd993-e586-4a43-be80-3af9ec515abd", 
+                    "value": "Growth of mycobacterium"
+                }
+            ], 
+            "bodySite": {
+                "code": "sputum", 
+                "system": "BodySite", 
+                "display": "Sputum sample"
+            }, 
+            "containerIdentifier": "24100A", 
+            "collected": "2015-11-19T00:00:00", 
+            "id": "790f362d-9f5d-4cec-bc5e-2d394329ec15"
+        }, 
+        {
+            "dst": null, 
+            "sequences": null, 
+            "microscopy": [
+                {
+                    "issued": "2015-11-23T00:00:00", 
+                    "type": "Microscopy", 
+                    "id": "819e153c-539e-486d-b8bd-26f0c3a031e7", 
+                    "value": "Negative result"
+                }
+            ], 
+            "culture": [
+                {
+                    "issued": "2016-01-21T00:00:00", 
+                    "type": "Culture", 
+                    "id": "fd649acb-6a6c-41d0-b15b-ade34161d2ee", 
+                    "value": "20 to 100 colonies"
+                }
+            ], 
+            "bodySite": {
+                "code": "sputum", 
+                "system": "BodySite", 
+                "display": "Sputum sample"
+            }, 
+            "containerIdentifier": "24100B", 
+            "collected": "2015-11-19T00:00:00", 
+            "id": "0efd6bd8-58a2-4106-97cc-9c92ca42539b"
+        }, 
+        {
+            "dst": null, 
+            "sequences": null, 
+            "microscopy": [
+                {
+                    "issued": "2015-12-22T00:00:00", 
+                    "type": "Microscopy", 
+                    "id": "ff075a7c-3a19-4a3c-b018-a143ba2a3369", 
+                    "value": "Negative result"
+                }
+            ], 
+            "culture": [
+                {
+                    "issued": "2016-02-23T00:00:00", 
+                    "type": "Culture", 
+                    "id": "2c56ca58-58aa-4d11-b4f1-81c6094c38a7", 
+                    "value": "At the end of the study protocol growth is not fixed"
+                }
+            ], 
+            "bodySite": {
+                "code": "sputum", 
+                "system": "BodySite", 
+                "display": "Sputum sample"
+            }, 
+            "containerIdentifier": "26121A", 
+            "collected": "2015-12-21T00:00:00", 
+            "id": "26064b3f-81db-476d-bb6f-13c163e48b90"
+        }, 
+        {
+            "dst": null, 
+            "sequences": null, 
+            "microscopy": [
+                {
+                    "issued": "2015-12-22T00:00:00", 
+                    "type": "Microscopy", 
+                    "id": "037b79df-8c07-4771-bc0d-3ce27aa7fce0", 
+                    "value": "Negative result"
+                }
+            ], 
+            "culture": [
+                {
+                    "issued": "2016-02-23T00:00:00", 
+                    "type": "Culture", 
+                    "id": "c5fd8ea0-9ecc-46a8-8fc4-222cdfce1d25", 
+                    "value": "At the end of the study protocol growth is not fixed"
+                }
+            ], 
+            "bodySite": {
+                "code": "sputum", 
+                "system": "BodySite", 
+                "display": "Sputum sample"
+            }, 
+            "containerIdentifier": "26121B", 
+            "collected": "2015-12-21T00:00:00", 
+            "id": "c81ac77e-6307-4c70-b12f-9aa88bd736a6"
+        }, 
+        {
+            "dst": null, 
+            "sequences": null, 
+            "microscopy": [
+                {
+                    "issued": "2016-01-20T00:00:00", 
+                    "type": "Microscopy", 
+                    "id": "7dff1a35-ae8a-4faf-8745-1dcbdc713a9e", 
+                    "value": "Negative result"
+                }
+            ], 
+            "culture": null, 
+            "bodySite": {
+                "code": "sputum", 
+                "system": "BodySite", 
+                "display": "Sputum sample"
+            }, 
+            "containerIdentifier": "1136A", 
+            "collected": "2016-01-18T00:00:00", 
+            "id": "8ba8db90-6660-43e3-a634-a10024f0c68a"
+        }, 
+        {
+            "dst": null, 
+            "sequences": null, 
+            "microscopy": [
+                {
+                    "issued": "2016-01-20T00:00:00", 
+                    "type": "Microscopy", 
+                    "id": "68c3c8b5-64dd-45c2-a63c-a26ae5e0d980", 
+                    "value": "Negative result"
+                }
+            ], 
+            "culture": null, 
+            "bodySite": {
+                "code": "sputum", 
+                "system": "BodySite", 
+                "display": "Sputum sample"
+            }, 
+            "containerIdentifier": "1136B", 
+            "collected": "2016-01-18T00:00:00", 
+            "id": "16e924b2-9e8c-4cfd-924e-fa93103adb79"
+        }, 
+        {
+            "dst": null, 
+            "sequences": null, 
+            "microscopy": [
+                {
+                    "issued": "2016-02-16T00:00:00", 
+                    "type": "Microscopy", 
+                    "id": "094a0b50-e66a-4072-b5f1-9cc90869079b", 
+                    "value": "Negative result"
+                }
+            ], 
+            "culture": null, 
+            "bodySite": {
+                "code": "sputum", 
+                "system": "BodySite", 
+                "display": "Sputum sample"
+            }, 
+            "containerIdentifier": "3435A", 
+            "collected": "2016-02-15T00:00:00", 
+            "id": "a5276d46-5c0b-4e1c-8aac-0ac23c830438"
+        }, 
+        {
+            "dst": null, 
+            "sequences": null, 
+            "microscopy": [
+                {
+                    "issued": "2016-02-16T00:00:00", 
+                    "type": "Microscopy", 
+                    "id": "7f425d3b-d5da-4919-917c-3c444d226198", 
+                    "value": "Negative result"
+                }
+            ], 
+            "culture": null, 
+            "bodySite": {
+                "code": "sputum", 
+                "system": "BodySite", 
+                "display": "Sputum sample"
+            }, 
+            "containerIdentifier": "3435B", 
+            "collected": "2016-02-15T00:00:00", 
+            "id": "fd880dcb-00f9-402b-b349-03f80bf2c97b"
+        }, 
+        {
+            "dst": null, 
+            "sequences": null, 
+            "microscopy": [
+                {
+                    "issued": "2016-02-23T00:00:00", 
+                    "type": "Microscopy", 
+                    "id": "4c81cb3a-5c5c-49a8-804b-46e10a566b7d", 
+                    "value": "Negative result"
+                }
+            ], 
+            "culture": null, 
+            "bodySite": {
+                "code": "sputum", 
+                "system": "BodySite", 
+                "display": "Sputum sample"
+            }, 
+            "containerIdentifier": "3947A", 
+            "collected": "2016-02-19T00:00:00", 
+            "id": "6d3c5c1e-f5f4-48f5-b083-54e5e9cf5d40"
+        }, 
+        {
+            "dst": null, 
+            "sequences": null, 
+            "microscopy": [
+                {
+                    "issued": "2016-02-23T00:00:00", 
+                    "type": "Microscopy", 
+                    "id": "220b3d77-c0dc-442b-aa93-23419d85e945", 
+                    "value": "Negative result"
+                }
+            ], 
+            "culture": null, 
+            "bodySite": {
+                "code": "sputum", 
+                "system": "BodySite", 
+                "display": "Sputum sample"
+            }, 
+            "containerIdentifier": "3947B", 
+            "collected": "2016-02-19T00:00:00", 
+            "id": "600d4e41-4085-4cbb-a822-3fa4e5b884c8"
+        }
+    ], 
+    "id": "99ee9e12-f004-4f79-a85a-570bf36f1600", 
+    "imagingStudies": [
+        {
+            "studyDate": "2015-11-19T00:00:00", 
+            "series": [
+                {
+                    "uid": "2.25.200803890179203287635538017303832768792", 
+                    "started": "2015-11-19T00:00:00", 
+                    "numberOfInstances": 1, 
+                    "number": 1, 
+                    "instance": [
+                        {
+                            "content": {
+                                "url": "https://imagery.tbportal.org/adb97169-62a1-4660-96bd-18173a704b2b/2.25.57200596712458713337820624868007358400/2.25.200803890179203287635538017303832768792/2.25.202903401548016578708691980406054149815.dcm", 
+                                "size": "1469354"
+                            }, 
+                            "sopClass": "1.2.840.10008.5.1.4.1.1.7", 
+                            "uid": "2.25.202903401548016578708691980406054149815", 
+                            "number": 1
+                        }
+                    ], 
+                    "modality": {
+                        "code": "XC", 
+                        "system": "Modality"
+                    }
+                }
+            ], 
+            "studyUid": "2.25.57200596712458713337820624868007358400", 
+            "imagesCount": "1", 
+            "report": null, 
+            "id": "239d2049-c8b1-438b-b65e-f855ce0c420a", 
+            "seriesCount": "1"
+        }, 
+        {
+            "studyDate": "2016-02-19T00:00:00", 
+            "series": [
+                {
+                    "uid": "2.25.125827796663368896396321292426360490021", 
+                    "started": "2016-02-19T00:00:00", 
+                    "numberOfInstances": 1, 
+                    "number": 1, 
+                    "instance": [
+                        {
+                            "content": {
+                                "url": "https://imagery.tbportal.org/adb97169-62a1-4660-96bd-18173a704b2b/2.25.181853684237095195944048324232616470727/2.25.125827796663368896396321292426360490021/2.25.185515875272233615919655832544838503660.dcm", 
+                                "size": "1293644"
+                            }, 
+                            "sopClass": "1.2.840.10008.5.1.4.1.1.7", 
+                            "uid": "2.25.185515875272233615919655832544838503660", 
+                            "number": 1
+                        }
+                    ], 
+                    "modality": {
+                        "code": "XC", 
+                        "system": "Modality"
+                    }
+                }
+            ], 
+            "studyUid": "2.25.181853684237095195944048324232616470727", 
+            "imagesCount": "1", 
+            "report": null, 
+            "id": "4a5bda0e-8b3b-4d6b-b0b0-b150701faaba", 
+            "seriesCount": "1"
+        }
+    ]
+}

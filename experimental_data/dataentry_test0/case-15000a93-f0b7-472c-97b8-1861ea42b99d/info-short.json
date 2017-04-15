@@ -1,0 +1,21 @@
+{
+    "status": "final", 
+    "ageOnset": 35, 
+    "updated": "2017-03-02T16:04:09.966444+03:00", 
+    "dstProfile": {
+        "code": "polyDR", 
+        "system": "DstProfile", 
+        "display": "Polydrug resistance"
+    }, 
+    "conditionId": "15000a93-f0b7-472c-97b8-1861ea42b99d", 
+    "patientId": "fe67085d-5ff9-4f1d-b392-6eca40256d92", 
+    "diagnosis": {
+        "code": "A15.0", 
+        "system": "Diagnosis", 
+        "display": "A15.0 - Tuberculosis of lung, confirmed by sputum microscopy with or without culture"
+    }, 
+    "patientIdentifier": "G-261", 
+    "patientGender": "male", 
+    "total": 0, 
+    "registrationDate": "2013-09-02T00:00:00"
+}

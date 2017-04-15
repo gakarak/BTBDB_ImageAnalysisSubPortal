@@ -1,0 +1,21 @@
+{
+    "status": "amended", 
+    "ageOnset": 23, 
+    "updated": "2017-02-09T00:14:04.48699+03:00", 
+    "dstProfile": {
+        "code": "MDRnonXDR", 
+        "system": "DstProfile", 
+        "display": "Multidrug resistance"
+    }, 
+    "conditionId": "97ea356f-f314-47eb-814f-fcf700ebdf7e", 
+    "patientId": "661574ab-b07c-49ad-8b90-bdd80fdfdab0", 
+    "diagnosis": {
+        "code": "A15.0", 
+        "system": "Diagnosis", 
+        "display": "A15.0 - Tuberculosis of lung, confirmed by sputum microscopy with or without culture"
+    }, 
+    "patientIdentifier": "MNI126", 
+    "patientGender": "female", 
+    "total": 0, 
+    "registrationDate": "2017-02-08T00:00:00"
+}

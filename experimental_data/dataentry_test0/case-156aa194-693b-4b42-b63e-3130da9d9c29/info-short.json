@@ -1,0 +1,21 @@
+{
+    "status": "final", 
+    "ageOnset": 35, 
+    "updated": "2017-03-02T00:44:48.860389+03:00", 
+    "dstProfile": {
+        "code": "monoDR", 
+        "system": "DstProfile", 
+        "display": "Monoresistance"
+    }, 
+    "conditionId": "156aa194-693b-4b42-b63e-3130da9d9c29", 
+    "patientId": "01045c7c-821a-47f1-9db5-9f9636cc98af", 
+    "diagnosis": {
+        "code": "A15.3", 
+        "system": "Diagnosis", 
+        "display": "A15.3 - Tuberculosis of lung, confirmed by unspecified means"
+    }, 
+    "patientIdentifier": "SPIM04091980", 
+    "patientGender": "male", 
+    "total": 0, 
+    "registrationDate": "2015-12-02T00:00:00"
+}

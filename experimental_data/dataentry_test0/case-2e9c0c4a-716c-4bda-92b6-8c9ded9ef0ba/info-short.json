@@ -1,0 +1,21 @@
+{
+    "status": "final", 
+    "ageOnset": 35, 
+    "updated": "2017-02-03T10:40:38.390843+03:00", 
+    "dstProfile": {
+        "code": "MDRnonXDR", 
+        "system": "DstProfile", 
+        "display": "Multidrug resistance"
+    }, 
+    "conditionId": "2e9c0c4a-716c-4bda-92b6-8c9ded9ef0ba", 
+    "patientId": "259d8261-9b1a-4da0-abb2-df21139111da", 
+    "diagnosis": {
+        "code": "A15.1", 
+        "system": "Diagnosis", 
+        "display": "A15.1 - Tuberculosis of lung, confirmed by culture only"
+    }, 
+    "patientIdentifier": "G-114", 
+    "patientGender": "male", 
+    "total": 0, 
+    "registrationDate": "2014-12-24T00:00:00"
+}

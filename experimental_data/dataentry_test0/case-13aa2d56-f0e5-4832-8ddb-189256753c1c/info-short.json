@@ -1,0 +1,21 @@
+{
+    "status": "final", 
+    "ageOnset": 43, 
+    "updated": "2017-03-02T08:25:15.150858+03:00", 
+    "dstProfile": {
+        "code": "polyDR", 
+        "system": "DstProfile", 
+        "display": "Polydrug resistance"
+    }, 
+    "conditionId": "13aa2d56-f0e5-4832-8ddb-189256753c1c", 
+    "patientId": "d833706b-7698-44fa-9064-560ac05d7ead", 
+    "diagnosis": {
+        "code": "A15.1", 
+        "system": "Diagnosis", 
+        "display": "A15.1 - Tuberculosis of lung, confirmed by culture only"
+    }, 
+    "patientIdentifier": "IKGV27091972", 
+    "patientGender": "male", 
+    "total": 0, 
+    "registrationDate": "2017-03-02T00:00:00"
+}

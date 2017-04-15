@@ -1,0 +1,21 @@
+{
+    "status": "amended", 
+    "ageOnset": 47, 
+    "updated": "2017-02-05T22:50:15.122133+03:00", 
+    "dstProfile": {
+        "code": null, 
+        "system": "DstProfile", 
+        "display": null
+    }, 
+    "conditionId": "944f3e67-693c-4295-a515-1b71757c5ba4", 
+    "patientId": "6458e611-fbc6-4f86-91ff-1359a6aacda5", 
+    "diagnosis": {
+        "code": null, 
+        "system": "Diagnosis", 
+        "display": null
+    }, 
+    "patientIdentifier": "MNI107", 
+    "patientGender": "male", 
+    "total": 0, 
+    "registrationDate": "2017-01-03T00:00:00"
+}
