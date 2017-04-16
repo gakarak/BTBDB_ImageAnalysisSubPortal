@@ -29,11 +29,13 @@ if __name__ == '__main__':
                                    dirWithModel=pathModelLung,
                                    pathOutNii=None,
                                    outSize=shapeOrig,
+                                   # outSize=shape4Lung,
                                    threshold=0.5)
         lesionMask = segmentLesions3D(niiResiz4Lesi,
                                       dirWithModel=pathModelLesion,
                                       pathOutNii=None,
                                       outSize=shapeOrig,
+                                      # outSize=shape4Lung,
                                       threshold=None)
         foutLungMsk = '%s-lungs.nii.gz' % ser.pathNii
         foutLesionMsk = '%s-lesion.nii.gz' % ser.pathNii
