@@ -89,6 +89,19 @@ def morph3DIter(timg, pElem, numIter, isErosion=True):
             ret = scMorphology.binary_dilation(ret, pElem)
     return ret
 
+def makeLungedMaskNii(pimgNii, parStrElemSize=2, parNumIterMax=9, isDebug=False):
+    if isinstance(pimgNii, str) or isinstance(pimgNii, unicode):
+        pimgNii = nib.load(pimgNii)
+    timg = niiImagePreTransform(pimgNii.get_data())
+    retMsk, retIsOk = makeLungedMask(timg,
+                                          parStrElemSize=parStrElemSize,
+                                          parNumIterMax=parNumIterMax,
+                                          isDebug=isDebug)
+    retMskNii = nib.Nifti1Image(niiImagePostTransform(retMsk).astype(pimgNii.get_data_dtype()),
+                                pimgNii.affine,
+                                header=pimgNii.header)
+    return (retMskNii, retIsOk)
+
 def makeLungedMask(timg, parStrElemSize=2, parNumIterMax=9, isDebug=False):
     strSiz = parStrElemSize
     strElem = getCircleElement(strSiz)
@@ -149,6 +162,15 @@ def makeLungedMask(timg, parStrElemSize=2, parNumIterMax=9, isDebug=False):
 
 #############################################
 # Basic Lung-information extraction code
+def prepareLungSizeInfoNii(mskLungsNii, isInStrings=False, isPreproc=True):
+    if isPreproc:
+        timg = niiImagePreTransform(mskLungsNii.get_data())
+    else:
+        timg = mskLungsNii.get_data()
+    return prepareLungSizeInfo(mskLungs=timg,
+                               niiHeader=mskLungsNii.header,
+                               isInStrings=isInStrings)
+
 def prepareLungSizeInfo(mskLungs, niiHeader, isInStrings=False):
     isOk = bool(np.unique(mskLungs).max()<3)
     hdrXyzUnits = niiHeader.get_xyzt_units()
