@@ -12,7 +12,7 @@ from fcnn_lesion3d import BatcherCTLesion3D
 from app.core.preprocessing import resizeNii, resize3D
 
 #########################################
-def segmentLungs3D(pathInpNii, dirWithModel, pathOutNii=None, outSize=None, batchSize=8, isDebug=False, threshold=None):
+def segmentLungs25D(pathInpNii, dirWithModel, pathOutNii=None, outSize=None, batchSize=8, isDebug=False, threshold=None):
     if isinstance(pathInpNii,str) or isinstance(pathInpNii,unicode):
         isInpFromFile = True
         if not os.path.isfile(pathInpNii):

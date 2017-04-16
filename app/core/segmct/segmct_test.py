@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import nibabel as nib
 from app.core.preprocessing import resizeNii
 from fcnn_lung2d import BatcherCTLung2D
-from app.core.segmct import segmentLesions3D, segmentLungs3D
+from app.core.segmct import segmentLesions3D, segmentLungs25D
 
 class TestCTProcessing(unittest.TestCase):
     def setUp(self):
@@ -23,10 +23,10 @@ class TestCTProcessing(unittest.TestCase):
         inpSize = niiOriginal.shape
         sizeProcessing = (256,256,64)
         niiResized = resizeNii(pathNii=niiOriginal, newSize=sizeProcessing)
-        niiMask = segmentLungs3D(niiResized, dirWithModel=self.pathModelLung,
-                                 pathOutNii=None,
-                                 outSize=inpSize,
-                                 threshold=0.5)
+        niiMask = segmentLungs25D(niiResized, dirWithModel=self.pathModelLung,
+                                  pathOutNii=None,
+                                  outSize=inpSize,
+                                  threshold=0.5)
         foutMskLung = '%s-msk-lung-test.nii.gz' % self.pathInpNii
         nib.save(niiMask, foutMskLung)
         self.assertTrue(inpSize==niiMask.shape)
