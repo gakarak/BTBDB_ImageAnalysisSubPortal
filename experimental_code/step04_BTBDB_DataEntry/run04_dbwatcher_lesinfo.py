@@ -6,7 +6,6 @@ import os
 import numpy as np
 import nibabel as nib
 import matplotlib.pyplot as plt
-from app.core.preprocessing import resizeNii
 import app.core.preprocessing as preproc
 import common as comm
 
@@ -39,7 +38,7 @@ def prepareLesionDistribInfo(niiLung, niiLesion, numZ = 3, threshLesion=0.5):
     # numZ = 4
     ret4Lung = dict()
     for ilbl in [1, 2]:
-        if ii in arrLbl:
+        if ilbl in arrLbl:
             lstLesionP = []
             mskLung = (imgLungsDiv == ilbl)
             zmin, zmax = getMinMaxLungZ(mskLung)
