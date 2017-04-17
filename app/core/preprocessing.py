@@ -215,5 +215,115 @@ def prepareLungSizeInfo(mskLungs, niiHeader, isInStrings=False):
     }
     return retInfoLungSizes
 
+#############################################
+def getMinMaxLungZ(pmsk):
+    zsum = np.sum(pmsk, axis=(0, 1))
+    tmpz = np.where(zsum>0)[0]
+    if len(tmpz)>0:
+        zmin = tmpz[0]
+        zmax = tmpz[-1]
+        return (zmin, zmax)
+    else:
+        return (-1.,-1.)
+
+def prepareLesionDistribInfo(niiLung, niiLesion, numZ = 3, threshLesion=0.5):
+    # (1) load nii if input is a 'path'
+    if isinstance(niiLung, str) or isinstance(niiLung, unicode):
+        niiLung = nib.load(niiLung)
+    if isinstance(niiLesion, str) or isinstance(niiLesion, unicode):
+        niiLesion = nib.load(niiLesion)
+    # (2) split lungs
+    retMskLungs, retIsOk = makeLungedMaskNii(niiLung)
+    imgLungsDiv = niiImagePreTransform(retMskLungs.get_data())
+    imgMskLesion = niiImagePreTransform(niiLesion.get_data())
+    # (3) increase number of slice for convenience
+    numZ = numZ + 1
+    # (4) calc percent of lesion volume in lung volume
+    arrLbl = np.sort(np.unique(imgLungsDiv))
+    # threshLesion=0.5
+    # numZ = 4
+    ret4Lung = dict()
+    for ilbl in [1, 2]:
+        if ilbl in arrLbl:
+            lstLesionP = []
+            mskLung = (imgLungsDiv == ilbl)
+            zmin, zmax = getMinMaxLungZ(mskLung)
+            arrz = np.linspace(zmin, zmax, numZ)
+            mskLesion = imgMskLesion.copy()
+            mskLesion[~mskLung] = 0
+            mskLesion = (mskLesion>threshLesion)
+            for zzi in range(numZ-1):
+                z1 = int(arrz[zzi + 0])
+                z2 = int(arrz[zzi + 1])
+                volMsk = float(np.sum(mskLung[:, :, z1:z2]))
+                volLesion = float(np.sum(mskLesion[:, :, z1:z2]))
+                if volMsk<1:
+                    volMsk = 1.
+                lstLesionP.append(volLesion/volMsk)
+            ret4Lung[ilbl] = lstLesionP
+        else:
+            ret4Lung[ilbl] = None
+    return ret4Lung
+
+#############################################
+def normalizeCTImage(pimg, outType = np.uint8):
+    pimg = pimg.astype(np.float)
+    vMin = -1000.
+    vMax = +200.
+    ret = 255. * (pimg - vMin) / (vMax - vMin)
+    ret[ret < 0] = 0
+    ret[ret > 255] = 255.
+    return ret.astype(outType)
+
+# generate preview
+def makePreview4Lesion(dataImg, dataMsk, dataLes, sizPrv=256, nx=4, ny=3, pad=5, lesT=0.7):
+    shpPrv = (sizPrv, sizPrv, sizPrv)
+    dataImgR = resize3D(dataImg, shpPrv)
+    dataMskR = resize3D(dataMsk, shpPrv)
+    dataLesR = resize3D(dataLes, shpPrv)
+    numXY = nx*ny - 1
+    brd = 0.1
+    arrZ = np.linspace(brd*sizPrv, (1.-brd)*sizPrv, numXY ).astype(np.int)
+    cnt = 0
+    tmpV = []
+    for yy in range(ny):
+        tmpH = []
+        for xx in range(nx):
+            if (yy==0) and (xx==0):
+                timg = np.rot90(dataImgR[:, sizPrv / 2, :])
+                tmsk = np.rot90(dataMskR[:, sizPrv / 2, :] > 0.1)
+                tles0 = np.rot90(dataLesR[:, sizPrv / 2, :])
+            else:
+                zidx = arrZ[cnt]
+                timg = np.rot90(dataImgR[:, :, zidx])
+                tmsk = np.rot90(dataMskR[:, :, zidx] > 0.1)
+                tles0 = np.rot90(dataLesR[:, :, zidx])
+                cnt+=1
+            timg = timg.astype(np.float)
+            timgR = timg.copy()
+            timgG = timg.copy()
+            timgB = timg.copy()
+            timgR[tmsk>0] += 30
+            timgG[tmsk>0] += 30
+            #
+            tles = tles0.copy()
+            tles[tmsk<1] = 0
+            tlesT0 = 0.1
+            tlesT1 = lesT
+            tles /= tlesT1
+            tles[tles>1.] = 1.
+            tles[tles<tlesT0] = 0
+            tles = (255.*tles).astype(np.uint8)
+            timgR[tles>1] = tles[tles>1]
+            timgRGB = np.dstack([timgR, timgG, timgB])
+            timgRGB[timgRGB>255] = 255
+            timgRGB = timgRGB.astype(np.uint8)
+            timgRGB = np.pad(timgRGB, pad_width=[[pad],[pad],[0]], mode='constant')
+            tmpH.append(timgRGB)
+        imgH = np.hstack(tmpH)
+        tmpV.append(imgH)
+    imgV = np.vstack(tmpV)
+    return imgV
+
 if __name__ == '__main__':
     pass
