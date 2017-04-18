@@ -8,12 +8,14 @@ import os
 import glob
 import nibabel as nib
 import app.core.preprocessing as preproc
+import dataentry
 
 import unittest
 
 class TestLungDividing(unittest.TestCase):
     def setUp(self):
         self.wdir = '../../experimental_data/resize-256x256x64'
+        self.dirDataDataEntry = '../../experimental_data/dataentry_test0'
 
     def test_resize_nii(self):
         self.assertTrue(os.path.isdir(self.wdir))
@@ -44,5 +46,37 @@ class TestLungDividing(unittest.TestCase):
                 self.assertTrue( numLungs, 1)
             print ('\t[%d/%d] %s, #Lungs = %d, isOk = %s' % (ii, numNii, os.path.basename(pathNii), numLungs, retIsOk))
 
+    def test_dbwatcher(self):
+        self.assertTrue(os.path.isdir(self.dirDataDataEntry))
+        dbWatcher = dataentry.DBWatcher()
+        dbWatcher.load(self.dirDataDataEntry, isDropEmpty=True, isDropBadSeries=True)
+        dbWatcher.printStat()
+        self.assertTrue(len(dbWatcher.cases)>0)
+
+    def test_lung_lesion_report(self):
+        tmpDir = '../../experimental_data/dataentry_test0/case-2c396a3e-1900-4fb4-bd3a-6763dc3f2ec0/study-dd10657e-f2c3-48ba-87d6-b5f3fc40c752'
+        fmskLung = '%s/series-1.3.6.1.4.1.25403.163683357445804.6452.20140120113751.2-CT.nii.gz-lungs.nii.gz' % tmpDir
+        fmskLesion = '%s/series-1.3.6.1.4.1.25403.163683357445804.6452.20140120113751.2-CT.nii.gz-lesion.nii.gz' % tmpDir
+        #
+        niiLung = nib.load(fmskLung)
+        niiLesion = nib.load(fmskLesion)
+        retInfo = preproc.prepareLesionDistribInfo(niiLung, niiLesion)
+        self.assertTrue(len(retInfo)>1)
+
+    def test_preview_generation(self):
+        tmpDir = '../../experimental_data/dataentry_test0/case-2c396a3e-1900-4fb4-bd3a-6763dc3f2ec0/study-dd10657e-f2c3-48ba-87d6-b5f3fc40c752'
+        fimgLung = '%s/series-1.3.6.1.4.1.25403.163683357445804.6452.20140120113751.2-CT.nii.gz' % tmpDir
+        fmskLung = '%s/series-1.3.6.1.4.1.25403.163683357445804.6452.20140120113751.2-CT.nii.gz-lungs.nii.gz' % tmpDir
+        fmskLesion = '%s/series-1.3.6.1.4.1.25403.163683357445804.6452.20140120113751.2-CT.nii.gz-lesion.nii.gz' % tmpDir
+        #
+        dataImg = preproc.normalizeCTImage(nib.load(fimgLung).get_data())
+        dataMsk = nib.load(fmskLung).get_data()
+        dataLes = nib.load(fmskLesion).get_data()
+        #
+        imgPreview = preproc.makePreview4Lesion(dataImg, dataMsk, dataLes)
+        self.assertTrue(np.min(imgPreview.shape[:2])>256)
+
 if __name__ == '__main__':
-    unittest.main()
+    # unittest.main()
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestLungDividing)
+    unittest.TextTestRunner(verbosity=2).run(suite)
