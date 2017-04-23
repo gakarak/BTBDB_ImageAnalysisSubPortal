@@ -8,6 +8,7 @@ import numpy as np
 import tempfile
 import distutils
 import distutils.spawn
+import errno
 
 def checkFileOrDir(ppath, isDir=False, isRaiseException=True):
     if not isDir:
@@ -31,6 +32,18 @@ def checkDirContainsDicom(pdir, isRaiseException=True):
     if (not ret) and isRaiseException:
         raise Exception('Cant find DICOM files in directory [%s]' % pdir)
     return ret
+
+#######################################
+def mkdir_p(path):
+    try:
+        os.makedirs(path, exist_ok=True)  # Python>3.2
+    except TypeError:
+        try:
+            os.makedirs(path)
+        except OSError as exc: # Python >2.5
+            if exc.errno == errno.EEXIST and os.path.isdir(path):
+                pass
+            else: raise
 
 if __name__ == '__main__':
     pass
