@@ -70,8 +70,8 @@ class SeriesInfo:
         return False
 
 class CaseInfo:
-    jsonShort = 'info-short.json'
-    jsonAll = 'info-all.json'
+    JSON_SHORT = 'info-short.json'
+    JSON_ALL = 'info-all.json'
     dictShort = None
     dictAll = None
     path = None
@@ -86,20 +86,20 @@ class CaseInfo:
     def getKey(self):
         return '%s:%s' % (self.caseId, self.patientId)
     def loadInfo(self, pathCase, isDropBad = False):
-        tpathJsonShort = os.path.join(pathCase, self.jsonShort)
-        tpathJsonAll = os.path.join(pathCase, self.jsonAll)
+        tpathJsonShort = os.path.join(pathCase, self.JSON_SHORT)
+        tpathJsonAll = os.path.join(pathCase, self.JSON_ALL)
         if os.path.isfile(tpathJsonShort):
             with open(tpathJsonShort, 'r') as f:
-                self.jsonShort = json.load(f)
-                self.patientId = self.jsonShort['patientId']
-                self.caseId = self.jsonShort['conditionId']
+                self.dictShort = json.load(f)
+                self.patientId = self.dictShort['patientId']
+                self.caseId = self.dictShort['conditionId']
         if os.path.isfile(tpathJsonAll):
             with open(tpathJsonAll, 'r') as f:
-                self.jsonAll = json.load(f)
-                if 'imagingStudies' in self.jsonAll.keys():
-                    if self.jsonAll['imagingStudies'] is not None:
+                self.dictAll = json.load(f)
+                if 'imagingStudies' in self.dictAll.keys():
+                    if self.dictAll['imagingStudies'] is not None:
                         tdict = dict()
-                        for idx, studyJson in enumerate(self.jsonAll['imagingStudies']):
+                        for idx, studyJson in enumerate(self.dictAll['imagingStudies']):
                             dictSeries = SeriesInfo.getAllSeriesForStudy(pathCase, studyJson, isDropBad=isDropBad)
                             tdict = dict(tdict.items() + dictSeries.items())
                             # print ('Case [%s] : #Series = %d' % (self.caseId, len(self.series)))
