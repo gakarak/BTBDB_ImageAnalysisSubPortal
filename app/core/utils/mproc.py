@@ -9,7 +9,7 @@ import numpy as np
 import multiprocessing as mp
 
 ######################################
-class Runner(object):
+class ProcessRunner(object):
     def __call__(self, *args, **kwargs):
         self.run()
     def getUniqueKey(self):
@@ -18,7 +18,7 @@ class Runner(object):
         raise NotImplementedError
 
 ######################################
-class SimpleTaskManager(object):
+class SimpleProcessManager(object):
     def __init__(self, nproc=1):
         self._nproc = nproc
         self._pool = mp.Pool(processes=self._nproc)

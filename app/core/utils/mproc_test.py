@@ -4,10 +4,10 @@ import os
 import time
 from datetime import datetime
 import numpy as np
-from mproc import SimpleTaskManager, Runner
+from mproc import SimpleProcessManager, ProcessRunner
 
 ######################################
-class MyTask(Runner):
+class MyTask(ProcessRunner):
     def __init__(self, param1, param2, dt=None):
         self.param1 = param1
         self.param2 = param2
@@ -24,7 +24,7 @@ class MyTask(Runner):
 ######################################
 class TestMProc(unittest.TestCase):
     def test_simple_taskrunner(self):
-        tm = SimpleTaskManager(nproc=3)
+        tm = SimpleProcessManager(nproc=3)
         numTasks = 12
         rndSleep = np.random.randint(1, 3, numTasks)
         for ii in rndSleep:
