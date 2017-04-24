@@ -137,7 +137,7 @@ class SeriesInfo:
         return False
     @classmethod
     def getInstanceBaseName(cls, instanceId, instanceNum):
-        return '{0:04f}-{1}.dcm'.format(instanceNum, instanceId)
+        return '{0:04d}-{1}.dcm'.format(instanceNum, instanceId)
     @classmethod
     def getInstanceBaseNameJs(cls, instanceJs):
         instanceId  = instanceJs['uid']
@@ -196,9 +196,9 @@ class CaseInfo:
             return None
     def isEmpty(self):
         if self.series is not None:
-            return len(self.series)>0
+            return (len(self.series)<1)
         else:
-            return False
+            return True
     def toString(self):
         tmp='CaseInfo: caseId={0}, patientId={1}, #series={2}'.format(self.caseId(), self.patientId(), self.seriesNum())
         return tmp
@@ -210,7 +210,8 @@ class CaseInfo:
         if path is not None:
             self.loadInfo(path)
     def getKey(self):
-        return '%s:%s' % (self.caseId(), self.patientId())
+        # return '%s:%s' % (self.caseId(), self.patientId())
+        return self.caseId()
     def getStudyUidById(self, studyID):
         if self.isInitialized() and (self.dictAll['imagingStudies'] is not None):
             for study in self.dictAll['imagingStudies']:
@@ -234,11 +235,10 @@ class CaseInfo:
                     dictSeries = SeriesInfo.getAllSeriesForStudy(self, studyJson, isDropBad=isDropBad)
                     tdict = dict(tdict.items() + dictSeries.items())
                     # print ('Case [%s] : #Series = %d' % (self.caseId, len(self.series)))
-                if len(tdict) > 0:
-                    self.isEmpty = False
                 self.series = tdict
     def loadInfo(self, pathCase, isDropBad = False):
-        self.wdir = os.path.dirname(pathCase)
+        self.path = pathCase
+        # self.wdir = os.path.dirname(pathCase)
         tpathJsonShort = os.path.join(pathCase, self.JSON_SHORT)
         tpathJsonAll = os.path.join(pathCase, self.JSON_ALL)
         if os.path.isfile(tpathJsonShort):
@@ -250,8 +250,8 @@ class CaseInfo:
                 if 'imagingStudies' in self.dictAll.keys():
                     self.loadSeriesInfo(isDropBad=isDropBad)
     def save2Disk(self):
-        if (self.wdir is not None) and (self.dictAll is not None) and (self.dictShort is not None):
-            case_dir = '%s/%s' % (self.wdir, CaseInfo.getCaseDirName(self.caseId()))
+        if (self.wdir() is not None) and (self.dictAll is not None) and (self.dictShort is not None):
+            case_dir = '%s/%s' % (self.wdir(), CaseInfo.getCaseDirName(self.caseId()))
             utils.mkdir_p(case_dir)
             fjsonAll  = os.path.join(case_dir, CaseInfo.JSON_ALL)
             fjsonShort = os.path.join(case_dir, CaseInfo.JSON_SHORT)
@@ -320,7 +320,6 @@ class CaseInfo:
     @staticmethod
     def newCase(dataDir, dictShort, dictAll, isSaveToDisk=False):
         case = CaseInfo()
-        case.wdir = dataDir
         case.path = CaseInfo.getCaseDirNameJs(dictAll, dataDir=dataDir)
         case.setupFromJson(jsonShort=dictShort, jsonAll=dictAll)
         if isSaveToDisk:
@@ -346,7 +345,7 @@ class DBWatcher:
             caseInfo = CaseInfo()
             caseInfo.loadInfo(pathCase=pathCase, isDropBad=isDropBadSeries)
             if (ii%20 == 0):
-                print ('[%d/%d] --> case #%s' % (ii, numCases, caseInfo.caseId))
+                print ('[%d/%d] --> case #%s' % (ii, numCases, caseInfo.caseId()))
             if isDropEmpty and caseInfo.isEmpty():
                 continue
             else:
