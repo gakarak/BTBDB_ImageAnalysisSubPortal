@@ -44,24 +44,31 @@ if __name__ == '__main__':
         caseId = case['conditionId']
         print ('[%d/%d]' % (icase, numCases))
         if dbWatcher.isHaveCase(caseId):
-            isSaveToDisk = False
-            print ('\t:: case [%s] exist, skip...' % caseId)
+            new_case = dbWatcher.cases[caseId]
+            ptrLogger.info ('\t:: case-info [%s] exist in db-cache, skip get-case-info ...' % caseId)
         else:
-            isSaveToDisk = True
-        try:
             caseInfo = dwd.getCaseInfo(caseId)
-            new_case = CaseInfo.newCase(dataDir=dirData,
-                                        dictShort=case,
-                                        dictAll=caseInfo,
-                                        isSaveToDisk=isSaveToDisk)
+            isSaveToDisk = True
+            try:
+                new_case = CaseInfo.newCase(dataDir=dirData,
+                                            dictShort=case,
+                                            dictAll=caseInfo,
+                                            isSaveToDisk=isSaveToDisk)
+            except Exception as err:
+                ptrLogger.error('Error case download: [{0}]'.format(err))
+                new_case = None
+        if new_case is not None:
             new_series = new_case.getGoodSeries()
+            # try:
             if len(new_series)>0:
                 for ser in new_series:
-                    if not dbWatcher.checkSeriesInDB(ser):
+                    if ser.isInitialized() and ser.isHasData() and (not ser.isDownloaded()):
+                        newRunner = dwd.ProcessRunnerDownloadSeries(series=ser)
                         print ('\t append Series to download [{0}]'.format(ser))
+                        newRunner.run()
                     else:
-                        print ('\tskip existing series: {0}'.format(ser))
-                print ('---')
-        except Exception as err:
-            ptrLogger.error('Error case download: [{0}]'.format(err))
+                        print ('\tskip downloaded series: {0}'.format(ser))
+                    tmp = ser.isDownloaded()
+            # except Exception as err:
+            #     ptrLogger.error('Error case download: [{0}]'.format(err))
 
