@@ -9,6 +9,7 @@ import numpy as np
 import nibabel as nib
 import utils
 
+#######################################
 class SeriesInfo:
     # (1) Study:
     studyId = None
@@ -68,6 +69,80 @@ class SeriesInfo:
             return '%s:%s' % (self.studyId, self.uid())
         else:
             return 'invalid-key'
+    # *** Helpers *** : series state cheking
+    # [Check #1] : check download state
+    def getInstancesJs(self):
+        if self.isInitialized():
+            return self.jsonInfo['instance']
+        else:
+            return []
+    def getPathInstances(self, isRelative = True):
+        ret = []
+        if self.isInitialized():
+            dirRaw = self.getDirRaw(isRelative = isRelative)
+            instancesJs = self.getInstancesJs()
+            for instJs in instancesJs:
+                tpath = os.path.join(dirRaw, self.getInstanceBaseNameJs(instJs))
+                ret.append(tpath)
+            return ret
+        return ret
+    def isHasData(self):
+        return (len(self.getInstancesJs())>0)
+    def isDownloaded(self):
+        sdir = self.getDir(isRelative=False)
+        if not os.path.isdir(sdir):
+            return False
+        pathsInstances = self.getPathInstances(isRelative=False)
+        #FIXME: simplified version: downloaded file is not validated (by size for example)
+        for path in pathsInstances:
+            if not os.path.isfile(path):
+                return False
+        return True
+    # [Check #2] : check data conversion status
+    def pathConvertedData(self, isRelative=True):
+        if self.isInitialized():
+            return '{0}.nii.gz'.format(self.getDir(isRelative=isRelative))
+    def isConverted(self):
+        pathNii = self.pathConvertedData(isRelative=False)
+        if pathNii is not None:
+            return os.path.isfile(pathNii)
+        return False
+    # [Check #3] : check that data os postprocessed (lung segmented, lesion deted, report (json and PDF) is prepared)
+    def pathPostprocLungs(self, isRelative=True):
+        if self.isInitialized():
+            return '{0}-lungs.nii.gz'.format(self.getDir(isRelative=isRelative))
+    def pathPostprocLesions(self, isRelative=True):
+        if self.isInitialized():
+            return '{0}-lesions.nii.gz'.format(self.getDir(isRelative=isRelative))
+    def pathPostprocReport(self, isRelative=True):
+        if self.isInitialized():
+            return '{0}-report.json'.format(self.getDir(isRelative=isRelative))
+    def pathPostprocReportPDF(self, isRelative=True):
+        if self.isInitialized():
+            return '{0}-report.pdf'.format(self.getDir(isRelative=isRelative))
+    def isPostprocessed(self):
+        if self.isInitialized():
+            pathLungs     = self.pathPostprocLungs(isRelative=False)
+            pathLesion    = self.pathPostprocLesions(isRelative=False)
+            pathReport    = self.pathPostprocReport(isRelative=False)
+            pathReportPDF = self.pathPostprocReportPDF(isRelative=False)
+            if not os.path.isfile(pathLungs):
+                return False
+            if not os.path.isfile(pathLesion):
+                return False
+            if not os.path.isfile(pathReport):
+                return False
+            # if not os.path.isfile(pathReportPDF):
+            #     return False
+        return False
+    @classmethod
+    def getInstanceBaseName(cls, instanceId, instanceNum):
+        return '{0:04f}-{1}.dcm'.format(instanceNum, instanceId)
+    @classmethod
+    def getInstanceBaseNameJs(cls, instanceJs):
+        instanceId  = instanceJs['uid']
+        instanceNum = instanceJs['number']
+        return cls.getInstanceBaseName(instanceId, instanceNum)
     @staticmethod
     def getAllSeriesForStudy(caseInfo, studyJson, isDropBad = False):
         studyID = studyJson['id']
@@ -85,6 +160,7 @@ class SeriesInfo:
     def isGoodSeries(pseries):
         return pseries.isGood()
 
+#######################################
 class CaseInfo:
     GOOD_MODALITIES = {'CT': 36}
     # GOOD_MODALITIES = {'CT': 36, 'XR': 1, 'CR': 1}
@@ -251,6 +327,7 @@ class CaseInfo:
             case.save2Disk()
         return case
 
+#######################################
 class DBWatcher:
     wdir = None
     cases = None
@@ -316,5 +393,6 @@ class DBWatcher:
         else:
             print ('DBWatcher is not initialized')
 
+#######################################
 if __name__ == '__main__':
     pass
