@@ -4,7 +4,7 @@ __author__ = 'ar'
 
 import unittest
 import os
-import dataentry
+import dataentry_v1
 
 class TestDataEntry(unittest.TestCase):
     def setUp(self):
@@ -12,7 +12,7 @@ class TestDataEntry(unittest.TestCase):
 
     def test_dbwatcher(self):
         self.assertTrue(os.path.isdir(self.dirDataDataEntry))
-        dbWatcher = dataentry.DBWatcher()
+        dbWatcher = dataentry_v1.DBWatcher()
         dbWatcher.load(self.dirDataDataEntry, isDropEmpty=True, isDropBadSeries=True)
         dbWatcher.printStat()
         self.assertTrue(len(dbWatcher.cases) > 0)
