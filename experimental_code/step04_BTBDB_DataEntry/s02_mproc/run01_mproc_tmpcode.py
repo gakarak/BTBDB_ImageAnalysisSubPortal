@@ -24,6 +24,7 @@ class MyTask(Runner):
         self.param1 = param1
         self.param2 = param2
     def run(self):
+        time.sleep(100)
         tmp = np.ones((1000,1000))
         for ii in range(10):
             tmp *= (tmp + self.param1) * self.param2
@@ -50,7 +51,7 @@ def my_routine(params):
 ######################################
 if __name__ == '__main__':
     tm = SimpleTaskManager(nproc=6)
-    rndSleep = [2]*12 #np.random.randint(2, 2, 12)
+    rndSleep = [80]*12 #np.random.randint(2, 2, 12)
 
     for ii in rndSleep:
         print (':: [%s]' % ii)
