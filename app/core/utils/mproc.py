@@ -7,6 +7,7 @@ import time
 from datetime import datetime
 import numpy as np
 import multiprocessing as mp
+import multiprocessing.pool
 
 ######################################
 class ProcessRunner(object):
@@ -18,10 +19,13 @@ class ProcessRunner(object):
         raise NotImplementedError
 
 ######################################
-class SimpleProcessManager(object):
-    def __init__(self, nproc=1):
+class SimpleTaskManager(object):
+    def __init__(self, nproc=1, isThreadManager=False):
         self._nproc = nproc
-        self._pool = mp.Pool(processes=self._nproc)
+        if isThreadManager:
+            self._pool = mp.pool.ThreadPool(processes=self._nproc)
+        else:
+            self._pool = mp.Pool(processes=self._nproc)
         self._poolState = dict()
     # def appendTask_Func(self, task_function, task_args):
     #     return self._pool.apply_async(task_function, [task_args])
