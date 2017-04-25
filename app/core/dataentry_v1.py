@@ -45,6 +45,9 @@ class SeriesInfo:
                 pdir = self.ptrCase.wdir()
             return CaseInfo.getRelativeSeriesPath(caseId=caseId, studyId=self.studyId,
                                                   seriesUid=self.uid(), modality=self.modality(), dataDir=pdir)
+    def caseId(self):
+        if self.ptrCase is not None:
+            return self.ptrCase.caseId()
     def studyUID(self):
         if self.ptrCase is not None:
             return self.ptrCase.getStudyUidById(self.studyId)
@@ -137,7 +140,12 @@ class SeriesInfo:
                 return False
             # if not os.path.isfile(pathReportPDF):
             #     return False
+            return True
         return False
+    def getReportJson(self):
+        pathReport = self.pathPostprocReport(isRelative=False)
+        with open(pathReport, 'r') as f:
+            return json.loads(f.read())
     @classmethod
     def getInstanceBaseName(cls, instanceId, instanceNum):
         return '{0:04d}-{1}.dcm'.format(instanceNum, instanceId)
