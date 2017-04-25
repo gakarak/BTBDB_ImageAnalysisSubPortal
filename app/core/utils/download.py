@@ -17,7 +17,7 @@ import log
 import mproc
 from datetime import datetime
 
-urlTakeList="https://data.tbportals.niaid.nih.gov/api/cases?since=2017-02-01&take=%d&skip=%d"
+urlTakeList="https://data.tbportals.niaid.nih.gov/api/cases?since=2017-04-01&take=%d&skip=%d"
 urlCaseInfo="https://data.tbportals.niaid.nih.gov/api/cases/%s"
 
 #######################################
@@ -125,8 +125,8 @@ class RunnerDataEntry(mproc.AbstractRunner):
         return 'timekey-{0}'.format(datetime.now().strftime('%Y.%m.%d-%H.%M.%S:%f'))
     def run(self):
         dirData = self.data_dir
-        ptrLogger = log.get_logger(wdir=dirData)
         mkdir_p(dirData)
+        ptrLogger = log.get_logger(wdir=dirData)
         dbWatcher = DBWatcher(pdir=dirData)
         dbWatcher.printStat()
         #
