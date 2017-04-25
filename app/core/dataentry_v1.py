@@ -373,24 +373,56 @@ class DBWatcher:
             if series.getKey() == pseries.getKey():
                 return True
         return False
-    def printStat(self):
+    def toString(self):
+        if self.cases is None:
+            return 'DBWatcher is not initialized'
+        else:
+            tret = self.getStatistics()
+            return 'Cases: #All/#Good = {0}/{1}, Series = #All/#Good/#Down/#Conv/#Proc = {2}/{3}/{4}/{5}/{6}'\
+                .format(tret['cases']['total'],
+                        tret['cases']['empty'],
+                        tret['series']['total'],
+                        tret['series']['good'],
+                        tret['series']['downloaded'],
+                        tret['series']['converted'],
+                        tret['series']['processed'])
+    def __str__(self):
+        return self.toString()
+    def __repr__(self):
+        return self.toString()
+    def getStatistics(self):
+        ret = {
+            'cases': {
+                'total': 0,
+                'empty': 0
+            },
+            'series': {
+                'total': 0,
+                'good':  0,
+                'downloaded': 0,
+                'converted': 0,
+                'processed': 0
+            }
+        }
         if self.cases is not None:
-            numCases = len(self.cases)
-            numCasesEmpty = 0
-            numSeries = 0
-            numSeriesGood = 0
+            ret['cases']['total'] = len(self.cases)
             for ic, (kcase, case) in enumerate(self.cases.items()):
                 if case.isEmpty():
-                    numCasesEmpty += 1
+                    ret['cases']['empty'] += 1
                 else:
                     for si, (kstudy, ser) in enumerate(case.series.items()):
-                        numSeries += 1
+                        ret['series']['total'] += 1
                         if ser.isGood():
-                            numSeriesGood += 1
-            print ('Cases: #All/#Empty = %d/%d, Series: All/Good = %d/%d'
-                   % (numCases, numCasesEmpty, numSeries, numSeriesGood))
-        else:
-            print ('DBWatcher is not initialized')
+                            ret['series']['good'] += 1
+                        if ser.isDownloaded():
+                            ret['series']['downloaded'] += 1
+                        if ser.isConverted():
+                            ret['series']['converted'] += 1
+                        if ser.isPostprocessed():
+                            ret['series']['processed'] += 1
+        return ret
+    def printStat(self):
+        print (self.toString())
 
 #######################################
 if __name__ == '__main__':
