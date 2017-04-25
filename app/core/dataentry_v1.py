@@ -380,7 +380,7 @@ class DBWatcher:
             numSeries = 0
             numSeriesGood = 0
             for ic, (kcase, case) in enumerate(self.cases.items()):
-                if case.isEmpty:
+                if case.isEmpty():
                     numCasesEmpty += 1
                 else:
                     for si, (kstudy, ser) in enumerate(case.series.items()):
