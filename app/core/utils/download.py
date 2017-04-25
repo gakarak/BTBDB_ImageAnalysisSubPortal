@@ -59,7 +59,7 @@ def downloadDicom(urlRequest, pauthTocken=None):
         raise Exception(strErr)
 
 #######################################
-class RunnerDownloadSeries(mproc.AbstractRunner):
+class TaskRunnerDownloadSeries(mproc.AbstractRunner):
     def __init__(self, series, isCleanBeforeStart = False):
         self.series = series
         self.is_clean = isCleanBeforeStart
@@ -165,7 +165,7 @@ class RunnerDataEntry(mproc.AbstractRunner):
                             else:
                                 # FIXME: execute SeriesDownload Runner over Process-TaskManager in future
                                 ptrLogger.info('\t append Series to download [{0}]'.format(ser))
-                                newRunner = RunnerDownloadSeries(series=ser)
+                                newRunner = TaskRunnerDownloadSeries(series=ser)
                                 newRunner.run()
                         else:
                             ptrLogger.info('\tskip downloaded series: {0}'.format(ser))
