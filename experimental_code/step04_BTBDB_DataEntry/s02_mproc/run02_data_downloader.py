@@ -14,4 +14,4 @@ if __name__ == '__main__':
 
     tmDataEntry = SimpleTaskManager(nproc=1, isThreadManager=True)
     tmDataEntry.appendTaskRunner(runnerDataEntry)
-    tmDataEntry.waitAll(dt=5)
+    tmDataEntry.waitAll(dt=-1)
