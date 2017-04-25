@@ -94,9 +94,10 @@ class TaskRunnerDownloadSeries(mproc.AbstractRunner):
                         ptrLogger.info('*** WARNING *** file [{0}] exist, skip'.format(foutDicom))
 
 #######################################
-class RunnerDataEntry(mproc.AbstractRunner):
+class RunnerDBDownload(mproc.AbstractRunner):
     def __init__(self, data_dir=None):
         if data_dir is None:
+            # FIXME: remove in future
             self.data_dir = 'data-cases'
         else:
             self.data_dir = data_dir
@@ -122,13 +123,13 @@ class RunnerDataEntry(mproc.AbstractRunner):
         self.allCases = tmp['results']
     # AbstractRunner interface:
     def getUniqueKey(self):
-        return 'timekey-{0}'.format(datetime.now().strftime('%Y.%m.%d-%H.%M.%S:%f'))
+        return 'download-tkey-{0}'.format(datetime.now().strftime('%Y.%m.%d-%H.%M.%S:%f'))
     def run(self):
         dirData = self.data_dir
         mkdir_p(dirData)
-        ptrLogger = log.get_logger(wdir=dirData)
+        ptrLogger = log.get_logger(wdir=dirData, logName='s01-donwload')
         dbWatcher = DBWatcher(pdir=dirData)
-        dbWatcher.printStat()
+        ptrLogger.info(dbWatcher.toString())
         #
         # dataEntry = DataEntryRunner()
         try:

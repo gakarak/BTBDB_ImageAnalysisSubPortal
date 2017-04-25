@@ -3,10 +3,10 @@
 __author__ = 'ar'
 
 from app.core.utils.mproc import SimpleTaskManager
-from app.core.utils.download import RunnerDataEntry
+from app.core.utils.download import RunnerDBDownload
 
 if __name__ == '__main__':
-    runnerDataEntry = RunnerDataEntry()
+    runnerDataEntry = RunnerDBDownload()
     runnerDataEntry.refreshCases()
     print (runnerDataEntry)
 

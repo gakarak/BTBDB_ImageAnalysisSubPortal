@@ -16,7 +16,7 @@ class MyTestCase(unittest.TestCase):
         shutil.rmtree(self.temp_dir)
 
     def test_something(self):
-        runnerDataEntry = dwd.RunnerDataEntry(data_dir=self.temp_dir)
+        runnerDataEntry = dwd.RunnerDBDownload(data_dir=self.temp_dir)
         runnerDataEntry.refreshCases()
         self.assertTrue(runnerDataEntry.numCases()>0)
 
