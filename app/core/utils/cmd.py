@@ -19,7 +19,7 @@ class CommandRunner(object):
         self.stdErr = None
         self.retCode = -1
         self.isFinished = False
-    def run(self, timeOut=15):
+    def run(self, timeOut=60):
         def target():
             self.process = subprocess.Popen(self.cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             self.stdOut, self.stdErr = self.process.communicate()

@@ -10,12 +10,14 @@ import json
 from pprint import pprint
 import errno
 
+from app.core.dataentry_v1 import DBWatcher, CaseInfo, SeriesInfo
 from . import mkdir_p
 import log
 
 import mproc
+from datetime import datetime
 
-urlTakeList="https://data.tbportals.niaid.nih.gov/api/cases?since=2017-02-01&take=%d&skip=%d"
+urlTakeList="https://data.tbportals.niaid.nih.gov/api/cases?since=2017-04-01&take=%d&skip=%d"
 urlCaseInfo="https://data.tbportals.niaid.nih.gov/api/cases/%s"
 
 #######################################
@@ -57,7 +59,7 @@ def downloadDicom(urlRequest, pauthTocken=None):
         raise Exception(strErr)
 
 #######################################
-class ProcessRunnerDownloadSeries(mproc.ProcessRunner):
+class TaskRunnerDownloadSeries(mproc.AbstractRunner):
     def __init__(self, series, isCleanBeforeStart = False):
         self.series = series
         self.is_clean = isCleanBeforeStart
@@ -90,6 +92,83 @@ class ProcessRunnerDownloadSeries(mproc.ProcessRunner):
                             ptrLogger.error('Cant download DICOM URL for instance [{0}] : {1}'.format(instJs, err))
                     else:
                         ptrLogger.info('*** WARNING *** file [{0}] exist, skip'.format(foutDicom))
+
+#######################################
+class RunnerDataEntry(mproc.AbstractRunner):
+    def __init__(self, data_dir=None):
+        if data_dir is None:
+            self.data_dir = 'data-cases'
+        else:
+            self.data_dir = data_dir
+        self.clean()
+    def clean(self):
+        self.allCases = None
+    def numCases(self):
+        if self.allCases is not None:
+            return len(self.allCases)
+    def toString(self):
+        if self.allCases is None:
+            return 'No cases'
+        else:
+            return '#Cases = %d' % len(self.allCases)
+    def __str__(self):
+        return self.toString()
+    def __repr__(self):
+        return self.toString()
+    def refreshCases(self):
+        tmp = getListOfCases(1, 0)
+        numCases = tmp['total']
+        tmp = getListOfCases(numCases, 0)
+        self.allCases = tmp['results']
+    # AbstractRunner interface:
+    def getUniqueKey(self):
+        return 'timekey-{0}'.format(datetime.now().strftime('%Y.%m.%d-%H.%M.%S:%f'))
+    def run(self):
+        dirData = self.data_dir
+        mkdir_p(dirData)
+        ptrLogger = log.get_logger(wdir=dirData)
+        dbWatcher = DBWatcher(pdir=dirData)
+        dbWatcher.printStat()
+        #
+        # dataEntry = DataEntryRunner()
+        try:
+            self.refreshCases()
+        except Exception as err:
+            ptrLogger.error('Cant refresh info about DataEntry cases: {0}'.format(err))
+        ptrLogger.info ('DataEntry: %s' % self.toString())
+        numCases = len(self.allCases)
+        for icase, case in enumerate(self.allCases):
+            caseId = case['conditionId']
+            ptrLogger.info ('[%d/%d] ' % (icase, numCases))
+            if dbWatcher.isHaveCase(caseId):
+                new_case = dbWatcher.cases[caseId]
+                ptrLogger.info('\t:: case-info [%s] exist in db-cache, skip get-case-info ...' % caseId)
+            else:
+                caseInfo = getCaseInfo(caseId)
+                isSaveToDisk = True
+                try:
+                    new_case = CaseInfo.newCase(dataDir=dirData,
+                                                dictShort=case,
+                                                dictAll=caseInfo,
+                                                isSaveToDisk=isSaveToDisk)
+                except Exception as err:
+                    ptrLogger.error('Error case download: [{0}]'.format(err))
+                    new_case = None
+            if new_case is not None:
+                new_series = new_case.getGoodSeries()
+                # try:
+                if len(new_series) > 0:
+                    for ser in new_series:
+                        if ser.isInitialized() and ser.isHasData() and (not ser.isDownloaded()):
+                            if ser.isConverted():
+                                ptrLogger.warn('\t Series converted (exist nii) but is not downloaded: skip...')
+                            else:
+                                # FIXME: execute SeriesDownload Runner over Process-TaskManager in future
+                                ptrLogger.info('\t append Series to download [{0}]'.format(ser))
+                                newRunner = TaskRunnerDownloadSeries(series=ser)
+                                newRunner.run()
+                        else:
+                            ptrLogger.info('\tskip downloaded series: {0}'.format(ser))
 
 #######################################
 if __name__ == '__main__':

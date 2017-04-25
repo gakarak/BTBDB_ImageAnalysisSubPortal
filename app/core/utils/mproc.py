@@ -7,9 +7,10 @@ import time
 from datetime import datetime
 import numpy as np
 import multiprocessing as mp
+import multiprocessing.pool
 
 ######################################
-class ProcessRunner(object):
+class AbstractRunner(object):
     def __call__(self, *args, **kwargs):
         self.run()
     def getUniqueKey(self):
@@ -18,10 +19,13 @@ class ProcessRunner(object):
         raise NotImplementedError
 
 ######################################
-class SimpleProcessManager(object):
-    def __init__(self, nproc=1):
+class SimpleTaskManager(object):
+    def __init__(self, nproc=1, isThreadManager=False):
         self._nproc = nproc
-        self._pool = mp.Pool(processes=self._nproc)
+        if isThreadManager:
+            self._pool = mp.pool.ThreadPool(processes=self._nproc)
+        else:
+            self._pool = mp.Pool(processes=self._nproc)
         self._poolState = dict()
     # def appendTask_Func(self, task_function, task_args):
     #     return self._pool.apply_async(task_function, [task_args])
@@ -73,9 +77,14 @@ class SimpleProcessManager(object):
         return self.toString()
     def __repr__(self):
         return self.toString()
-    def waitAll(self):
-        self._pool.close()
-        self._pool.join()
+    def waitAll(self, dt = 0):
+        if dt>0:
+            time.sleep(dt)
+            self._pool.close()
+            self._pool.terminate()
+        else:
+            self._pool.close()
+            self._pool.join()
 
 ######################################
 if __name__ == '__main__':
