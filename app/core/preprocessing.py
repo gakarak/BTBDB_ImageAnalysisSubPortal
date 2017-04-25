@@ -190,6 +190,59 @@ def prepareLungSizeInfo(mskLungs, niiHeader, isInStrings=False):
     sizeLungLeft  = volLungLeft  * hdrVoxelSize
     sizeLungRight = volLungRight * hdrVoxelSize
     sizeLungTotal = volLungTotal * hdrVoxelSize
+    # (1) get spacing
+    tmp_spacing = niiHeader.get_zooms()
+    if (tmp_spacing is not None) and (len(tmp_spacing)==3):
+        ret_spacing = {
+            'x': float(tmp_spacing[0]),
+            'y': float(tmp_spacing[1]),
+            'z': float(tmp_spacing[2])
+        }
+    else:
+        ret_spacing = {
+            'x': -1,
+            'y': -1,
+            'z': -1
+        }
+    # (2) get bounding_box
+    tmp_bounding_box =  niiHeader.get_data_shape()
+    if (tmp_bounding_box is not None) and (len(tmp_bounding_box) == 3):
+        bounding_box_vox = {
+            'units': 'voxels',
+            'x': tmp_bounding_box[0],
+            'y': tmp_bounding_box[1],
+            'z': tmp_bounding_box[2],
+        }
+        bounding_box_mm = {
+            'units': 'voxels',
+            'x': tmp_bounding_box[0] * ret_spacing['x'],
+            'y': tmp_bounding_box[1] * ret_spacing['y'],
+            'z': tmp_bounding_box[2] * ret_spacing['z'],
+        }
+    else:
+        bounding_box_vox = {
+            'units': 'voxels',
+            'x': -1,
+            'y': -1,
+            'z': -1,
+        }
+        bounding_box_mm = {
+            'units': 'voxels',
+            'x': -1,
+            'y': -1,
+            'z': -1,
+        }
+    bounding_box = [
+        bounding_box_vox,
+        bounding_box_mm
+    ]
+    # (3) calc assimetry
+    try:
+        assimetryVol = np.abs( float(sizeLungLeft) - float(sizeLungRight)) / (float(sizeLungLeft) + float(sizeLungRight))
+    except:
+        assimetryVol = -1
+    assimatryTex = -1
+    # number -> strings
     if isInStrings:
         volLungLeft   = '%0.1f' % volLungLeft
         volLungRight  = '%0.1f' % volLungRight
@@ -198,22 +251,98 @@ def prepareLungSizeInfo(mskLungs, niiHeader, isInStrings=False):
         sizeLungRight = '%0.1f' % sizeLungRight
         sizeLungTotal = '%0.1f' % sizeLungTotal
         hdrVoxelSize  = '%0.3f' % hdrVoxelSize
+    # Fin
     retInfoLungSizes = {
         'units':         hdrXyzUnits,
         'voxelSize':     hdrVoxelSize,
         'isValidLungs':  isOk,
-        'lungsVoxels': {
-            'left':     volLungLeft,
-            'right':    volLungRight,
-            'total':    volLungTotal,
+        'number_of_slices': bounding_box_vox['z'],
+        'spacing': ret_spacing,
+        'bounding_box': bounding_box,
+        'volume': {
+            'total': [
+                {
+                    'units': 'voxels',
+                    'value': volLungTotal
+                },
+                {
+                    'units': 'mm3',
+                    'value': sizeLungTotal
+                },
+            ],
+            'left': [
+                {
+                    'units': 'voxels',
+                    'value': volLungLeft
+                },
+                {
+                    'units': 'mm3',
+                    'value': sizeLungLeft
+                }
+            ],
+            'right': [
+                {
+                    'units': 'voxels',
+                    'value': volLungRight
+                },
+                {
+                    'units': 'mm3',
+                    'value': sizeLungRight
+                }
+            ]
         },
-        'lungsSizes': {
-            'left':     sizeLungLeft,
-            'right':    sizeLungRight,
-            'total':    sizeLungTotal
-        },
+        'asymmetry': [
+            {
+                "type": "volume",
+                "value": assimetryVol
+            },
+            {
+                "type": "texture",
+                "value": assimatryTex
+            }
+        ],
+        # 'lungsVoxels': {
+        #     'left':     volLungLeft,
+        #     'right':    volLungRight,
+        #     'total':    volLungTotal,
+        # },
+        # 'lungsSizes': {
+        #     'left':     sizeLungLeft,
+        #     'right':    sizeLungRight,
+        #     'total':    sizeLungTotal
+        # },
     }
     return retInfoLungSizes
+
+def getJsonReport(series, reportLesionScore, reportLungs, lstImgJson=[]):
+    case_id = series.ptrCase.caseId()
+    patient_id = series.ptrCase.patientId()
+    study_uid = series.studyUID()
+    series_uid = series.uid()
+    retLesions = {
+        'left': None,
+        'right': None
+    }
+    for k,v in reportLesionScore.items():
+        if k == 1:
+            retLesions['left'] = v
+        if k == 2:
+            retLesions['right'] = v
+    ret = {
+        'case_id' : case_id,
+        'patient_id' : patient_id,
+        'study_uid' : study_uid,
+        'series_uid' : series_uid,
+        'number_of_slices' : reportLungs['number_of_slices'],
+        'spacing' : reportLungs['spacing'],
+        'bounding_box': reportLungs['bounding_box'],
+        'volume': reportLungs['volume'],
+        'asymmetry': reportLungs['asymmetry'],
+        'preview_images' : lstImgJson,
+        'lesions': retLesions,
+        'comment': 'No comments...'
+    }
+    return ret
 
 #############################################
 def getMinMaxLungZ(pmsk):

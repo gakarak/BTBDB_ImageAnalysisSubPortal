@@ -21,8 +21,7 @@ def get_logger(wdir, logName=None, isDefault=False):
         if logName is None:
             logName = "dicom-log-%s" % (time.strftime('%Y.%m.%d-%H.%M.%S'))
         else:
-            pass
-            # logName = "%s-%s" % (logName, time.strftime('%Y.%m.%d-%H.%M.%S'))
+            logName = "%s-%s" % (logName, time.strftime('%Y.%m.%d-%H.%M.%S'))
     outLog = os.path.join(wdir, logName)
     logger = logging.getLogger(logName)
     logger.setLevel(logging.DEBUG)
