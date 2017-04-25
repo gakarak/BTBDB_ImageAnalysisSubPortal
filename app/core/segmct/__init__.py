@@ -9,6 +9,9 @@ import nibabel as nib
 from fcnn_lung2d import BatcherCTLung2D
 from fcnn_lesion3d import BatcherCTLesion3D
 
+import json
+import skimage.io as skio
+import app.core.preprocessing as preproc
 from app.core.preprocessing import resizeNii, resize3D
 
 #########################################
@@ -165,6 +168,89 @@ def api_segmentLungAndLesion(dirModelLung, dirModelLesion, series,
             msgErr('Cant save segmentation results to file [{0}] : {1}, for series [{2}]'.format(pathSegmLesions, err, series))
             return False
         return True
+
+def api_generateAllReports(series,
+                           dirModelLung, dirModelLesion,
+                           ptrLogger=None,
+                           shape4Lung = (256, 256, 64), shape4Lesi = (128, 128, 64)):
+    # (1) msg-helpers
+    def msgInfo(msg):
+        if ptrLogger is not None:
+            ptrLogger.info(msg)
+        else:
+            print (msg)
+    def msgErr(msg):
+        if ptrLogger is not None:
+            ptrLogger.error(msg)
+        else:
+            print (msg)
+    # (0) prepare path-variables
+    pathNii = series.pathConvertedNifti(isRelative=False)
+    pathSegmLungs = series.pathPostprocLungs(isRelative=False)
+    pathSegmLesions = series.pathPostprocLesions(isRelative=False)
+    pathPreview = series.pathPostprocPreview(isRelative=False)
+    pathReport = series.pathPostprocReport(isRelative=False)
+    # (1) Lung/Lesions segmentation
+    retSegm = api_segmentLungAndLesion(dirModelLung=dirModelLung,
+                             dirModelLesion=dirModelLesion,
+                             series=series,
+                             ptrLogger=ptrLogger,
+                             shape4Lung=shape4Lung,
+                             shape4Lesi=shape4Lesi)
+    msgInfo('Segmentation Lung/Lesion isOk = {0}'.format(retSegm))
+    if (not os.path.isfile(pathSegmLungs)) or (not os.path.isfile(pathSegmLesions)):
+        msgErr('Cant segment Lung/Lesion, skip... [{0}]'.format(series))
+        return False
+    # (2) calc lesion score
+    try:
+        niiLung = nib.load(pathSegmLungs)
+        niiLesion = nib.load(pathSegmLesions)
+    except Exception as err:
+        msgErr('Cant load Lung/Lesion Nifti data: [{0}], for {1}'.format(err, pathSegmLesions))
+        return False
+    try:
+        retLesionScore = preproc.prepareLesionDistribInfo(niiLung, niiLesion)
+    except Exception as err:
+        msgErr('Cant evaluate Lesion-score: [{0}], for {1}'.format(err, pathSegmLesions))
+        return False
+    # (3) prepare short report about lungs
+    try:
+        niiLungDiv, _ = preproc.makeLungedMaskNii(niiLung)
+        retLungInfo = preproc.prepareLungSizeInfoNii(niiLungDiv)
+    except Exception as err:
+        msgErr('Cant get Lung information : [{0}], for {1}'.format(err, series))
+        return False
+    # (4) generate preview & save preview image
+    try:
+        dataImg = preproc.normalizeCTImage(nib.load(pathNii).get_data())
+        dataMsk = niiLung.get_data()
+        dataLes = niiLesion.get_data()
+        imgPreview = preproc.makePreview4Lesion(dataImg, dataMsk, dataLes)
+        imgPreviewJson = {
+            "description": "CT Lesion preview",
+            "content-type": "image/png",
+            "xsize": imgPreview.shape[1],
+            "ysize": imgPreview.shape[0],
+            "url": os.path.basename(pathPreview)
+        }
+        skio.imsave(pathPreview, imgPreview)
+    except Exception as err:
+        msgErr('Cant generate preview image : [{0}], for {1}'.format(err, series))
+        return False
+    # (5) generate & save JSON report
+    try:
+        jsonReport = preproc.getJsonReport(series=series,
+                                           reportLesionScore=retLesionScore,
+                                           reportLungs=retLungInfo,
+                                           lstImgJson=[imgPreviewJson])
+        with open(pathReport, 'w') as f:
+            f.write(json.dumps(jsonReport, indent=4))
+    except Exception as err:
+        msgErr('Cant generate final JSON report : [{0}], for {1}'.format(err, series))
+        return False
+    # FIXME: append PDF generation in future here
+    # (6) generate PDF preview
+    return True
 
 #########################################
 if __name__ == '__main__':
