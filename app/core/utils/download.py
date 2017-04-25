@@ -98,7 +98,8 @@ class RunnerDataEntry(mproc.AbstractRunner):
     def __init__(self, data_dir=None):
         if data_dir is None:
             self.data_dir = 'data-cases'
-        self.data_dir = data_dir
+        else:
+            self.data_dir = data_dir
         self.clean()
     def clean(self):
         self.allCases = None
