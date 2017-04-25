@@ -5,6 +5,10 @@ __author__ = 'ar'
 import enum
 import json
 
+#
+# Stage API currently 'obsolete'
+#
+
 """
 status for stage/total: 
     - new : all stages is incompleted
