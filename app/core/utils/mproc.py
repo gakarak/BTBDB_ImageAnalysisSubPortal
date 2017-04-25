@@ -10,7 +10,7 @@ import multiprocessing as mp
 import multiprocessing.pool
 
 ######################################
-class ProcessRunner(object):
+class AbstractRunner(object):
     def __call__(self, *args, **kwargs):
         self.run()
     def getUniqueKey(self):

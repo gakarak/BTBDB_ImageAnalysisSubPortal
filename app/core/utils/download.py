@@ -57,7 +57,7 @@ def downloadDicom(urlRequest, pauthTocken=None):
         raise Exception(strErr)
 
 #######################################
-class ProcessRunnerDownloadSeries(mproc.ProcessRunner):
+class RunnerDownloadSeries(mproc.AbstractRunner):
     def __init__(self, series, isCleanBeforeStart = False):
         self.series = series
         self.is_clean = isCleanBeforeStart

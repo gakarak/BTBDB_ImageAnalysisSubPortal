@@ -6,10 +6,10 @@ import os
 import time
 from datetime import datetime
 import numpy as np
-from mproc import SimpleTaskManager, ProcessRunner
+from mproc import SimpleTaskManager, AbstractRunner
 
 ######################################
-class MyTask(ProcessRunner):
+class MyTask(AbstractRunner):
     def __init__(self, param1, param2, dt=None):
         self.param1 = param1
         self.param2 = param2
