@@ -8,7 +8,10 @@ import shutil
 import tempfile
 import subprocess
 import threading
-from . import checkDirContainsDicom, checkExeInPath, checkFileOrDir
+from . import checkDirContainsDicom, checkExeInPath, checkFileOrDir, mkdir_p
+import mproc, log
+from app.core.dataentry_v1 import DBWatcher
+from datetime import datetime
 
 #####################################
 class CommandRunner(object):
@@ -60,6 +63,44 @@ def pydcm2nii(dirDicom, foutNii, pexe='dcm2nii'):
     #
     shutil.rmtree(tmpDir)
     return os.path.isfile(foutNii)
+
+#####################################
+# Simple Runners for Task and Job conversion
+class TaskRunnerConvertSeries(mproc.AbstractRunner):
+    def __init__(self, series):
+        self.ser = series
+    def getUniqueKey(self):
+        return self.ser.getKey()
+    def run(self):
+        # FIXME: we think, tha if series is postprocessed, then series-conversion is not needed...
+        inpDirWithDicom = self.ser.getDirRaw(False)
+        outPathNifti = self.ser.pathConvertedNifti(False)
+        tret = pydcm2nii(dirDicom=inpDirWithDicom, foutNii=outPathNifti)
+        return tret
+
+class RunnerDBConvert(mproc.AbstractRunner):
+    def __init__(self, data_dir=None):
+        if data_dir is None:
+            #FIXME: remove in future
+            self.data_dir = 'data-cases'
+        else:
+            self.data_dir = data_dir
+    def getUniqueKey(self):
+        return 'conv-tkey-{0}'.format(datetime.now().strftime('%Y.%m.%d-%H.%M.%S:%f'))
+    def run(self):
+        dirData = self.data_dir
+        mkdir_p(dirData)
+        ptrLogger = log.get_logger(wdir=dirData, logName='s02-conv')
+        dbWatcher = DBWatcher(pdir=dirData)
+        ptrLogger.info(dbWatcher.toString())
+        for iser, ser in enumerate(dbWatcher.allSeries()):
+            if ser.isDownloaded() and (not ser.isConverted()) and (not ser.isPostprocessed()):
+                convTask = TaskRunnerConvertSeries(series=ser)
+                tret = convTask.run()
+                ptrLogger.info ('[%d] convert is Ok = %s, %s' % (iser, tret, ser))
+        ptrLogger.info('Conversion is finished. Refresh DB-Info')
+        dbWatcher.reload()
+        ptrLogger.info(dbWatcher.toString())
 
 #####################################
 if __name__ == '__main__':
