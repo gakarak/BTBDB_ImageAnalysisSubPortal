@@ -99,11 +99,11 @@ class SeriesInfo:
                 return False
         return True
     # [Check #2] : check data conversion status
-    def pathConvertedData(self, isRelative=True):
+    def pathConvertedNifti(self, isRelative=True):
         if self.isInitialized():
             return '{0}.nii.gz'.format(self.getDir(isRelative=isRelative))
     def isConverted(self):
-        pathNii = self.pathConvertedData(isRelative=False)
+        pathNii = self.pathConvertedNifti(isRelative=False)
         if pathNii is not None:
             return os.path.isfile(pathNii)
         return False
