@@ -77,9 +77,14 @@ class SimpleTaskManager(object):
         return self.toString()
     def __repr__(self):
         return self.toString()
-    def waitAll(self):
-        self._pool.close()
-        self._pool.join()
+    def waitAll(self, dt = 0):
+        if dt>0:
+            time.sleep(dt)
+            self._pool.close()
+            self._pool.terminate()
+        else:
+            self._pool.close()
+            self._pool.join()
 
 ######################################
 if __name__ == '__main__':
