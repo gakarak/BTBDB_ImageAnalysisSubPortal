@@ -94,5 +94,78 @@ def segmentLesions3D(pathInpNii, dirWithModel, pathOutNii=None, outSize=None, is
         return outMskNii
 
 #########################################
+def api_segmentLungAndLesion(dirModelLung, dirModelLesion, series,
+                             ptrLogger=None,
+                             shape4Lung = (256, 256, 64), shape4Lesi = (128, 128, 64)):
+    # (1) msg-helpers
+    def msgInfo(msg):
+        if ptrLogger is not None:
+            ptrLogger.info(msg)
+        else:
+            print (msg)
+    def msgErr(msg):
+        if ptrLogger is not None:
+            ptrLogger.error(msg)
+        else:
+            print (msg)
+    # (2.1) check data
+    if not series.isInitialized():
+        msgErr('Series is not initialized, skip .. [{0}]'.format(series))
+        return False
+    # if not series.isDownloaded():
+    #     msgErr('Series data is not downloaded, skip .. [{0}]'.format(series))
+    #     return False
+    if not series.isConverted():
+        msgErr('Series DICOM data is not converted to Nifti format, skip .. [{0}]'.format(series))
+        return False
+    # (2.2) check existing files
+    pathNii = series.pathConvertedNifti(isRelative=False)
+    pathSegmLungs = series.pathPostprocLungs(isRelative=False)
+    pathSegmLesions = series.pathPostprocLesions(isRelative=False)
+    if os.path.isfile(pathSegmLungs) and os.path.isfile(pathSegmLesions):
+        msgInfo('Series data is already segmented, skip task ... [{0}]'.format(series))
+        return False
+    else:
+        # (2.3.1) load and resize
+        try:
+            dataNii = nib.load(pathNii)
+            shapeOrig = dataNii.shape
+            niiResiz4Lung = resizeNii(dataNii, shape4Lung)
+            niiResiz4Lesi = resizeNii(dataNii, shape4Lesi)
+        except Exception as err:
+            msgErr('Cant load and resize input nifti file [{0}] : {1}, for series [{2}]'.format(pathNii, err, series))
+            return False
+        # (2.3.2) segment lungs
+        try:
+            lungMask = segmentLungs25D(niiResiz4Lung,
+                                       dirWithModel=dirModelLung,
+                                       pathOutNii=None,
+                                       outSize=shapeOrig,
+                                       # outSize=shape4Lung,
+                                       threshold=0.5)
+        except Exception as err:
+            msgErr('Cant segment lungs for file [{0}] : {1}, for series [{2}]'.format(pathNii, err, series))
+            return False
+        # (2.3.3) segment lesions
+        try:
+            lesionMask = segmentLesions3D(niiResiz4Lesi,
+                                          dirWithModel=dirModelLesion,
+                                          pathOutNii=None,
+                                          outSize=shapeOrig,
+                                          # outSize=shape4Lung,
+                                          threshold=None)
+        except Exception as err:
+            msgErr('Cant segment lesions for file [{0}] : {1}, for series [{2}]'.format(pathNii, err, series))
+            return False
+        # (2.3.4) save results
+        try:
+            nib.save(lungMask, pathSegmLungs)
+            nib.save(lesionMask, pathSegmLesions)
+        except Exception as err:
+            msgErr('Cant save segmentation results to file [{0}] : {1}, for series [{2}]'.format(pathSegmLesions, err, series))
+            return False
+        return True
+
+#########################################
 if __name__ == '__main__':
     print ('---')
