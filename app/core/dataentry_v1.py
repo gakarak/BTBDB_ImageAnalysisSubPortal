@@ -142,10 +142,18 @@ class SeriesInfo:
             #     return False
             return True
         return False
-    def getReportJson(self):
+    def getReportJson(self, root_url=None):
         pathReport = self.pathPostprocReport(isRelative=False)
         with open(pathReport, 'r') as f:
-            return json.loads(f.read())
+            jsonData = json.loads(f.read())
+            dir_relative = os.path.dirname(self.getDir(isRelative=True))
+            if jsonData.has_key('preview_images'):
+                for tmp in jsonData['preview_images']:
+                    if root_url is None:
+                        tmp['url'] = '/{0}/{1}'.format(dir_relative, os.path.basename(tmp['url']))
+                    else:
+                        tmp['url'] = '{0}{1}/{2}'.format(root_url, dir_relative, os.path.basename(tmp['url']))
+            return jsonData
     @classmethod
     def getInstanceBaseName(cls, instanceId, instanceNum):
         return '{0:04d}-{1}.dcm'.format(instanceNum, instanceId)
