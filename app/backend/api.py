@@ -1,6 +1,7 @@
 from flask import render_template
 
 from flask import request, Response
+from flask import send_file
 
 import os
 from app.backend import app_flask
@@ -84,10 +85,12 @@ def report_helper(case_id, patient_id, study_uid, series_uid, root_url):
 @app_flask.route('/data/', methods=['GET'])
 def data_load():
     file_path = request.args.get('path')
-    file_path = os.path.join(dir_data(), file_path)
+    # file_path = os.path.join(dir_data(), file_path)
+    file_path = '{0}/{1}'.format(dir_data(), file_path)
     if os.path.isfile(file_path):
-        with open(file_path, 'r') as f:
-            return f.read()
+        return send_file(file_path, mimetype='image/jpeg')
+        # with open(file_path, 'r') as f:
+        #     return f.read()
     return Response(json.dumps({}), mimetype='application/json')
 
 @app_flask.route('/report/', methods=['POST'])
