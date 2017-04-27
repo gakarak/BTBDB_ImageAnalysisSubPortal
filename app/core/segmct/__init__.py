@@ -228,7 +228,7 @@ def api_generateAllReports(series,
         imgPreview = preproc.makePreview4Lesion(dataImg, dataMsk, dataLes)
         imgPreviewJson = {
             "description": "CT Lesion preview",
-            "content-type": "image/png",
+            "content-type": "image/jpeg",
             "xsize": imgPreview.shape[1],
             "ysize": imgPreview.shape[0],
             "url": os.path.basename(pathPreview)
