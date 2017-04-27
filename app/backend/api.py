@@ -1,6 +1,7 @@
 from flask import render_template
 
 from flask import request, Response
+from flask import send_file
 
 import os
 from app.backend import app_flask
@@ -16,7 +17,7 @@ def dir_base():
 def dir_data():
     return app_flask.config['DIR_DATA']
 
-def get_responce(retcode=0, errorstr='', result=None):
+def get_response(retcode=0, errorstr='', result=None):
     return {
         'retcode': retcode,
         'errorstr': errorstr,
@@ -70,24 +71,26 @@ def report_helper(case_id, patient_id, study_uid, series_uid, root_url):
         if is_ok:
             try:
                 ret = ptr_series.getReportJson(root_url = root_url)
-                return Response(json.dumps(get_responce(result=ret), indent=4), mimetype='application/json')
+                return Response(json.dumps(get_response(result=ret), indent=4), mimetype='application/json')
             except Exception as err:
                 str_error = 'db-report error: {0}'.format(err)
     else:
         str_error = 'Cant find requested series in DB: case_id={0}, study_uid={1}, series_uid={2}' \
             .format(case_id, study_uid, series_uid)
     if is_ok:
-        return Response(json.dumps(get_responce(result=ret), indent=4), mimetype='application/json')
+        return Response(json.dumps(get_response(result=ret), indent=4), mimetype='application/json')
     else:
-        return Response(json.dumps(get_responce(1, str_error), indent=4), mimetype='application/json')
+        return Response(json.dumps(get_response(1, str_error), indent=4), mimetype='application/json')
 
 @app_flask.route('/data/', methods=['GET'])
 def data_load():
     file_path = request.args.get('path')
-    file_path = os.path.join(dir_data(), file_path)
+    # file_path = os.path.join(dir_data(), file_path)
+    file_path = '{0}/{1}'.format(dir_data(), file_path)
     if os.path.isfile(file_path):
-        with open(file_path, 'r') as f:
-            return f.read()
+        return send_file(file_path, mimetype='image/jpeg')
+        # with open(file_path, 'r') as f:
+        #     return f.read()
     return Response(json.dumps({}), mimetype='application/json')
 
 @app_flask.route('/report/', methods=['POST'])
@@ -100,7 +103,7 @@ def report_json():
         return report_helper(case_id, patient_id, study_uid, series_uid)
     except Exception as err:
         str_error = 'Invalid request: [{0}]'.format(err)
-        ret = get_responce(1, str_error)
+        ret = get_response(1, str_error)
         return Response(json.dumps(ret, indent=4), mimetype='application/json')
 
 @app_flask.route('/report/<string:case_id>/<string:patient_id>/<string:study_uid>/<string:series_uid>/', methods=['GET'])
@@ -146,9 +149,9 @@ def report_path(case_id, patient_id, study_uid, series_uid):
 @app_flask.route('/db/status/', methods=['GET'])
 def db_status():
     try:
-        ret = get_responce(result=dbWatcher.getStatistics())
+        ret = get_response(result=dbWatcher.getStatistics())
     except Exception as err:
-        ret = get_responce(retcode=1, errorstr='db-status *error: {0}'.format(err))
+        ret = get_response(retcode=1, errorstr='db-status *error: {0}'.format(err))
     return Response(json.dumps(ret, indent=4), mimetype='application/json')
 
 @app_flask.route('/db/series/', methods=['GET'])
@@ -156,7 +159,7 @@ def db_series():
     try:
         ret = dbWatcher.getStatistics()
     except Exception as err:
-        ret = get_responce(retcode=1, errorstr='db-series *error: {0}'.format(err))
+        ret = get_response(retcode=1, errorstr='db-series *error: {0}'.format(err))
     return Response(json.dumps(ret['series'], indent=4), mimetype='application/json')
 
 @app_flask.route('/db/series/all/', methods=['GET'])
@@ -167,7 +170,7 @@ def db_series_all():
             if ser.isInitialized():
                 ret.append(get_series_responce(ser))
     except Exception as err:
-        ret = get_responce(retcode=1, errorstr='db-series-all *error: {0}'.format(err))
+        ret = get_response(retcode=1, errorstr='db-series-all *error: {0}'.format(err))
     return Response(json.dumps(ret, indent=4), mimetype='application/json')
 
 @app_flask.route('/db/series/good/', methods=['GET'])
@@ -177,8 +180,9 @@ def db_series_good():
         for ser in dbWatcher.allSeries():
             if ser.isInitialized() and ser.isGood():
                 ret.append(get_series_responce(ser))
+        ret = get_response(result=ret)
     except Exception as err:
-        ret = get_responce(retcode=1, errorstr='db-series-good *error: {0}'.format(err))
+        ret = get_response(retcode=1, errorstr='db-series-good *error: {0}'.format(err))
     return Response(json.dumps(ret, indent=4), mimetype='application/json')
 
 @app_flask.route('/db/series/downloaded/', methods=['GET'])
@@ -188,8 +192,9 @@ def db_series_downloaded():
         for ser in dbWatcher.allSeries():
             if ser.isInitialized() and ser.isDownloaded():
                 ret.append(get_series_responce(ser))
+        ret = get_response(result=ret)
     except Exception as err:
-        ret = get_responce(retcode=1, errorstr='db-series-downloaded *error: {0}'.format(err))
+        ret = get_response(retcode=1, errorstr='db-series-downloaded *error: {0}'.format(err))
     return Response(json.dumps(ret, indent=4), mimetype='application/json')
 
 @app_flask.route('/db/series/converted/', methods=['GET'])
@@ -199,8 +204,9 @@ def db_series_converted():
         for ser in dbWatcher.allSeries():
             if ser.isInitialized() and ser.isConverted():
                 ret.append(get_series_responce(ser))
+        ret = get_response(result=ret)
     except Exception as err:
-        ret = get_responce(retcode=1, errorstr='db-series-downloaded *error: {0}'.format(err))
+        ret = get_response(retcode=1, errorstr='db-series-downloaded *error: {0}'.format(err))
     return Response(json.dumps(ret, indent=4), mimetype='application/json')
 
 @app_flask.route('/db/series/processed/', methods=['GET'])
@@ -210,7 +216,8 @@ def db_series_postprocessed():
         for ser in dbWatcher.allSeries():
             if ser.isInitialized() and ser.isPostprocessed():
                 ret.append(get_series_responce(ser))
+        ret = get_response(result=ret)
     except Exception as err:
-        ret = get_responce(retcode=1, errorstr='db-series-downloaded *error: {0}'.format(err))
+        ret = get_response(retcode=1, errorstr='db-series-downloaded *error: {0}'.format(err))
     return Response(json.dumps(ret, indent=4), mimetype='application/json')
 
