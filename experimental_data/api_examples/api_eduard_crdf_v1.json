@@ -33,11 +33,14 @@
           "value": -1
         }
       ],
+      "pdf_report" : {
+        "url" : "http://deeplab2.grid.by:7777/data/?path=case-9e67b1de-4c3d-4d12-b527-6edef152d18e/study-d3894a2c-d19a-4445-83ff-eb1fbe239f98/series-1.2.840.113619.2.55.3.2831156813.683.1455860929.985.4-CT-report0.pdf",
+        "description" : "Report 2017:XX:YY"
+      },
       "preview_images": [
         {
           "url": "http://deeplab2.grid.by:7777/data/?path=case-9e67b1de-4c3d-4d12-b527-6edef152d18e/study-d3894a2c-d19a-4445-83ff-eb1fbe239f98/series-1.2.840.113619.2.55.3.2831156813.683.1455860929.985.4-CT-preview0.jpg",
           "ysize": 798,
-          "content-type": "image/png",
           "description": "CT Lesion preview",
           "xsize": 1064
         }
