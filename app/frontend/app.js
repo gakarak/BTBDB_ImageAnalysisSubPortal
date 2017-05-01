@@ -1,6 +1,10 @@
 'use strict';
 
-angular.module('mainApp', ['ngMaterial']);
+angular.module('mainApp', [
+    'ngMaterial',
+    'dataentryInfo',
+    'dbStatus'
+]);
 
 angular.module('mainApp')
 .value('appConfig', {
@@ -8,6 +12,7 @@ angular.module('mainApp')
         version: '0.0.1',
         prjUrl: 'http://tuberculosis.by'
     }
-}).controller('mainCtrl', ['$rootScope', '$scope', function($rootScope, $scope, $location) {
+})
+.controller('mainCtrl', ['$rootScope', '$scope', function($rootScope, $scope, $location) {
     console.log(':: MainApp->Contrller()');
 }]);
