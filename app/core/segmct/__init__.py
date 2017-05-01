@@ -99,7 +99,7 @@ def segmentLesions3D(pathInpNii, dirWithModel, pathOutNii=None, outSize=None, is
 #########################################
 def api_segmentLungAndLesion(dirModelLung, dirModelLesion, series,
                              ptrLogger=None,
-                             shape4Lung = (256, 256, 64), shape4Lesi = (128, 128, 64)):
+                             shape4Lung = (256, 256, 64), shape4Lesi = (128, 128, 64), gpuMemUsage=0.2):
     # (1) msg-helpers
     def msgInfo(msg):
         if ptrLogger is not None:
@@ -129,6 +129,16 @@ def api_segmentLungAndLesion(dirModelLung, dirModelLesion, series,
         msgInfo('Series data is already segmented, skip task ... [{0}]'.format(series))
         return False
     else:
+        # (2.3.0) TF GPU memory usage constraints
+        # FIXME:temporary fix, in future: apped memory usage parameter in application config
+        import tensorflow as tf
+        import keras.backend as K
+        from keras.backend.tensorflow_backend import set_session
+        if K.image_dim_ordering() == 'tf':
+            config = tf.ConfigProto()
+            config.gpu_options.per_process_gpu_memory_fraction = gpuMemUsage
+            set_session(tf.Session(config=config))
+
         # (2.3.1) load and resize
         try:
             dataNii = nib.load(pathNii)

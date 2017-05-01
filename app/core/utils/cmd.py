@@ -96,8 +96,11 @@ class RunnerDBConvert(mproc.AbstractRunner):
         for iser, ser in enumerate(dbWatcher.allSeries()):
             if ser.isDownloaded() and (not ser.isConverted()) and (not ser.isPostprocessed()):
                 convTask = TaskRunnerConvertSeries(series=ser)
-                tret = convTask.run()
-                ptrLogger.info ('[%d] convert is Ok = %s, %s' % (iser, tret, ser))
+                try:
+                    tret = convTask.run()
+                    ptrLogger.info('[%d] convert is Ok = %s, %s' % (iser, tret, ser))
+                except Exception as err:
+                    ptrLogger.error('[%d] Cant convert DICOM->Nifti [%s] for series %s' % (iser, err, ser))
         ptrLogger.info('Conversion is finished. Refresh DB-Info')
         dbWatcher.reload()
         ptrLogger.info(dbWatcher.toString())

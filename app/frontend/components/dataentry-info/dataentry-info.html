@@ -1,0 +1,30 @@
+<div layout="column">
+    <div layout="row"  layout-align="center center">
+        <h2><b>#cases = </b>{{$ctrl.cases.length}}</h2>
+        <md-button class="md-raised" ng-click="$ctrl.updateInfo()">
+            <md-icon md-font-library="material-icons" aria-label="refresh">refresh</md-icon>
+            Refresh
+        </md-button>
+    </div>
+    <div layout-align="center center">
+        <md-list>
+        <md-list-item class="md-3-line" ng-repeat="caseItem in $ctrl.cases">
+            <div class="md-list-item-text">
+                <h3><b>case-id:</b> {{caseItem.case_id}}</h3>
+                <h4><b>age:</b> {{caseItem.age}}</h4>
+                <h4><b>gender:</b> {{caseItem.gender}}</h4>
+                <p><b>Diagnosis:</b> {{caseItem.diag}}</p>
+            </div>
+            <md-chips ng-repeat="seriesItem in caseItem.series">
+                    <md-chip>
+                        <a href="/report/{{seriesItem.case_id}}/{{seriesItem.patient_id}}/{{seriesItem.study_uid}}/{{seriesItem.series_uid}}/">
+                            series-{{$index}}
+                        </a>
+                    </md-chip>
+                </md-chips>
+            <!--<md-button class="md-secondary">Respond</md-button>-->
+            <md-divider ng-if="!$last"></md-divider>
+        </md-list-item>
+    </md-list>
+    </div>
+</div>
