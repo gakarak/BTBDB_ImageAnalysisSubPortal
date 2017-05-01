@@ -1,0 +1,15 @@
+<div layout="column">
+    <div layout="row" layout-align="center center">
+        <md-button class="md-raised" ng-click="$ctrl.updateInfo()">
+            <md-icon md-font-library="material-icons" aria-label="refresh">refresh</md-icon>
+            Refresh
+        </md-button>
+    </div>
+    <h2>
+        <pre>
+            <code>
+{{$ctrl.dbstat | json}}
+            </code>
+        </pre>
+    </h2>
+</div>
