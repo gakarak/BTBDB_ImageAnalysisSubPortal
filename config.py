@@ -1,7 +1,7 @@
 import os
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-DATA_DIR_NAME = 'data'
+DATA_DIR_NAME = 'data-real'
 
 class Config(object):
     DEBUG = True
