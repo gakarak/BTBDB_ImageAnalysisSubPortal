@@ -181,8 +181,9 @@ class SeriesInfo:
 
 #######################################
 class CaseInfo:
-    GOOD_MODALITIES = {'CT': 36}
+    # GOOD_MODALITIES = {'CT': 36}
     # GOOD_MODALITIES = {'CT': 36, 'XR': 1, 'CR': 1}
+    GOOD_MODALITIES = {'CR': 1}
     #
     JSON_SHORT = 'info-short.json'
     JSON_ALL = 'info-all.json'
