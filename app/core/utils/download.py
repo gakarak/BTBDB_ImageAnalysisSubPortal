@@ -145,9 +145,9 @@ class RunnerDBDownload(mproc.AbstractRunner):
                 new_case = dbWatcher.cases[caseId]
                 ptrLogger.info('\t:: case-info [%s] exist in db-cache, skip get-case-info ...' % caseId)
             else:
-                caseInfo = getCaseInfo(caseId)
-                isSaveToDisk = True
                 try:
+                    caseInfo = getCaseInfo(caseId)
+                    isSaveToDisk = True
                     new_case = CaseInfo.newCase(dataDir=dirData,
                                                 dictShort=case,
                                                 dictAll=caseInfo,
