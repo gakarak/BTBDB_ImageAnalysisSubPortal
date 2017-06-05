@@ -1,0 +1,90 @@
+{
+    "comment": "No comments...", 
+    "preview_images": [
+        {
+            "url": "preview0.jpg",
+            "ysize": 798, 
+            "content-type": "image/jpeg", 
+            "description": "CT Lesion preview", 
+            "xsize": 1064
+        }
+    ], 
+    "spacing": {
+        "y": 0.7792969942092896, 
+        "x": 0.7792969942092896, 
+        "z": 2.5
+    }, 
+    "study_uid": "1.3.6.1.4.1.25403.207732457674374.13668.20141127075857.50", 
+    "volume": {
+        "total": [
+            {
+                "units": "voxels", 
+                "value": 3209249
+            }, 
+            {
+                "units": "mm3", 
+                "value": 4872472.863306522
+            }
+        ], 
+        "right": [
+            {
+                "units": "voxels", 
+                "value": 1287011
+            }, 
+            {
+                "units": "mm3", 
+                "value": 1954016.7099146843
+            }
+        ], 
+        "left": [
+            {
+                "units": "voxels", 
+                "value": 1922238
+            }, 
+            {
+                "units": "mm3", 
+                "value": 2918456.153391838
+            }
+        ]
+    }, 
+    "bounding_box": [
+        {
+            "units": "voxels", 
+            "x": 512, 
+            "z": 130, 
+            "y": 512
+        }, 
+        {
+            "units": "voxels", 
+            "x": 399.00006103515625, 
+            "z": 325.0, 
+            "y": 399.00006103515625
+        }
+    ], 
+    "asymmetry": [
+        {
+            "type": "volume", 
+            "value": 0.19793633962338228
+        }, 
+        {
+            "type": "texture", 
+            "value": -1
+        }
+    ], 
+    "series_uid": "1.3.6.1.4.1.25403.207732457674374.13668.20141127075857.51", 
+    "patient_id": "eb9a88fd-5b57-4de7-bac2-4272c700f604", 
+    "lesions": {
+        "right": [
+            0.9809870803775096, 
+            0.958610018696409, 
+            0.9192551346067221
+        ], 
+        "left": [
+            0.0, 
+            4.22286693860408e-05, 
+            0.021744999386427783
+        ]
+    }, 
+    "case_id": "26241dfd-c0cc-4b0f-b469-d2256cbb7374", 
+    "number_of_slices": 130
+}
