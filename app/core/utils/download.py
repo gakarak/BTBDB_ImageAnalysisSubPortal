@@ -17,7 +17,7 @@ import log
 import mproc
 from datetime import datetime
 
-urlTakeList="https://data.tbportals.niaid.nih.gov/api/cases?since=2016-04-01&take=%d&skip=%d"
+urlTakeList="https://data.tbportals.niaid.nih.gov/api/cases?since=2010-04-01&take=%d&skip=%d"
 urlCaseInfo="https://data.tbportals.niaid.nih.gov/api/cases/%s"
 
 #######################################
@@ -145,9 +145,9 @@ class RunnerDBDownload(mproc.AbstractRunner):
                 new_case = dbWatcher.cases[caseId]
                 ptrLogger.info('\t:: case-info [%s] exist in db-cache, skip get-case-info ...' % caseId)
             else:
-                caseInfo = getCaseInfo(caseId)
-                isSaveToDisk = True
                 try:
+                    caseInfo = getCaseInfo(caseId)
+                    isSaveToDisk = True
                     new_case = CaseInfo.newCase(dataDir=dirData,
                                                 dictShort=case,
                                                 dictAll=caseInfo,

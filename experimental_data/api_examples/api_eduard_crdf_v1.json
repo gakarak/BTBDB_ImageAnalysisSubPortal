@@ -13,24 +13,24 @@
       "comment": "No comments...",
       "lesions": {
         "right": [
-          0.43281112736175725,
+          0.43281112736175725, // on UI will be displayed in percent with one digits after comma
           0.9400288192543059,
           0.9961982184626363
         ],
+        "right_comment" : "",
         "left": [
-          0.0,
-          7.647920339261747e-06,
-          0.04284051286807199
-        ]
+          "empty if problems or length 3" 
+        ],
+        "left_comment" : "empty if is Ok, or description of the problem "
       },
       "asymmetry": [
         {
           "type": "volume",
-          "value": 0.08549292823808971
+          "value": 0.08549292823808971  // on UI: all numbers in format: print('{0:0.2f}'.format(float_number)
         },
         {
           "type": "texture",
-          "value": -1
+          "value": -1 // on UI: all numbers in format: print('{0:0.2f}'.format(float_number)
         }
       ],
       "pdf_report" : {
@@ -46,9 +46,10 @@
         }
       ],
       "spacing": {
-        "y": 0.9765620231628418,
-        "x": 0.9765620231628418,
-        "z": 1.25
+        "units": "mm",
+        "y": 0.9765620231628418, // on UI: all numbers in format: print('{0:0.2f}'.format(float_number)
+        "x": 0.9765620231628418, // on UI: all numbers in format: print('{0:0.2f}'.format(float_number)
+        "z": 1.25 // on UI: all numbers in format: print('{0:0.2f}'.format(float_number)
       },
       "study_uid": "1.2.840.113619.2.55.3.2831156813.683.1455860929.979",
       "series_uid": "1.2.840.113619.2.55.3.2831156813.683.1455860929.985.4",
@@ -57,50 +58,50 @@
         "total": [
           {
             "units": "voxels",
-            "value": 5527194
+            "value": 5527194 // int-value
           },
           {
-            "units": "mm3",
-            "value": 6588922.110564709
+            "units": "mm3", // on UI: mm3 -> cm3
+            "value": 6588922.110564709 // on UI: all numbers in format: print('{0:0.2f}'.format(float_number)
           }
         ],
         "right": [
           {
             "units": "voxels",
-            "value": 2527329
+            "value": 2527329 // int-value
           },
           {
-            "units": "mm3",
-            "value": 3012807.9326999187
+            "units": "mm3", // on UI: mm3 -> cm3
+            "value": 3012807.9326999187 // on UI: all numbers in format: print('{0:0.2f}'.format(float_number)
           }
         ],
         "left": [
           {
             "units": "voxels",
-            "value": 2999865
+            "value": 2999865 // int-value
           },
           {
-            "units": "mm3",
-            "value": 3576114.17786479
+            "units": "mm3", // on UI: mm3 -> cm3
+            "value": 3576114.17786479 // on UI: all numbers in format: print('{0:0.2f}'.format(float_number)
           }
         ]
       },
       "bounding_box": [
         {
           "units": "voxels",
-          "x": 512,
-          "z": 299,
-          "y": 512
+          "x": 512, // int-value
+          "z": 299, // int-value
+          "y": 512 // int-value
         },
         {
-          "units": "voxels",
-          "x": 499.999755859375,
-          "z": 373.75,
-          "y": 499.999755859375
+          "units": "mm",
+          "x": 499.999755859375, // on UI: all numbers in format: print('{0:0.2f}'.format(float_number)   *** mm -> cm
+          "z": 373.75,// on UI: all numbers in format: print('{0:0.2f}'.format(float_number)              *** mm -> cm
+          "y": 499.999755859375 // on UI: all numbers in format: print('{0:0.2f}'.format(float_number)    *** mm -> cm
         }
       ],
       "case_id": "9e67b1de-4c3d-4d12-b527-6edef152d18e",
-      "number_of_slices": 299
+      "number_of_slices": 299 // int-value
     }
   }
 }

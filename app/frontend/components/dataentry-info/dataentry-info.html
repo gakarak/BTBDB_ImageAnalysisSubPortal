@@ -17,7 +17,7 @@
             </div>
             <md-chips ng-repeat="seriesItem in caseItem.series">
                     <md-chip>
-                        <a href="/report/{{seriesItem.case_id}}/{{seriesItem.patient_id}}/{{seriesItem.study_uid}}/{{seriesItem.series_uid}}/">
+                        <a target="_blank" href="/report/{{seriesItem.case_id}}/{{seriesItem.patient_id}}/{{seriesItem.study_uid}}/{{seriesItem.series_uid}}/">
                             series-{{$index}}
                         </a>
                     </md-chip>
