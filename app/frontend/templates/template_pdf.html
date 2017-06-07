@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Image analysys report</title>
+</head>
+<body>
+    <table width="100%" cellpadding="4" cellspacing="1" style="border: 1px solid #000000;">
+        <thead>
+        <center><h1><b>Common case description</b></h1></center>
+        </thead>
+        <tbody>
+        <tr>
+            <td> case_id </td>
+            <td> {{ dataJson.case_id }} </td>
+        </tr>
+        <tr>
+            <td> patient_id </td>
+            <td> {{ dataJson.patient_id }}</td>
+        </tr>
+        <tr>
+            <td> study_uid </td>
+            <td> {{ dataJson.study_uid }}</td>
+        </tr>
+        <tr>
+            <td> series_uid </td>
+            <td> {{ dataJson.series_uid }}</td>
+        </tr>
+        <tr>
+            <td> number of slices </td>
+            <td> {{ dataJson.number_of_slices }}</td>
+        </tr>
+        <tr>
+            <td> number of slices </td>
+            <td> {{ dataJson.number_of_slices }}</td>
+        </tr>
+        <tr>
+            <td> bounding box </td>
+            <td>
+                {% for bbox in dataJson.bounding_box %}
+                    {{ '%d' % bbox.x }}x{{ '%d' % bbox.y }}x{{ '%d' % bbox.z }} ({{ bbox.units }}),
+                {% endfor %}
+            </td>
+
+        </tr>
+        <tr>
+            <td> spacing </td>
+            <td> {{ '%0.3f' % dataJson.spacing.x }}/{{ '%0.3f' % dataJson.spacing.y }}/{{ '%0.3f' % dataJson.spacing.z }} mm</td>
+        </tr>
+        </tbody>
+    </table>
+    <hr style="margin: 3em 0;"/>
+    <table width="100%" cellpadding="4" cellspacing="1" style="border: 1px solid #000000;">
+        <thead>
+            <center><h1><b>Volume, mm3</b></h1></center>
+        </thead>
+        <tbody>
+            <tr>
+                <td><b>Total</b></td>
+                <td><b>Left </b></td>
+                <td><b>Right</b></td>
+            </tr>
+            <tr>
+                <td>
+                    {% if dataJson.volume.total is defined %}
+                        {{ '%0.1f' % dataJson.volume.total[0].value }}/{{ '%0.1f' % dataJson.volume.total[1].value }} ({{ dataJson.volume.total[0].units }}/{{ dataJson.volume.total[1].units }})
+                    {% else %}
+                        <b>Error...</b>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if dataJson.volume.left is defined %}
+                        {{ '%0.1f' % dataJson.volume.left[0].value }}/{{ '%0.1f' % dataJson.volume.left[1].value }} ({{ dataJson.volume.left[0].units }}/{{ dataJson.volume.left[1].units }})
+                    {% else %}
+                        <b>Error...</b>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if dataJson.volume.right is defined %}
+                        {{ '%0.1f' % dataJson.volume.right[0].value }}/{{ '%0.1f' % dataJson.volume.right[1].value }} ({{ dataJson.volume.right[0].units }}/{{ dataJson.volume.right[1].units }})
+                    {% else %}
+                        <b>Error...</b>
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <hr style="margin: 3em 0;"/>
+    <table width="100%" cellpadding="4" cellspacing="1" style="border: 1px solid #000000;">
+        <thead>
+            <center><h1><b>Assymetry</b></h1></center>
+        </thead>
+        <tbody>
+            {% for ass in dataJson.asymmetry %}
+            <tr>
+                <td>{{ ass.type }}</td>
+                <td>{{ '%0.3f' % ass.value }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <hr style="margin: 3em 0;"/>
+    <table width="100%" cellpadding="4" cellspacing="1" style="border: 1px solid #000000;">
+        <thead>
+            <center><h1><b>Lesions</b></h1></center>
+        </thead>
+        <tbody>
+            <tr>
+                <td></td>
+                <td><b>Left</b></td>
+                <td><b>Right</b></td>
+            </tr>
+            <tr>
+                <td><b>Upper Sextant (%)</b></td>
+                {% if dataJson.lesions.left is defined %}
+                    {% set tval = dataJson.lesions.left[0] * 100.0 %}
+                    <td>{{ '%0.1f' % tval }}</td>
+                {% else %}
+                    <td>...</td>
+                {% endif %}
+                {% if dataJson.lesions.right is defined %}
+                    {% set tval = dataJson.lesions.right[0] * 100.0 %}
+                    <td>{{ '%0.1f' % tval }}</td>
+                {% else %}
+                    <td>...</td>
+                {% endif %}
+            </tr>
+            <tr>
+                <td><b>Middle Sextant (%)</b></td>
+                {% if dataJson.lesions.left is defined %}
+                    {% set tval = dataJson.lesions.left[1] * 100.0 %}
+                    <td>{{ '%0.1f' % tval }}</td>
+                {% else %}
+                    <td>...</td>
+                {% endif %}
+                {% if dataJson.lesions.right is defined %}
+                    {% set tval = dataJson.lesions.right[1] * 100.0 %}
+                    <td>{{ '%0.1f' % tval }}</td>
+                {% else %}
+                    <td>...</td>
+                {% endif %}
+            </tr>
+            <tr>
+                <td><b>Lower Sextant (%)</b></td>
+                {% if dataJson.lesions.left is defined %}
+                    {% set tval = dataJson.lesions.left[2] * 100.0 %}
+                    <td>{{ '%0.1f' % tval }}</td>
+                {% else %}
+                    <td>...</td>
+                {% endif %}
+                {% if dataJson.lesions.right is defined %}
+                    {% set tval = dataJson.lesions.right[2] * 100.0 %}
+                    <td>{{ '%0.1f' % tval }}</td>
+                {% else %}
+                    <td>...</td>
+                {% endif %}
+            </tr>
+        </tbody>
+    </table>
+    <br>
+    <br>
+    <table width="100%" cellpadding="0" cellspacing="0">
+        <thead>
+            <h1><center><b>Lesions preview</b></center></h1>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <img src="{{ dataJson.preview_images[0].url }}" />
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
