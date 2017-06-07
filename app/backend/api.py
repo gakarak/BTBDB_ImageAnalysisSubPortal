@@ -1,12 +1,15 @@
 from flask import render_template
 
-from flask import request, Response
+from flask import request, Response, make_response
 from flask import send_file
 
 import os
 from app.backend import app_flask
 from app.backend import utils as utils
 from app.core.dataentry_v1 import DBWatcher
+
+from xhtml2pdf import pisa
+from cStringIO import StringIO
 
 import json
 
@@ -46,7 +49,7 @@ def index():
     return render_template("index.html", title='Home', user=user)
 
 ##########################################
-def report_helper(case_id, patient_id, study_uid, series_uid, root_url):
+def report_helper(case_id, patient_id, study_uid, series_uid, root_url, url_basic=""):
     ptr_series = None
     is_ok = False
     ret = None
@@ -71,6 +74,11 @@ def report_helper(case_id, patient_id, study_uid, series_uid, root_url):
         if is_ok:
             try:
                 ret = ptr_series.getReportJson(root_url = root_url)
+                #FIXME: temporary solution
+                ret['pdf_report'] = {
+                    'url': '{4}report-pdf/{0}/{1}/{2}/{3}'.format(case_id, patient_id, study_uid, series_uid, url_basic),
+                    'description': 'No comments...'
+                }
                 return Response(json.dumps(get_response(result=ret), indent=4), mimetype='application/json')
             except Exception as err:
                 str_error = 'db-report error: {0}'.format(err)
@@ -131,6 +139,25 @@ def data_load():
         #     return f.read()
     return Response(json.dumps({}), mimetype='application/json')
 
+@app_flask.route('/report-pdf/<string:case_id>/<string:patient_id>/<string:study_uid>/<string:series_uid>/', methods=['GET'])
+def data_pdf_load(case_id, patient_id, study_uid, series_uid):
+    try:
+        jsonResponse = report_helper(case_id=case_id, patient_id=None, study_uid=study_uid, series_uid=series_uid, root_url="")
+        retJson = json.loads(jsonResponse.get_data())
+        retJson = retJson['responce']
+        tmpImgPath = retJson['preview_images'][0]['url']
+        retJson['preview_images'][0]['url'] = '{0}/{1}'.format(dir_data(), tmpImgPath)
+        strHTML = render_template('templates/template_pdf.html', dataJson = retJson)
+        pdf = StringIO()
+        pisa.CreatePDF(StringIO(strHTML), pdf)
+        retResponse = make_response(pdf.getvalue())
+        retResponse.headers['Content-Sispositions'] = "attachment; filename='crdf-report.pdf'"
+        retResponse.mimetype = 'application/pdf'
+        return retResponse
+    except Exception as err:
+        str_error = 'db-report error: {0}'.format(err)
+        return Response(json.dumps(get_response(1, str_error), indent=4), mimetype='application/json')
+
 @app_flask.route('/report/', methods=['POST'])
 def report_json():
     try:
@@ -147,7 +174,7 @@ def report_json():
 @app_flask.route('/report/<string:case_id>/<string:patient_id>/<string:study_uid>/<string:series_uid>/', methods=['GET'])
 def report_path(case_id, patient_id, study_uid, series_uid):
     root_URL = request.url_root
-    return report_helper(case_id, patient_id, study_uid, series_uid, '{0}data/?path='.format(root_URL))
+    return report_helper(case_id, patient_id, study_uid, series_uid, '{0}data/?path='.format(root_URL), url_basic=root_URL)
 
 ##########################################
 # db-info REST API
