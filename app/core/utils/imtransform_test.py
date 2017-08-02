@@ -39,6 +39,12 @@ class TestImtransform(unittest.TestCase):
         tvol = np.zeros((100, 100, 100))
         txyz = (50, 50, 50)
         tvol[txyz[0] - 20:txyz[0] + 20, txyz[1] - 20:txyz[1] + 20, txyz[2] - 20:txyz[2] + 20] = 1
+        pshear = np.array([
+            [1.,  0.1, 0.0, 0.],
+            [0.0,  1., 0.0, 0.],
+            [0.0, 0.0, 1.,  0.],
+            [0.,   0., 0.,  1.]
+        ])
         #
         img3dA = affine_transformation_3d(tvol,
                                           pshiftXYZ=(0., 0., 0.),
@@ -46,6 +52,7 @@ class TestImtransform(unittest.TestCase):
                                           protAngleXYZ=(45. / 2., 0., 0.),
                                           pscaleXYZ=(1., 1., 1.),
                                           pcropSizeXYZ=(50, 50, 50),
+                                          pshear=pshear,
                                           isRandomizeRot=False,
                                           isDebug=True)
     # def test_something(self):
@@ -54,7 +61,8 @@ class TestImtransform(unittest.TestCase):
 ####################################
 if __name__ == '__main__':
     unittest.main()
-    # test_image_transform_3d()
-    # test_image_transform_2d()
+    # testTransform = TestImtransform()
+    # testTransform.test_image_transform_3d()
+    # testTransform.test_image_transform_2d()
 
 
