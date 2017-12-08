@@ -9,10 +9,10 @@ import nibabel as nib
 import numpy as np
 
 if __name__ == '__main__':
-    wdirIMG = '../../experimental_data/data_analyze/original-nii'
-    wdirMSK = '../../experimental_data/data_analyze/resegm2'
-    # wdirIMG = '/mnt/data1T/datasets/CRDF/CT_with_segm_mask_v3/00data_in_analyze/original-nii'
-    # wdirMSK = '/mnt/data1T/datasets/CRDF/CT_with_segm_mask_v3/00data_in_analyze/resegm2'
+    # wdirIMG = '../../experimental_data/data_analyze/original-nii'
+    # wdirMSK = '../../experimental_data/data_analyze/resegm2'
+    wdirIMG = '/mnt/data1T/datasets/CRDF/CT_with_segm_mask_v3/00data_in_analyze/original-nii'
+    wdirMSK = '/mnt/data1T/datasets/CRDF/CT_with_segm_mask_v3/00data_in_analyze/resegm2'
     wdirOut = '%s-masked' % wdirIMG
     if not os.path.isdir(wdirOut):
         os.mkdir(wdirOut)

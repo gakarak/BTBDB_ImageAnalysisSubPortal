@@ -22,7 +22,7 @@ if __name__ == '__main__':
         print ('[%d/%d] : %s --> %s' % (ii, numAnalyze, os.path.basename(pp), os.path.basename(fout)))
         tdataInp  = nib.load(pp)
         newData   = tdataInp.get_data() #+ 0*tdataInp.header['scl_inter']
-        taffine = tdataInp.affine
+        taffine   = tdataInp.affine
         newHeader = nib.Nifti1Header.from_header(tdataInp.header)
         newHeader['scl_inter'] = float('nan')
         newHeader.set_xyzt_units(xyz='mm')
