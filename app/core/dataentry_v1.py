@@ -7,7 +7,7 @@ import glob
 import json
 import numpy as np
 import nibabel as nib
-import utils
+from . import utils
 
 #######################################
 class SeriesInfo:
@@ -181,9 +181,9 @@ class SeriesInfo:
 
 #######################################
 class CaseInfo:
-    # GOOD_MODALITIES = {'CT': 36}
+    GOOD_MODALITIES = {'CT': 36}
     # GOOD_MODALITIES = {'CT': 36, 'XR': 1, 'CR': 1}
-    GOOD_MODALITIES = {'CR': 1}
+    # GOOD_MODALITIES = {'CR': 1}
     #
     JSON_SHORT = 'info-short.json'
     JSON_ALL = 'info-all.json'
@@ -253,7 +253,8 @@ class CaseInfo:
                 tdict = dict()
                 for idx, studyJson in enumerate(self.dictAll['imagingStudies']):
                     dictSeries = SeriesInfo.getAllSeriesForStudy(self, studyJson, isDropBad=isDropBad)
-                    tdict = dict(tdict.items() + dictSeries.items())
+                    # tdict = dict(tdict.items() + dictSeries.items())
+                    tdict = {**tdict, **dictSeries} #FIXME: check this solution for python 3.5+
                     # print ('Case [%s] : #Series = %d' % (self.caseId, len(self.series)))
                 self.series = tdict
     def loadInfo(self, pathCase, isDropBad = False):

@@ -102,7 +102,8 @@ class CaseInfo:
                         tdict = dict()
                         for idx, studyJson in enumerate(self.jsonAll['imagingStudies']):
                             dictSeries = SeriesInfo.getAllSeriesForStudy(pathCase, studyJson, isDropBad=isDropBad)
-                            tdict = dict(tdict.items() + dictSeries.items())
+                            # tdict = dict(tdict.items() + dictSeries.items())
+                            tdict = {**tdict, **dictSeries}
                             # print ('Case [%s] : #Series = %d' % (self.caseId, len(self.series)))
                         if len(tdict)>0:
                             self.isEmpty = False

@@ -6,8 +6,8 @@ import os
 import numpy as np
 import nibabel as nib
 
-from fcnn_lung2d import BatcherCTLung2D
-from fcnn_lesion3d import BatcherCTLesion3D
+from app.core.segmct.fcnn_lung2d import BatcherCTLung2D
+from app.core.segmct.fcnn_lesion3d import BatcherCTLesion3D
 
 import json
 import skimage.io as skio
@@ -16,7 +16,7 @@ from app.core.preprocessing import resizeNii, resize3D
 
 #########################################
 def segmentLungs25D(pathInpNii, dirWithModel, pathOutNii=None, outSize=None, batchSize=8, isDebug=False, threshold=None):
-    if isinstance(pathInpNii,str) or isinstance(pathInpNii,unicode):
+    if isinstance(pathInpNii,str):# or isinstance(pathInpNii,unicode):
         isInpFromFile = True
         if not os.path.isfile(pathInpNii):
             raise Exception('Cant find input file [%s]' % pathInpNii)
@@ -56,7 +56,7 @@ def segmentLungs25D(pathInpNii, dirWithModel, pathOutNii=None, outSize=None, bat
 
 #########################################
 def segmentLesions3D(pathInpNii, dirWithModel, pathOutNii=None, outSize=None, isDebug=False, threshold=None):
-    if isinstance(pathInpNii, str) or isinstance(pathInpNii, unicode):
+    if isinstance(pathInpNii, str):# or isinstance(pathInpNii, unicode):
         isInpFromFile = True
         if not os.path.isfile(pathInpNii):
             raise Exception('Cant find input file [%s]' % pathInpNii)
@@ -231,22 +231,22 @@ def api_generateAllReports(series,
         msgErr('Cant get Lung information : [{0}], for {1}'.format(err, series))
         return False
     # (4) generate preview & save preview image
-    try:
-        dataImg = preproc.normalizeCTImage(nib.load(pathNii).get_data())
-        dataMsk = niiLung.get_data()
-        dataLes = niiLesion.get_data()
-        imgPreview = preproc.makePreview4Lesion(dataImg, dataMsk, dataLes)
-        imgPreviewJson = {
-            "description": "CT Lesion preview",
-            "content-type": "image/jpeg",
-            "xsize": imgPreview.shape[1],
-            "ysize": imgPreview.shape[0],
-            "url": os.path.basename(pathPreview)
-        }
-        skio.imsave(pathPreview, imgPreview)
-    except Exception as err:
-        msgErr('Cant generate preview image : [{0}], for {1}'.format(err, series))
-        return False
+    # try:
+    dataImg = preproc.normalizeCTImage(nib.load(pathNii).get_data())
+    dataMsk = niiLung.get_data()
+    dataLes = niiLesion.get_data()
+    imgPreview = preproc.makePreview4Lesion(dataImg, dataMsk, dataLes)
+    imgPreviewJson = {
+        "description": "CT Lesion preview",
+        "content-type": "image/jpeg",
+        "xsize": imgPreview.shape[1],
+        "ysize": imgPreview.shape[0],
+        "url": os.path.basename(pathPreview)
+    }
+    skio.imsave(pathPreview, imgPreview)
+    # except Exception as err:
+    #     msgErr('Cant generate preview image : [{0}], for {1}'.format(err, series))
+    #     return False
     # (5) generate & save JSON report
     try:
         jsonReport = preproc.getJsonReport(series=series,

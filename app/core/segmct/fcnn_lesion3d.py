@@ -215,8 +215,8 @@ class BatcherCTLesion3D:
     def precalculateAndLoadMean(self, isRecalculateMean=False):
         if os.path.isfile(self.pathMeanData) and (not isRecalculateMean):
             print (':: found mean-value file, try to load from it [%s] ...' % self.pathMeanData)
-            with open(self.pathMeanData, 'r') as f:
-                self.meanData = pickle.load(f)
+            with open(self.pathMeanData, 'rb') as f:
+                self.meanData = pickle.load(f, encoding='latin1')
             tmpMeanKeys = ('meanImg', 'meanCh', 'meanImgCh')
             for ii in tmpMeanKeys:
                 if ii not in self.meanData.keys():
@@ -350,7 +350,7 @@ class BatcherCTLesion3D:
         if len(lstData)>0:
             tmpListOfImg = []
             # (1) load into memory
-            if isinstance(lstData[0],str) or isinstance(lstData[0],unicode):
+            if isinstance(lstData[0],str):# or isinstance(lstData[0],unicode):
                 for ii in lstData:
                     tmpListOfImg.append(nib.load(ii).get_data())
             elif isinstance(lstData[0], nib.nifti1.Nifti1Image):

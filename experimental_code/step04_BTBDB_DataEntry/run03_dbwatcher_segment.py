@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from app.core.preprocessing import resizeNii
 from app.core.segmct import segmentLesions3D, segmentLungs25D
 from app.core.dataentry_v1 import DBWatcher
-from app.core.segmct import api_segmentLungAndLesion
+from app.core.segmct import api_segmentLungAndLesion, api_generateAllReports
 # import common as comm
 
 if __name__ == '__main__':
@@ -18,16 +18,19 @@ if __name__ == '__main__':
     # shape4Lung = (256, 256, 64)
     # shape4Lesi = (128, 128, 64)
     dataDir = '../../experimental_data/dataentry_test0'
-    dbWatcher = DBWatcher(pdir=dataDir)
+    dbWatcher = DBWatcher()#pdir=dataDir)
     dbWatcher.load(dataDir, isDropEmpty=True, isDropBadSeries=True)
-    # dbWatcher.printStat()
+    dbWatcher.printStat()
     print (dbWatcher.toString())
     for ii, ser in enumerate(dbWatcher.allSeries()):
         if ser.isConverted():
-            api_segmentLungAndLesion(dirModelLung=pathModelLung,
-                                     dirModelLesion=pathModelLesion,
-                                     series=ser,
-                                     ptrLogger=None)
+            # api_segmentLungAndLesion(dirModelLung=pathModelLung,
+            #                          dirModelLesion=pathModelLesion,
+            #                          series=ser,
+            #                          ptrLogger=None)
+            api_generateAllReports(dirModelLung=pathModelLung,
+                                   dirModelLesion=pathModelLesion,
+                                   series=ser)
             pathSegmLesion = ser.pathPostprocLesions(isRelative=False)
             print ('[{0}] : isOk={2}, {1}'.format(ii, ser, os.path.isfile(pathSegmLesion)))
         # dataNii = nib.load(ser.pathNii)

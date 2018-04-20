@@ -12,9 +12,9 @@ import errno
 
 from app.core.dataentry_v1 import DBWatcher, CaseInfo, SeriesInfo
 from . import mkdir_p
-import log
+from . import log
 
-import mproc
+from . import mproc
 from datetime import datetime
 
 urlTakeList="https://data.tbportals.niaid.nih.gov/api/cases?since=2010-04-01&take=%d&skip=%d"
@@ -24,20 +24,26 @@ urlCaseInfo="https://data.tbportals.niaid.nih.gov/api/cases/%s"
 try:
     from cStringIO import StringIO
 except:
-    from StringIO import StringIO
+    import io as StringIO
+    # from StringIO import StringIO
 
 #######################################
 def processRequest(urlRequest):
     tret = requests.get(urlRequest)
     if tret.status_code == 200:
-        return json.loads(tret._content)
+        # return json.loads(tret._content)
+        return tret.json()
     else:
         strErr = 'Error: %s' % tret._content
         print('*** ERROR: %s' % urlRequest)
-        pprint(json.loads(tret._content))
+        # pprint(json.loads(tret._content))
+        pprint(tret.json())
         raise Exception(strErr)
 
 def getListOfCases(ptake=1, pskip=0):
+    if ptake > 1000:
+        print('!!!Warning!!! #requested items is reduced by {}'.format(ptake))
+        ptake = 1000
     urlRequest = urlTakeList % (ptake, pskip)
     return processRequest(urlRequest)
 

@@ -2,9 +2,13 @@
 # -*- coding: utf-8 -*-
 __author__ = 'ar'
 
+import os
 import matplotlib.pyplot as plt
 import nibabel as nib
-import common as comm
+try:
+    import common as comm
+except:
+    from . import common as comm
 import skimage.io as skio
 import skimage.transform as sktf
 

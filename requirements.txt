@@ -2,7 +2,6 @@ Flask
 Jinja2
 pandas
 scikit-image
-theano
 tensorflow
 keras
 scikit-learn

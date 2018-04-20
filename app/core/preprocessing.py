@@ -27,7 +27,7 @@ def resize3D(timg, newShape = (256, 256, 64), order=3):
 
 ##################################
 def resizeNii(pathNii, newSize=(33, 33, 33), parOrder=4, parMode='edge', parPreserveRange=True):
-    if isinstance(pathNii,str) or isinstance(pathNii,unicode):
+    if isinstance(pathNii,str):# or isinstance(pathNii,unicode):
         tnii = nib.load(pathNii)
     else:
         tnii = pathNii
@@ -90,7 +90,7 @@ def morph3DIter(timg, pElem, numIter, isErosion=True):
     return ret
 
 def makeLungedMaskNii(pimgNii, parStrElemSize=2, parNumIterMax=9, isDebug=False):
-    if isinstance(pimgNii, str) or isinstance(pimgNii, unicode):
+    if isinstance(pimgNii, str):# or isinstance(pimgNii, unicode):
         pimgNii = nib.load(pimgNii)
     timg = niiImagePreTransform(pimgNii.get_data())
     retMsk, retIsOk = makeLungedMask(timg,
@@ -357,9 +357,9 @@ def getMinMaxLungZ(pmsk):
 
 def prepareLesionDistribInfo(niiLung, niiLesion, numZ = 3, threshLesion=0.5):
     # (1) load nii if input is a 'path'
-    if isinstance(niiLung, str) or isinstance(niiLung, unicode):
+    if isinstance(niiLung, str):# or isinstance(niiLung, unicode):
         niiLung = nib.load(niiLung)
-    if isinstance(niiLesion, str) or isinstance(niiLesion, unicode):
+    if isinstance(niiLesion, str):# or isinstance(niiLesion, unicode):
         niiLesion = nib.load(niiLesion)
     # (2) split lungs
     retMskLungs, retIsOk = makeLungedMaskNii(niiLung)
@@ -419,9 +419,9 @@ def makePreview4Lesion(dataImg, dataMsk, dataLes, sizPrv=256, nx=4, ny=3, pad=5,
         tmpH = []
         for xx in range(nx):
             if (yy==0) and (xx==0):
-                timg = np.rot90(dataImgR[:, sizPrv / 2, :])
-                tmsk = np.rot90(dataMskR[:, sizPrv / 2, :] > 0.1)
-                tles0 = np.rot90(dataLesR[:, sizPrv / 2, :])
+                timg = np.rot90(dataImgR[:, sizPrv // 2, :])
+                tmsk = np.rot90(dataMskR[:, sizPrv // 2, :] > 0.1)
+                tles0 = np.rot90(dataLesR[:, sizPrv // 2, :])
             else:
                 zidx = arrZ[cnt]
                 timg = np.rot90(dataImgR[:, :, zidx])

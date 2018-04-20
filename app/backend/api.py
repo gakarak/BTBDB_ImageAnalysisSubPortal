@@ -9,7 +9,10 @@ from app.backend import utils as utils
 from app.core.dataentry_v1 import DBWatcher
 
 from xhtml2pdf import pisa
-from cStringIO import StringIO
+try:
+    from cStringIO import StringIO
+except:
+    import io as StringIO
 
 import json
 
