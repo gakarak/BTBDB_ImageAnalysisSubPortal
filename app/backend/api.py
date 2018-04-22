@@ -85,6 +85,7 @@ def report_helper(case_id, patient_id, study_uid, series_uid, root_url, url_basi
                 return Response(json.dumps(get_response(result=ret), indent=4), mimetype='application/json')
             except Exception as err:
                 str_error = 'db-report error: {0}'.format(err)
+                print(str_error)
     else:
         str_error = 'Cant find requested series in DB: case_id={0}, study_uid={1}, series_uid={2}' \
             .format(case_id, study_uid, series_uid)

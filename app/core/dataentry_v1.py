@@ -147,7 +147,7 @@ class SeriesInfo:
         with open(pathReport, 'r') as f:
             jsonData = json.loads(f.read())
             dir_relative = os.path.dirname(self.getDir(isRelative=True))
-            if jsonData.has_key('preview_images'):
+            if 'preview_images' in jsonData:
                 for tmp in jsonData['preview_images']:
                     if root_url is None:
                         tmp['url'] = '/{0}/{1}'.format(dir_relative, os.path.basename(tmp['url']))
