@@ -256,6 +256,7 @@ def api_generateAllReports(series,
     # (0) prepare path-variables
     pathNii = series.pathConvertedNifti(isRelative=False)
     pathSegmLungs = series.pathPostprocLungs(isRelative=False)
+    pathSegmLungsDiv2 = series.pathPostprocLungsDiv2(isRelative=False)
     # pathSegmLesions1 = series.pathPostprocLesions(isRelative=False)
     pathSegmLesions1 = series.pathPostprocLesions2(isRelative=False)
     pathPreview = series.pathPostprocPreview(isRelative=False)
@@ -271,31 +272,37 @@ def api_generateAllReports(series,
     if (not os.path.isfile(pathSegmLungs)) or (not os.path.isfile(pathSegmLesions1)):
         msgErr('Cant segment Lung/Lesion, skip... [{0}]'.format(series))
         return False
-    # (2) calc lesion score
+    # (1.1) loading lungs-masks/lesions-masks
     try:
         niiLung = nib.load(pathSegmLungs)
         niiLesion = nib.load(pathSegmLesions1)
     except Exception as err:
         msgErr('Cant load Lung/Lesion Nifti data: [{0}], for {1}'.format(err, pathSegmLesions1))
         return False
+    # (2) prepare divided lungs
+    if not os.path.isfile(pathSegmLungsDiv2):
+        niiLungDiv, _ = preproc.makeLungedMaskNii(niiLung)
+        nib.save(niiLungDiv, pathSegmLungsDiv2)
+    else:
+        niiLungDiv = nib.load(pathSegmLungsDiv2)
+    # (3) calc lesion score
     try:
-        retLesionScore = preproc.prepareLesionDistribInfo(niiLung, niiLesion)
+        retLesionScoreBin, retLesionScoreById, retLesionScoreByName = preproc.prepareLesionDistribInfoV2(niiLung, niiLesion, niiLungDIV2=niiLungDiv)
     except Exception as err:
         msgErr('Cant evaluate Lesion-score: [{0}], for {1}'.format(err, pathSegmLesions1))
         return False
-    # (3) prepare short report about lungs
+    # (4) prepare short report about lungs
     try:
-        niiLungDiv, _ = preproc.makeLungedMaskNii(niiLung)
         retLungInfo = preproc.prepareLungSizeInfoNii(niiLungDiv)
     except Exception as err:
         msgErr('Cant get Lung information : [{0}], for {1}'.format(err, series))
         return False
-    # (4) generate preview & save preview image
+    # (5) generate preview & save preview image
     # try:
     dataImg = preproc.normalizeCTImage(nib.load(pathNii).get_data())
     dataMsk = niiLung.get_data()
     dataLes = niiLesion.get_data()
-    imgPreview = preproc.makePreview4Lesion(dataImg, dataMsk, dataLes)
+    imgPreview = preproc.makePreview4LesionV2(dataImg, dataMsk, dataLes)
     imgPreviewJson = {
         "description": "CT Lesion preview",
         "content-type": "image/jpeg",
@@ -310,9 +317,11 @@ def api_generateAllReports(series,
     # (5) generate & save JSON report
     try:
         jsonReport = preproc.getJsonReport(series=series,
-                                           reportLesionScore=retLesionScore,
+                                           reportLesionScore=retLesionScoreBin,
                                            reportLungs=retLungInfo,
-                                           lstImgJson=[imgPreviewJson])
+                                           lstImgJson=[imgPreviewJson],
+                                           reportLesionScoreById = retLesionScoreById,
+                                           reportLesionScoreByName=retLesionScoreByName)
         with open(pathReport, 'w') as f:
             f.write(json.dumps(jsonReport, indent=4))
     except Exception as err:

@@ -9,6 +9,19 @@ import skimage.transform as sktf
 from scipy.ndimage import measurements as scMeasurements
 from scipy.ndimage import interpolation as scInterpolation
 from scipy.ndimage import morphology as scMorphology
+from app.core.segmct.fcnn_lesion3dv2 import get_overlay_msk, lesion_id2name, lesion_name2id, lesion_id2rgb
+import skimage as sk
+import skimage.filters
+import skimage.morphology
+import matplotlib.pyplot as plt
+
+#############################################
+def _get_msk_bnd2(pmsk, dilat_siz=2):
+    ret_msk_bnd = skimage.filters.laplace(pmsk)>0
+    if dilat_siz is not None:
+        tsqr = sk.morphology.square(dilat_siz)
+        ret_msk_bnd = sk.morphology.binary_dilation(ret_msk_bnd, tsqr)
+    return ret_msk_bnd
 
 #############################################
 # pre/postload methods FIXME: remove in feature?
@@ -22,7 +35,7 @@ def niiImagePostTransform(timg):
 # Resize 3D images
 def resize3D(timg, newShape = (256, 256, 64), order=3):
     zoomScales = np.array(newShape, np.float) / np.array(timg.shape, np.float)
-    ret = scInterpolation.zoom(timg, zoomScales, order=3)
+    ret = scInterpolation.zoom(timg, zoomScales, order=order)
     return ret
 
 ##################################
@@ -314,20 +327,30 @@ def prepareLungSizeInfo(mskLungs, niiHeader, isInStrings=False):
     }
     return retInfoLungSizes
 
-def getJsonReport(series, reportLesionScore, reportLungs, lstImgJson=[]):
+def getJsonReport(series, reportLesionScore, reportLungs, lstImgJson=[], reportLesionScoreById = None, reportLesionScoreByName = None):
     case_id = series.ptrCase.caseId()
     patient_id = series.ptrCase.patientId()
     study_uid = series.studyUID()
     series_uid = series.uid()
-    retLesions = {
-        'left': None,
-        'right': None
-    }
-    for k,v in reportLesionScore.items():
-        if k == 1:
-            retLesions['left'] = v
-        if k == 2:
-            retLesions['right'] = v
+    retLesions = {}
+    # retLesions = {
+    #     'left': None,
+    #     'right': None
+    # }
+    k2n = {1: 'left', 2: 'right'}
+    for k, v in reportLesionScore.items():
+        k_name = k2n[k]
+        retLesions[k_name] = v
+        if reportLesionScoreById is not None:
+            retLesions[k_name + '_by_id'] = reportLesionScoreById[k]
+        if reportLesionScoreByName is not None:
+            retLesions[k_name + '_by_name'] = reportLesionScoreByName[k]
+        # if k == 1:
+        #     retLesions['left'] = v
+        #
+        #     retLesions['left_by_id'] =
+        # if k == 2:
+        #     retLesions['right'] = v
     ret = {
         'case_id' : case_id,
         'patient_id' : patient_id,
@@ -354,6 +377,71 @@ def getMinMaxLungZ(pmsk):
         return (zmin, zmax)
     else:
         return (-1.,-1.)
+
+def prepareLesionDistribInfoV2(niiLung, niiLesion, niiLungDIV2 = None, numZ = 3, threshLesion=0.5):
+    # (1) load nii if input is a 'path'
+    if isinstance(niiLung, str):# or isinstance(niiLung, unicode):
+        niiLung = nib.load(niiLung)
+    if isinstance(niiLesion, str):# or isinstance(niiLesion, unicode):
+        niiLesion = nib.load(niiLesion)
+    # (2) split lungs
+    if niiLungDIV2 is not None:
+        retMskLungDiv2 = niiLungDIV2
+        retIsOk = True
+    else:
+        retMskLungDiv2, retIsOk = makeLungedMaskNii(niiLung)
+    imgLungsDiv = niiImagePreTransform(retMskLungDiv2.get_data())
+    imgMskLesion = niiImagePreTransform(niiLesion.get_data())
+    # (3) increase number of slice for convenience
+    numZ = numZ + 1
+    # (4) calc percent of lesion volume in lung volume
+    arrLbl = np.sort(np.unique(imgLungsDiv))
+    # threshLesion=0.5
+    # numZ = 4
+    lst_lesion_id = sorted(lesion_id2name.keys())
+    ret4Lung = {}
+    ret4LesionsTypesByID = {}
+    ret4LesionsTypesByNames = {}
+    for ilbl in [1, 2]:
+        if ilbl in arrLbl:
+            lstLesionP = []
+            mskLung = (imgLungsDiv == ilbl)
+            zmin, zmax = getMinMaxLungZ(mskLung)
+            arrz = np.linspace(zmin, zmax, numZ)
+            mskLesion = imgMskLesion.copy()
+            mskLesion[~mskLung] = 0
+
+            mskLesionBin = (mskLesion>threshLesion)
+            lst_les_by_id = []
+            lst_les_by_names = []
+            for zzi in range(numZ-1):
+                z1 = int(arrz[zzi + 0])
+                z2 = int(arrz[zzi + 1])
+                volMsk = float(np.sum(mskLung[:, :, z1:z2]))
+                volLesion = float(np.sum(mskLesionBin[:, :, z1:z2]))
+                dct_les_by_id = {}
+                dct_les_by_names = {}
+                tmp_lesion_clip = mskLesion[:, :, z1:z2]
+                for kk, vv in lesion_id2name.items():
+                    if kk == 0: # skip background label
+                        continue
+                    tvol = float(np.sum(tmp_lesion_clip == kk))
+                    tvol_rel = tvol / volMsk
+                    dct_les_by_id[kk] = tvol_rel
+                    dct_les_by_names[vv] = tvol_rel
+                lst_les_by_id.append(dct_les_by_id)
+                lst_les_by_names.append(dct_les_by_names)
+                if volMsk<1:
+                    volMsk = 1.
+                lstLesionP.append(volLesion/volMsk)
+            ret4Lung[ilbl] = lstLesionP
+            ret4LesionsTypesByID[ilbl] = lst_les_by_id
+            ret4LesionsTypesByNames[ilbl] = lst_les_by_names
+        else:
+            ret4Lung[ilbl] = None
+            ret4LesionsTypesByID[ilbl] = None
+            ret4LesionsTypesByNames[ilbl] = None
+    return ret4Lung, ret4LesionsTypesByID, ret4LesionsTypesByNames
 
 def prepareLesionDistribInfo(niiLung, niiLesion, numZ = 3, threshLesion=0.5):
     # (1) load nii if input is a 'path'
@@ -447,6 +535,63 @@ def makePreview4Lesion(dataImg, dataMsk, dataLes, sizPrv=256, nx=4, ny=3, pad=5,
             timgRGB = np.dstack([timgR, timgG, timgB])
             timgRGB[timgRGB>255] = 255
             timgRGB = timgRGB.astype(np.uint8)
+            timgRGB = np.pad(timgRGB, pad_width=[[pad],[pad],[0]], mode='constant')
+            tmpH.append(timgRGB)
+        imgH = np.hstack(tmpH)
+        tmpV.append(imgH)
+    imgV = np.vstack(tmpV)
+    return imgV
+
+# generate preview
+def makePreview4LesionV2(dataImg, dataMsk, dataLes, sizPrv=256, nx=4, ny=3, pad=5, lesT=0.7):
+    shpPrv = (sizPrv, sizPrv, sizPrv)
+    dataImgR = resize3D(dataImg, shpPrv)
+    dataMskR = resize3D(dataMsk, shpPrv, order=0)
+    dataLesR = resize3D(dataLes, shpPrv, order=0)
+    numXY = nx*ny - 1
+    brd = 0.1
+    arrZ = np.linspace(brd*sizPrv, (1.-brd)*sizPrv, numXY ).astype(np.int)
+    cnt = 0
+    tmpV = []
+    for yy in range(ny):
+        tmpH = []
+        for xx in range(nx):
+            if (yy==0) and (xx==0):
+                timg = np.rot90(dataImgR[:, sizPrv // 2, :])
+                tmsk = np.rot90(dataMskR[:, sizPrv // 2, :] > 0.1)
+                tles0 = np.rot90(dataLesR[:, sizPrv // 2, :])
+            else:
+                zidx = arrZ[cnt]
+                timg = np.rot90(dataImgR[:, :, zidx])
+                tmsk = np.rot90(dataMskR[:, :, zidx] > 0.1)
+                tles0 = np.rot90(dataLesR[:, :, zidx])
+                cnt+=1
+            timg = timg.astype(np.float)
+            timgR = timg.copy()
+            timgG = timg.copy()
+            timgB = timg.copy()
+            # draw lung boundaries
+            tmsk_bnd = _get_msk_bnd2(tmsk)
+            timgR[tmsk_bnd > 0] = 0
+            timgG[tmsk_bnd > 0] = 255
+            timgB[tmsk_bnd > 0] = 0
+            # timgR[tmsk>0] += 30
+            # timgG[tmsk>0] += 30
+            #
+            timgRGB = np.dstack([timgR, timgG, timgB])
+            timgRGB[timgRGB > 255] = 255
+            timgRGB = get_overlay_msk(timgRGB, tles0)
+
+            # tles = tles0.copy()
+            # tles[tmsk<1] = 0
+            # tlesT0 = 0.1
+            # tlesT1 = lesT
+            # tles /= tlesT1
+            # tles[tles>1.] = 1.
+            # tles[tles<tlesT0] = 0
+            # tles = (255.*tles).astype(np.uint8)
+            # timgR[tles>1] = tles[tles>1]
+            timgRGB = (255. * timgRGB).astype(np.uint8)
             timgRGB = np.pad(timgRGB, pad_width=[[pad],[pad],[0]], mode='constant')
             tmpH.append(timgRGB)
         imgH = np.hstack(tmpH)

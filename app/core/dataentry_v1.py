@@ -114,6 +114,9 @@ class SeriesInfo:
     def pathPostprocLungs(self, isRelative=True):
         if self.isInitialized():
             return '{0}-lungs.nii.gz'.format(self.getDir(isRelative=isRelative))
+    def pathPostprocLungsDiv2(self, isRelative=True):
+        if self.isInitialized():
+            return '{0}-lungs-div2.nii.gz'.format(self.getDir(isRelative=isRelative))
     def pathPostprocLesions(self, isRelative=True):
         if self.isInitialized():
             return '{0}-lesions.nii.gz'.format(self.getDir(isRelative=isRelative))
