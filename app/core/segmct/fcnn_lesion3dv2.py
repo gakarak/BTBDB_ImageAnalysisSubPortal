@@ -29,7 +29,8 @@ lesion_id2name = OrderedDict({
     3: 'class_3',
     4: 'class_4',
     5: 'class_5',
-    6: 'class_6'
+    6: 'class_6',
+    # 7: 'class_7'
 })
 lesion_name2id = OrderedDict({vv:kk for kk, vv in lesion_id2name.items()})
 

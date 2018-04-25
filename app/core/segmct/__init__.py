@@ -8,12 +8,15 @@ import nibabel as nib
 
 from app.core.segmct.fcnn_lung2d import BatcherCTLung2D
 from app.core.segmct.fcnn_lesion3d import BatcherCTLesion3D
-from app.core.segmct.fcnn_lesion3dv2 import Inferencer as InferencerLesion3Dv2
+from app.core.segmct.fcnn_lesion3dv2 import Inferencer as InferencerLesion3Dv2, lesion_id2name, lesion_id2rgb, lesion_name2id
 
 import json
 import skimage.io as skio
 import app.core.preprocessing as preproc
 from app.core.preprocessing import resizeNii, resize3D
+
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 
 #########################################
 def segmentLungs25D(pathInpNii, dirWithModel, pathOutNii=None, outSize=None, batchSize=8, isDebug=False, threshold=None):
@@ -310,7 +313,21 @@ def api_generateAllReports(series,
         "ysize": imgPreview.shape[0],
         "url": os.path.basename(pathPreview)
     }
-    skio.imsave(pathPreview, imgPreview)
+    lst_legends = [mpatches.Patch(color=lesion_id2rgb[kk], label=vv) for kk, vv in lesion_id2name.items()]
+    frame1 = plt.gca()
+    frame1.axes.set_axis_off()
+    fig = plt.gcf()
+    ax = plt.Axes(fig, [0., 0., 1., 1.])
+    ax.set_axis_off()
+    fig.add_axes(ax)
+    DPI = fig.get_dpi()
+    fig.set_size_inches(imgPreview.shape[1] / float(DPI), imgPreview.shape[0] / float(DPI))
+    plt.imshow(imgPreview)
+    plt.legend(handles=lst_legends)
+    fig.savefig(pathPreview, pad_inches = 0)
+    fig.clf()
+    fig.clear()
+    # skio.imsave(pathPreview, imgPreview)
     # except Exception as err:
     #     msgErr('Cant generate preview image : [{0}], for {1}'.format(err, series))
     #     return False
