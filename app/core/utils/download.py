@@ -17,7 +17,7 @@ import log
 import mproc
 from datetime import datetime
 
-urlTakeList="https://data.tbportals.niaid.nih.gov/api/cases?since=2010-04-01&take=%d&skip=%d"
+urlTakeList="https://data.tbportals.niaid.nih.gov/api/cases?since=2000-04-01&take=%d&skip=%d"
 urlCaseInfo="https://data.tbportals.niaid.nih.gov/api/cases/%s"
 
 #######################################
