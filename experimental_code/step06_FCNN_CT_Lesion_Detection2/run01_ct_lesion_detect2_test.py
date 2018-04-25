@@ -18,39 +18,8 @@ import skimage.transform
 import argparse
 import tensorflow as tf
 
-dct_colors = {
-    0: [0, 0, 0],
-    1: [1, 0, 0],
-    2: [0, 1, 0],
-    3: [0, 0, 1],
-    4: [1, 1, 0],
-    5: [0, 1, 1],
-    6: [1, 0, 1],
-    7: [0.7, 0.7, 0.7],
-}
+from app.core.segmct.fcnn_lesion3dv2 import buildModelFCN3D, Inferencer, lesion_id2rgb, get_overlay_msk
 
-from app.core.segmct.fcnn_lesion3dv2 import buildModelFCN3D, Inferencer
-
-def _get_overlay_msk(img2d, msk_lbl, alpha = 0.5, dct_colors=dct_colors):
-    img2d = img2d.astype(np.float32)
-    if img2d.max() > 1:
-        img2d = (img2d - img2d.min()) / (img2d.max() - img2d.min())
-    if img2d.ndim < 3:
-        img2d = np.tile(img2d[..., np.newaxis], 3)
-    msk_bin = (msk_lbl > 0)
-    msk_rgb = np.tile(msk_bin[..., np.newaxis], 3)
-    #
-    img_bg = (msk_rgb == False) * img2d
-    ret = img_bg.copy()
-    for kk, vv in dct_colors.items():
-        if kk < 1:
-            continue
-        tmp_msk = (msk_lbl == kk)
-        tmp_msk_rgb = np.tile(tmp_msk[..., np.newaxis], 3)
-        tmp_img_orerlay = alpha * np.array(vv) * tmp_msk_rgb
-        tmp_img_original = (1 - alpha) * tmp_msk_rgb * img2d
-        ret += tmp_img_orerlay + tmp_img_original
-    return ret
 
 if __name__ == '__main__':
     path_model = '../../experimental_data/models/fcnn_ct_lesion_segm_3dv2_tf/idx-lesions-trn-256x256x64.txt_model_fcn3d_lesions.h5'
@@ -63,7 +32,7 @@ if __name__ == '__main__':
 
     timg2d = timg[:, :, 32]
     tmsk2d = tmsk[:, :, 32]
-    msk_on_img = _get_overlay_msk(timg2d, tmsk2d)
+    msk_on_img = get_overlay_msk(timg2d, tmsk2d)
 
     plt.subplot(1, 3, 1)
     plt.imshow(timg2d)

@@ -19,10 +19,54 @@ import skimage.transform
 import argparse
 import tensorflow as tf
 import keras.backend as K
+from collections import OrderedDict
 
-import nibabel as nib
+#############################################
+lesion_id2name = OrderedDict({
+    0: 'background',
+    1: 'class_1',
+    2: 'class_2',
+    3: 'class_3',
+    4: 'class_4',
+    5: 'class_5',
+    6: 'class_6'
+})
+lesion_name2id = OrderedDict({vv:kk for kk, vv in lesion_id2name.items()})
 
+#############################################
+lesion_id2rgb = {
+    0: [0, 0, 0],
+    1: [1, 0, 0],
+    2: [0, 1, 0],
+    3: [0, 0, 1],
+    4: [1, 1, 0],
+    5: [0, 1, 1],
+    6: [1, 0, 1],
+    7: [0.7, 0.7, 0.7],
+}
 
+def get_overlay_msk(img2d, msk_lbl, alpha = 0.5, dct_colors=lesion_id2rgb):
+    img2d = img2d.astype(np.float32)
+    if img2d.max() > 1:
+        img2d = (img2d - img2d.min()) / (img2d.max() - img2d.min())
+    if img2d.ndim < 3:
+        img2d = np.tile(img2d[..., np.newaxis], 3)
+    msk_bin = (msk_lbl > 0)
+    msk_rgb = np.tile(msk_bin[..., np.newaxis], 3)
+    #
+    img_bg = (msk_rgb == False) * img2d
+    ret = img_bg.copy()
+    for kk, vv in dct_colors.items():
+        if kk < 1:
+            continue
+        tmp_msk = (msk_lbl == kk)
+        tmp_msk_rgb = np.tile(tmp_msk[..., np.newaxis], 3)
+        tmp_img_orerlay = alpha * np.array(vv) * tmp_msk_rgb
+        tmp_img_original = (1 - alpha) * tmp_msk_rgb * img2d
+        ret += tmp_img_orerlay + tmp_img_original
+    return ret
+
+#############################################
 def split_list_by_blocks(lst, psiz):
     tret = [lst[x:x + psiz] for x in range(0, len(lst), psiz)]
     return tret
@@ -81,6 +125,11 @@ class Inferencer:
         self.model = None
 
     def load_model(self, path_model, is_add_to_class = True):
+        if os.path.isdir(path_model):
+            lst_models = sorted(glob.glob('{}/*.h5'.format(path_model)))
+            if len(lst_models) < 1:
+                raise Exception('Cant find model files (*.h5) in dorectory [{}]'.format(path_model))
+            path_model = lst_models[0]
         if not os.path.isfile(path_model):
             raise Exception('Cant find Model-file [%s]' % path_model)
         model = buildModelFCN3D(self.inp_shape3d, self.num_cls)
@@ -92,6 +141,8 @@ class Inferencer:
     def get_img3d(self, pimg3d, ptype=np.float32, porder=1):
         if isinstance(pimg3d, str):
             pimg3d = nib.load(pimg3d).get_data().astype(ptype)
+        elif isinstance(pimg3d, nib.nifti1.Nifti1Image):
+            pimg3d = pimg3d.get_data().astype(ptype)
         if self.inp_shape3d is not None:
             pshape3d = tuple(self.inp_shape3d)[:3]
             if pimg3d.shape != pshape3d:
@@ -120,7 +171,7 @@ class Inferencer:
         if len(lst_data)>0:
             lst_of_img = []
             # (1) load into memory
-            if isinstance(lst_data[0], str):
+            if isinstance(lst_data[0], str) or isinstance(lst_data[0], nib.nifti1.Nifti1Image):
                 for ii in lst_data:
                     timg3d = self.get_img3d(ii)
                     timg3d = np.expand_dims(self.norm_img3d(timg3d), axis=-1)
