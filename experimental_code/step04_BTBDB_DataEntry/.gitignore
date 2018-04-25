@@ -1,3 +1,4 @@
 /data-cases/
 *.pyc
 /data-cases
+/tmp-out/

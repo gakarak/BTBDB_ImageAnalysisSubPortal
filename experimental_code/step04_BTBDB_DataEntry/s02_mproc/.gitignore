@@ -2,3 +2,4 @@
 *.tar
 /data-cases
 /data-cases-CT/
+/data-cases-XRay/*
