@@ -9,6 +9,7 @@ import requests
 import json
 from pprint import pprint
 import errno
+import itertools
 
 from app.core.dataentry_v1 import DBWatcher, CaseInfo, SeriesInfo
 from . import mkdir_p
@@ -17,15 +18,18 @@ from . import log
 from . import mproc
 from datetime import datetime
 
-urlTakeList="https://data.tbportals.niaid.nih.gov/api/cases?since=2010-04-01&take=%d&skip=%d"
-urlCaseInfo="https://data.tbportals.niaid.nih.gov/api/cases/%s"
+URL_TAKE_LIST_PART = "https://data.tbportals.niaid.nih.gov/api/cases?since=2010-04-01&take=%d&skip=%d"
+URL_TAKE_LIST_ALL = "https://data.tbportals.niaid.nih.gov/api/cases?since=2010-01-01"
+URL_CASE_INFO = "https://data.tbportals.niaid.nih.gov/api/cases/%s"
+URL_SPLIT_NUM = 1000
 
 #######################################
-try:
-    from cStringIO import StringIO
-except:
-    import io as StringIO
-    # from StringIO import StringIO
+# try:
+#     from cStringIO import StringIO
+# except:
+#     from io import StringIO
+#     # from StringIO import StringIO
+import io
 
 #######################################
 def processRequest(urlRequest):
@@ -41,20 +45,38 @@ def processRequest(urlRequest):
         raise Exception(strErr)
 
 def getListOfCases(ptake=1, pskip=0):
-    if ptake > 1000:
+    if ptake > URL_SPLIT_NUM:
         print('!!!Warning!!! #requested items is reduced by {}'.format(ptake))
-        ptake = 1000
-    urlRequest = urlTakeList % (ptake, pskip)
-    return processRequest(urlRequest)
+        tmp_request = processRequest(URL_TAKE_LIST_ALL)
+        ptake = tmp_request['total']
+        lst_take = list(range(0, ptake, URL_SPLIT_NUM))
+        lst_res = []
+        for xx in lst_take:
+            url_request = URL_TAKE_LIST_PART % (URL_SPLIT_NUM, xx)
+            tmp = processRequest(url_request)
+            lst_res.append(tmp)
+        if len(lst_res) > 0:
+            num_total = lst_res[0]['total']
+            lst_res = [xx['results'] for xx in lst_res]
+            lst_res = list(itertools.chain.from_iterable(lst_res))
+            tmp_res = {
+                'total': num_total,
+                'results': lst_res
+            }
+            return tmp_res
+    else:
+        url_request = URL_TAKE_LIST_PART % (ptake, pskip)
+        tmp_res = processRequest(url_request)
+        return tmp_res
 
 def getCaseInfo(condId):
-    urlRequest = urlCaseInfo % condId
+    urlRequest = URL_CASE_INFO % condId
     return processRequest(urlRequest)
 
 def downloadDicom(urlRequest, pauthTocken=None):
     tret = requests.get(urlRequest, auth=pauthTocken, stream=True)
     if tret.status_code == 200:
-        buff = StringIO()
+        buff = io.BytesIO()
         for chunk in tret.iter_content(2048):
             buff.write(chunk)
         return buff
@@ -101,13 +123,16 @@ class TaskRunnerDownloadSeries(mproc.AbstractRunner):
 
 #######################################
 class RunnerDBDownload(mproc.AbstractRunner):
-    def __init__(self, data_dir=None):
+    def __init__(self, data_dir=None, limit = -1):
         if data_dir is None:
             # FIXME: remove in future
             self.data_dir = 'data-cases'
         else:
             self.data_dir = data_dir
+        if not os.path.isdir(self.data_dir):
+            os.makedirs(self.data_dir)
         self.clean()
+        self.limit = limit
     def clean(self):
         self.allCases = None
     def numCases(self):
@@ -144,7 +169,12 @@ class RunnerDBDownload(mproc.AbstractRunner):
             ptrLogger.error('Cant refresh info about DataEntry cases: {0}'.format(err))
         ptrLogger.info ('DataEntry: %s' % self.toString())
         numCases = len(self.allCases)
+        counter_dwnld = 0
         for icase, case in enumerate(self.allCases):
+            if self.limit > 0:
+                if counter_dwnld > self.limit:
+                    ptrLogger.warning(' [!!!] case downloading limit exceeded [{}/{}], stop process...'.format(self.limit, counter_dwnld))
+                    return
             caseId = case['conditionId']
             ptrLogger.info ('[%d/%d] ' % (icase, numCases))
             if dbWatcher.isHaveCase(caseId):
@@ -161,6 +191,7 @@ class RunnerDBDownload(mproc.AbstractRunner):
                 except Exception as err:
                     ptrLogger.error('Error case download: [{0}]'.format(err))
                     new_case = None
+            counter_dwnld += 1
             if new_case is not None:
                 new_series = new_case.getGoodSeries()
                 # try:

@@ -7,3 +7,4 @@ keras
 scikit-learn
 matplotlib
 nibabel
+xhtml2pdf
