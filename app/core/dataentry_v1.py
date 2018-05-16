@@ -7,7 +7,7 @@ import glob
 import json
 import numpy as np
 import nibabel as nib
-from . import utils
+from app.core import utils
 
 #######################################
 class SeriesInfo:
