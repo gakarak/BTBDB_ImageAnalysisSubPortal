@@ -135,7 +135,7 @@ class SeriesInfo:
     def isPostprocessed(self):
         if self.isInitialized():
             pathLungs     = self.pathPostprocLungs(isRelative=False)
-            pathLesion    = self.pathPostprocLesions(isRelative=False)
+            pathLesion    = self.pathPostprocLesions2(isRelative=False)
             pathReport    = self.pathPostprocReport(isRelative=False)
             pathReportPDF = self.pathPostprocReportPDF(isRelative=False)
             if not os.path.isfile(pathLungs):
@@ -159,6 +159,22 @@ class SeriesInfo:
                         tmp['url'] = '/{0}/{1}'.format(dir_relative, os.path.basename(tmp['url']))
                     else:
                         tmp['url'] = '{0}{1}/{2}'.format(root_url, dir_relative, os.path.basename(tmp['url']))
+            #
+            try:
+                tmp_jstree = jsonData['similar_cases']
+                for xx in tmp_jstree:
+                    tcase = xx['case_id']
+                    tsers = xx['series_uid']
+                    tstud = xx['study_id']
+                    for yy in xx['preview_images']:
+                        dir_rel = os.path.dirname(CaseInfo.getRelativeSeriesPath(caseId=tcase, studyId=tstud, seriesUid=tsers, modality=self.modality(), dataDir=None))
+                        if root_url is None:
+                            yy['url'] = '/{}/{}'.format(dir_rel, yy['url'])
+                        else:
+                            yy['url'] = '{}{}/{}'.format(root_url, dir_rel, yy['url'])
+                            # print('-')
+            except Exception as err:
+                print('error: {}'.format(err))
             return jsonData
     @classmethod
     def getInstanceBaseName(cls, instanceId, instanceNum):
@@ -179,6 +195,7 @@ class SeriesInfo:
                 pser = SeriesInfo(ptrCase=caseInfo, studyId=studyID, jsonInfo=seriesJson)
                 skey = pser.getKey()
                 if (not isDropBad) or pser.isGood():
+                    pser.isPostprocessed()
                     ret[skey] = pser
         return ret
     @staticmethod

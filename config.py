@@ -1,8 +1,9 @@
 import os
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-DATA_DIR_NAME = 'data-real'
+# DATA_DIR_NAME = 'data-real'
 # DATA_DIR_NAME = 'experimental_data/dataentry_test0'
+DATA_DIR_NAME = '/home/ar/data/crdf/test_dataentry0'
 
 class Config(object):
     DEBUG = True

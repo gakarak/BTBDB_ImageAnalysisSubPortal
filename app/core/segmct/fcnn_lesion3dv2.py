@@ -22,14 +22,24 @@ import keras.backend as K
 from collections import OrderedDict
 
 #############################################
+# lesion_id2name = OrderedDict({
+#     0: 'background',
+#     1: 'class_1',
+#     2: 'class_2',
+#     3: 'class_3',
+#     4: 'class_4',
+#     5: 'class_5',
+#     6: 'class_6',
+#     # 7: 'class_7'
+# })
 lesion_id2name = OrderedDict({
     0: 'background',
-    1: 'class_1',
-    2: 'class_2',
-    3: 'class_3',
-    4: 'class_4',
-    5: 'class_5',
-    6: 'class_6',
+    1: 'Foci',
+    2: 'Caverns',
+    3: 'Fibrosis',
+    4: 'Plevritis',
+    5: 'Atelectasis',
+    6: 'Pneumathorax',
     # 7: 'class_7'
 })
 lesion_name2id = OrderedDict({vv:kk for kk, vv in lesion_id2name.items()})

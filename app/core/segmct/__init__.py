@@ -348,6 +348,12 @@ def api_generateAllReports(series,
     # (6) generate PDF preview
     return True
 
+def api_generateCBIR_BuildDSC(db_watcher, num_threads):
+
+
+    print('-')
+
+
 #########################################
 if __name__ == '__main__':
     print ('---')

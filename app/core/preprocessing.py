@@ -331,6 +331,7 @@ def getJsonReport(series, reportLesionScore, reportLungs, lstImgJson=[], reportL
     case_id = series.ptrCase.caseId()
     patient_id = series.ptrCase.patientId()
     study_uid = series.studyUID()
+    study_id  = series.studyId
     series_uid = series.uid()
     retLesions = {}
     # retLesions = {
@@ -355,6 +356,7 @@ def getJsonReport(series, reportLesionScore, reportLungs, lstImgJson=[], reportL
         'case_id' : case_id,
         'patient_id' : patient_id,
         'study_uid' : study_uid,
+        'study_id': study_id,
         'series_uid' : series_uid,
         'number_of_slices' : reportLungs['number_of_slices'],
         'spacing' : reportLungs['spacing'],
