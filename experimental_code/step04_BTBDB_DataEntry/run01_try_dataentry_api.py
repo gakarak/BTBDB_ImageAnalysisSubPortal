@@ -17,7 +17,7 @@ import logging.handlers
 try:
     from cStringIO import StringIO
 except:
-    from StringIO import StringIO
+    from io import StringIO
 
 #######################################
 dirData = 'data-cases'

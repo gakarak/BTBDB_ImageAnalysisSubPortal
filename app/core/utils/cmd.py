@@ -9,7 +9,7 @@ import tempfile
 import subprocess
 import threading
 from . import checkDirContainsDicom, checkExeInPath, checkFileOrDir, mkdir_p
-import mproc, log
+from . import log, mproc
 from app.core.dataentry_v1 import DBWatcher
 from datetime import datetime
 
