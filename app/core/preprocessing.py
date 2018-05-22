@@ -327,7 +327,7 @@ def prepareLungSizeInfo(mskLungs, niiHeader, isInStrings=False):
     }
     return retInfoLungSizes
 
-def getJsonReport(series, reportLesionScore, reportLungs, lstImgJson=[], reportLesionScoreById = None, reportLesionScoreByName = None):
+def getJsonReport(series, reportLesionScore, reportLungs, reportLesion = None, lstImgJson=[], reportLesionScoreById = None, reportLesionScoreByName = None):
     case_id = series.ptrCase.caseId()
     patient_id = series.ptrCase.patientId()
     study_uid = series.studyUID()
@@ -338,20 +338,23 @@ def getJsonReport(series, reportLesionScore, reportLungs, lstImgJson=[], reportL
     #     'left': None,
     #     'right': None
     # }
-    k2n = {1: 'left', 2: 'right'}
-    for k, v in reportLesionScore.items():
-        k_name = k2n[k]
-        retLesions[k_name] = v
-        if reportLesionScoreById is not None:
-            retLesions[k_name + '_by_id'] = reportLesionScoreById[k]
-        if reportLesionScoreByName is not None:
-            retLesions[k_name + '_by_name'] = reportLesionScoreByName[k]
-        # if k == 1:
-        #     retLesions['left'] = v
-        #
-        #     retLesions['left_by_id'] =
-        # if k == 2:
-        #     retLesions['right'] = v
+    if reportLesion is None:
+        k2n = {1: 'left', 2: 'right'}
+        for k, v in reportLesionScore.items():
+            k_name = k2n[k]
+            retLesions[k_name] = v
+            if reportLesionScoreById is not None:
+                retLesions[k_name + '_by_id'] = reportLesionScoreById[k]
+            if reportLesionScoreByName is not None:
+                retLesions[k_name + '_by_name'] = reportLesionScoreByName[k]
+            # if k == 1:
+            #     retLesions['left'] = v
+            #
+            #     retLesions['left_by_id'] =
+            # if k == 2:
+            #     retLesions['right'] = v
+    else:
+        retLesions = reportLesion['lesions']
     ret = {
         'case_id' : case_id,
         'patient_id' : patient_id,

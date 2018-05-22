@@ -18,6 +18,8 @@ from app.core.preprocessing import resizeNii, resize3D
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
+import app.core.lesion_descriptors as ldsc
+
 #########################################
 def segmentLungs25D(pathInpNii, dirWithModel, pathOutNii=None, outSize=None, batchSize=8, isDebug=False, threshold=None):
     if isinstance(pathInpNii,str):# or isinstance(pathInpNii,unicode):
@@ -149,7 +151,7 @@ def segmentLesions3Dv2(pathInpNii, dirWithModel, pathOutNii=None, outSize=None, 
 #########################################
 def api_segmentLungAndLesion(dirModelLung, dirModelLesion, series,
                              ptrLogger=None,
-                             shape4Lung = (256, 256, 64), shape4Lesi = (256, 256, 64), gpuMemUsage=0.8):
+                             shape4Lung = (256, 256, 64), shape4Lesi = (256, 256, 64), gpuMemUsage=0.4):
     # (1) msg-helpers
     def msgInfo(msg):
         if ptrLogger is not None:
@@ -294,6 +296,13 @@ def api_generateAllReports(series,
     except Exception as err:
         msgErr('Cant evaluate Lesion-score: [{0}], for {1}'.format(err, pathSegmLesions1))
         return False
+    # (3.1) calc cbir-descriptor
+    try:
+        cbir_desc = ldsc.calc_desc(pathSegmLungsDiv2, pathSegmLesions1)
+        cbir_desc_json = ldsc.desc_to_json(cbir_desc)
+    except Exception as err:
+        msgErr('Cant evaluate Lesion-score: [{0}], for {1}'.format(err, pathSegmLesions1))
+        return False
     # (4) prepare short report about lungs
     try:
         retLungInfo = preproc.prepareLungSizeInfoNii(niiLungDiv)
@@ -334,11 +343,12 @@ def api_generateAllReports(series,
     # (5) generate & save JSON report
     try:
         jsonReport = preproc.getJsonReport(series=series,
-                                           reportLesionScore=retLesionScoreBin,
+                                           reportLesionScore=None, #retLesionScoreBin,
+                                           reportLesion=cbir_desc_json,
                                            reportLungs=retLungInfo,
                                            lstImgJson=[imgPreviewJson],
-                                           reportLesionScoreById = retLesionScoreById,
-                                           reportLesionScoreByName=retLesionScoreByName)
+                                           reportLesionScoreById = None, #retLesionScoreById,
+                                           reportLesionScoreByName = None) #retLesionScoreByName)
         with open(pathReport, 'w') as f:
             f.write(json.dumps(jsonReport, indent=4))
     except Exception as err:
