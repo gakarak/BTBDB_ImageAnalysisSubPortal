@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 __author__ = 'ar'
 
+import app.backend
 from app.core.dataentry_v1 import DBWatcher
 from app.core.utils.mproc import SimpleTaskManager
 from app.core.utils.report import RunnerMakeReport
@@ -12,7 +13,8 @@ from app.core.segmct import api_segmentLungAndLesion
 
 
 if __name__ == '__main__':
-    dataDir = 'data-cases'
+    # dataDir = 'data-cases'
+    data_dir = app.backend.config.DIR_DATA
     pathModelLung = '../../../experimental_data/models/fcnn_ct_lung_segm_2.5d_tf/'
     pathModelLesion = '../../../experimental_data/models/fcnn_ct_lesion_segm_3d_tf/'
 
@@ -28,7 +30,7 @@ if __name__ == '__main__':
     #                                  gpuMemUsage=0.2)
     #         print ('---')
 
-    runnerMakeReport = RunnerMakeReport(data_dir=dataDir,
+    runnerMakeReport = RunnerMakeReport(data_dir=data_dir,
                                         dirModelLung=pathModelLung,
                                         dirModelLesion=pathModelLesion,
                                         listGpuId=[0, 1])
