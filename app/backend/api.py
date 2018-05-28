@@ -148,7 +148,7 @@ def data_load():
 def data_pdf_load(case_id, patient_id, study_uid, series_uid):
     try:
         jsonResponse = report_helper(case_id=case_id, patient_id=None, study_uid=study_uid, series_uid=series_uid, root_url="")
-        retJson = json.loads(jsonResponse.get_data())
+        retJson = json.loads(jsonResponse.get_data().decode('utf-8'))
         retJson = retJson['responce']
         tmpImgPath = retJson['preview_images'][0]['url']
         retJson['preview_images'][0]['url'] = '{0}/{1}'.format(dir_data(), tmpImgPath)
