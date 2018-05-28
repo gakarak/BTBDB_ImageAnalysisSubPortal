@@ -12,7 +12,8 @@ from xhtml2pdf import pisa
 try:
     from cStringIO import StringIO
 except:
-    import io as StringIO
+    import io
+    # import io as StringIO
 
 import json
 
@@ -152,8 +153,9 @@ def data_pdf_load(case_id, patient_id, study_uid, series_uid):
         tmpImgPath = retJson['preview_images'][0]['url']
         retJson['preview_images'][0]['url'] = '{0}/{1}'.format(dir_data(), tmpImgPath)
         strHTML = render_template('templates/template_pdf.html', dataJson = retJson)
-        pdf = StringIO()
-        pisa.CreatePDF(StringIO(strHTML), pdf)
+        # pdf = StringIO()
+        pdf = io.BytesIO()
+        pisa.CreatePDF(io.StringIO(strHTML), pdf)
         retResponse = make_response(pdf.getvalue())
         retResponse.headers['Content-Sispositions'] = "attachment; filename='crdf-report.pdf'"
         retResponse.mimetype = 'application/pdf'
