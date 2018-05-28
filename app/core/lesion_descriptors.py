@@ -347,10 +347,20 @@ def desc_dist_p(a, b, metrics_): # distance, which takes into account the positi
     a_parts = a_.reshape((a_.shape[0] * a_.shape[1], a_.shape[2]))
     b_parts = b_.reshape((b_.shape[0] * b_.shape[1], b_.shape[2]))
 
+    #FIXME: check NaN-removing code:
+    a_parts[np.isnan(a_parts)] = -1
+    b_parts[np.isnan(b_parts)] = -1
+    a_parts[np.isinf(a_parts)] = -1
+    b_parts[np.isinf(b_parts)] = -1
+
     diff_by_lesions = np.zeros((a_parts.shape[1]), np.float32)
 
+    # try:
     for les in range(diff_by_lesions.shape[0]):
         diff_by_lesions[ les ] = desc_distance(a_parts[:, les], b_parts[:, les], metrics_=metrics_)
+    # except Exception as err:
+    #     print('[{}]'.format(err))
+    #     print('-')
 
     integral_diff = np.sum(np.multiply(diff_by_lesions, lesions_weights))
 
