@@ -66,10 +66,10 @@ def report_helper(case_id, patient_id, study_uid, series_uid, root_url, url_basi
         is_ok = True
         str_error = ''
         if not ptr_series.isDownloaded():
-            is_ok = False
+            is_ok = True#False
             str_error = 'data for requested series has not yet been downloaded'
         if not ptr_series.isConverted():
-            is_ok = False
+            is_ok = True#False
             str_error = 'DICOM data for requested series downloaded, but has not yet been converted to Nifti'
         if not ptr_series.isPostprocessed():
             is_ok = False
