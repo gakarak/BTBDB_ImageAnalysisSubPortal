@@ -33,6 +33,7 @@ lesions_classes = { '1': 'Foci',
                     '4': 'Plevritis',
                     '5': 'Atelectasis',
                     '6': 'Pneumothorax'}
+                    # '6': 'Pneumathorax'}
 # lesions_classes = { '1': 'class_1', '2': 'class_2', '3': 'class_3', '4': 'class_4', '5': 'class_5', '6':'class_6'}
 lesions_classes2 = {vv:kk for kk,vv in lesions_classes.items()}
 lesions_weights = [0.1, 1.0, 1.0, 1.0, 1.0, 1.0]
@@ -384,7 +385,7 @@ def desc_distance(a, b, metrics_):
     return 0
 
 
-def calc_diff_matrices(desc_list_, metrics_='euclidean'):
+def calc_diff_matrices(desc_list_, metrics_='euclidean', ext_data = None):
 
     desc_list_len = len(desc_list_)
 
@@ -394,6 +395,8 @@ def calc_diff_matrices(desc_list_, metrics_='euclidean'):
 
     for i in range(desc_list_len):
         for j in range(i, desc_list_len):
+            if ext_data is not None:
+                print(' processing: [{} * {}] -> {}/{}'.format(i, j, ext_data[i], ext_data[j]))
             diff_int, diff_by_les = desc_dist_p(desc_list_[i], desc_list_[j], metrics_)
             diff_matrix_integral[ i, j ] = diff_int
             diff_matrix_by_lesion[ i, j ] = diff_by_les

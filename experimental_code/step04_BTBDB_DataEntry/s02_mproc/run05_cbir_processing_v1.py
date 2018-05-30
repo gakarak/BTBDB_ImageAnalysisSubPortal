@@ -104,7 +104,7 @@ if __name__ == '__main__':
     t1 = time.time()
     logging.info(' [*] build distance matrix')
     # pres_m, int_m, les_m = ldsc.calc_diff_matrices(desc_list_=desc_list, metrics_='euclidean')
-    _, int_m, _ = ldsc.calc_diff_matrices(desc_list_=desc_list, metrics_='euclidean')
+    _, int_m, _ = ldsc.calc_diff_matrices(desc_list_=desc_list, metrics_='euclidean', ext_data=json_filename_list)
     dt = time.time() - t1
     logging.info('\tDone (dist-mat)! dt ~ {:0.1f} (s)'.format(dt))
     #
