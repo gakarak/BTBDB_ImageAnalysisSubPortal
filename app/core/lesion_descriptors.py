@@ -27,7 +27,12 @@ num_of_segments = 1
 for s in segments:
     num_of_segments = num_of_segments * s
 
-lesions_classes = { '1': 'Foci', '2': 'Caverns', '3': 'Fibrosis', '4': 'Plevritis', '5': 'Atelectasis', '6':'Pneumathorax'}
+lesions_classes = { '1': 'Foci',
+                    '2': 'Caverns',
+                    '3': 'Fibrosis',
+                    '4': 'Plevritis',
+                    '5': 'Atelectasis',
+                    '6': 'Pneumothorax'}
 # lesions_classes = { '1': 'class_1', '2': 'class_2', '3': 'class_3', '4': 'class_4', '5': 'class_5', '6':'class_6'}
 lesions_classes2 = {vv:kk for kk,vv in lesions_classes.items()}
 lesions_weights = [0.1, 1.0, 1.0, 1.0, 1.0, 1.0]
