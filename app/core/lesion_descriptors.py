@@ -83,10 +83,10 @@ def get_left_right_lungs_ar(sgm_img_):
     min_val = np.min(sgm_img_)
 
     left_img = deepcopy(sgm_img_)
-    left_img[left_img[:]==2] = min_val
+    left_img[left_img[:] !=2 ] = min_val
 
     right_img = deepcopy(sgm_img_)
-    right_img[right_img[:]==1] = min_val
+    right_img[right_img[:] !=1] = min_val
 
     return left_img, right_img
 
@@ -172,22 +172,22 @@ def calc_desc(sgm_filename_, les_filename_, shad_idx_='dummy_idx'):
 
             for l in range(2, 7):
                 les_val = np.sum((les_img_f[:] == l).astype(np.uint8))
-                if les_val > 10:
+                if les_val > 64:
                     desc_[0, p, l - 1] = 1
 
         # right lung
         for p in range(3):
             les_img_f = deepcopy(les_img[right_parts[p]])
             sum_les_img_f = np.sum((les_img_f[:] == 1).astype(np.uint8))
-            sum_left_parts = len(left_parts[p][0])
+            sum_right_parts = len(right_parts[p][0])
 
-            foci_percent = sum_les_img_f / sum_left_parts
+            foci_percent = sum_les_img_f / sum_right_parts
             # print('right: ' + str(p) + ': ' + str(foci_percent))
             desc_[1, p, 0] = foci_percent
 
             for l in range(2, 7):
                 les_val = np.sum((les_img_f[:] == l).astype(np.uint8))
-                if les_val > 10:
+                if les_val > 64:
                     desc_[1, p, l - 1] = 1
 
         return desc_
