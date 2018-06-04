@@ -143,10 +143,10 @@ def calc_desc(sgm_filename_, les_filename_, shad_idx_='dummy_idx'):
         max_v = np.max(les_img)
         les_img -= min_v
 
-        for val in range(1, 6):
-            les_img[les_img[:] == val] = 1
-        for val in range(6, 11):
-            les_img[les_img[:] == val] = val - 4
+        # for val in range(1, 6):
+        #     les_img[les_img[:] == val] = 1
+        # for val in range(6, 11):
+        #     les_img[les_img[:] == val] = val - 4
         #
         # for y in range(les_img.shape[1]):
         #     im_to_save = les_img[:, y, :]
