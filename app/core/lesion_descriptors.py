@@ -396,7 +396,8 @@ def calc_diff_matrices(desc_list_, metrics_='euclidean', ext_data = None):
     for i in range(desc_list_len):
         for j in range(i, desc_list_len):
             if ext_data is not None:
-                print(' processing: [{} * {}] -> {}/{}'.format(i, j, ext_data[i], ext_data[j]))
+                pass
+                # print(' processing: [{} * {}] -> {}/{}'.format(i, j, ext_data[i], ext_data[j]))
             diff_int, diff_by_les = desc_dist_p(desc_list_[i], desc_list_[j], metrics_)
             diff_matrix_integral[ i, j ] = diff_int
             diff_matrix_by_lesion[ i, j ] = diff_by_les

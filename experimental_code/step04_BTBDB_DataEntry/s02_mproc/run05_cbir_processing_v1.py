@@ -57,6 +57,7 @@ def _task_simple_cbir(pdata):
             cur_similar_json_data['series_uid']     = n_case_json_data['series_uid']
             cur_similar_json_data['study_uid']      = n_case_json_data['study_uid']
             cur_similar_json_data['study_id']       = n_case_json_data['study_id']
+            cur_similar_json_data['patient_id']     = n_case_json_data['patient_id']
             cur_similar_json_data['preview_images'] = n_case_json_data['preview_images']
             case_json_data['similar_cases'].append(cur_similar_json_data)
     case_json = open(json_filename_list[dsc_idx], 'w')
