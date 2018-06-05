@@ -43,7 +43,7 @@ def _task_simple_cbir(pdata):
     int_m     = pdata[3]
     lst_fjson = pdata[4]
     logging.debug(' [CBIR] --> [{}] * [{}] * dsc-shape = {}'.format(dsc_idx, path_json, dsc.shape))
-    n_ind, n_dist = ldsc.make_cbir(dsc_idx, diff_matrix_=int_m, knn_number_=2)
+    n_ind, n_dist = ldsc.make_cbir(dsc_idx, diff_matrix_=int_m, knn_number_=3)
     #
     n_shad_idx = [lst_fjson[i] for i in n_ind]
     case_json = open(lst_fjson[dsc_idx], 'r')
