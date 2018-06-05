@@ -111,6 +111,9 @@ def get_lung_part(sgm_img_, total_parts_, part_index_):
     sgm_img_t[sgm_img_t[:] > 0] = 1
     nonzero_ind = np.nonzero(sgm_img_t)
 
+    if len(nonzero_ind[0]) == 0:
+        return []
+
     low_limit = int(part_index_*dp_)
     up_limit = int((part_index_+1)*dp_)
 
@@ -168,6 +171,10 @@ def calc_desc(sgm_filename_, les_filename_, shad_idx_='dummy_idx'):
 
         # left lung
         for p in range(3):
+            if not left_parts[p]:
+                for l in range(len(lesions_classes)):
+                    desc_[0, p, l] = 0.0
+                continue
             les_img_f = deepcopy(les_img[left_parts[p]])
             sum_les_img_f = np.sum((les_img_f[:] == 1).astype(np.uint8))
             sum_left_parts = len(left_parts[p][0])
@@ -183,6 +190,10 @@ def calc_desc(sgm_filename_, les_filename_, shad_idx_='dummy_idx'):
 
         # right lung
         for p in range(3):
+            if not right_parts[p]:
+                for l in range(len(lesions_classes)):
+                    desc_[1, p, l] = 0.0
+                continue
             les_img_f = deepcopy(les_img[right_parts[p]])
             sum_les_img_f = np.sum((les_img_f[:] == 1).astype(np.uint8))
             sum_right_parts = len(right_parts[p][0])
@@ -345,14 +356,16 @@ def desc_dist_q(a, b, metrics_): # quick distance, only by availability of lesio
 
     return desc_distance(a = aa, b = bb, metrics_=metrics_)
 
-def detected_lesions(desc_)
+
+def detected_lesions(desc_):
     detected_ = []
     for lr in range(desc_.shape[0]):
         for p in range(desc_.shape[1]):
             for k in lesions_classes:
-            if desc_[lr, p, int(k) - 1] > 0.01 and lesions_classes[k] not in detected_:
-                detected_.append(lesions_classes[k])
+                if desc_[lr, p, int(k) - 1] > 0.01 and lesions_classes[k] not in detected_:
+                    detected_.append(lesions_classes[k])
     return str(detected_)
+
 
 def desc_dist_p(a, b, metrics_): # distance, which takes into account the position of lesion in lungs
     a_ = deepcopy(a)
