@@ -29,6 +29,7 @@ def _task_evaluate_ldsc(pdata):
             dsc_json = ldsc.desc_to_json(cur_desc)
             json_data = json.loads(f.read())
             json_data['lesions'] = dsc_json
+            json_data['detected_lesions'] = ldsc.detected_lesions(cur_desc)
         if json_data is not None:
             with open(path_jsn, 'w') as f:
                 f.write(json.dumps(json_data, indent=4))
