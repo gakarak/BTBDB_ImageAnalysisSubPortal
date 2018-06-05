@@ -347,10 +347,10 @@ def desc_dist_q(a, b, metrics_): # quick distance, only by availability of lesio
 
 def detected_lesions(desc_)
     detected_ = []
-    for lr in range(a.shape[0]):
-        for p in range(a.shape[1]):
+    for lr in range(desc_.shape[0]):
+        for p in range(desc_.shape[1]):
             for k in lesions_classes:
-            if a[lr, p, int(k) - 1] > 0.01 and lesions_classes[k] not in detected_:
+            if desc_[lr, p, int(k) - 1] > 0.01 and lesions_classes[k] not in detected_:
                 detected_.append(lesions_classes[k])
     return str(detected_)
 
