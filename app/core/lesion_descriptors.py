@@ -364,7 +364,7 @@ def detected_lesions(desc_):
             for k in lesions_classes:
                 if desc_[lr, p, int(k) - 1] > 0.01 and lesions_classes[k] not in detected_:
                     detected_.append(lesions_classes[k])
-    return str(detected_)
+    return detected_
 
 
 def desc_dist_p(a, b, metrics_): # distance, which takes into account the position of lesion in lungs
