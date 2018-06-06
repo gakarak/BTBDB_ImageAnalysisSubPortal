@@ -49,6 +49,7 @@ def _task_simple_cbir(pdata):
     case_json = open(lst_fjson[dsc_idx], 'r')
     case_json_data = json.load(case_json)
     case_json.close()
+    case_json_data['detected_lesions'] = ldsc.detected_lesions(dsc)
     case_json_data['similar_cases'] = []
     for n_idx in n_shad_idx:
         with open(n_idx) as n_case_json:
