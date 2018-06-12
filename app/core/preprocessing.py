@@ -227,7 +227,7 @@ def prepareLungSizeInfo(mskLungs, niiHeader, isInStrings=False):
             'z': tmp_bounding_box[2],
         }
         bounding_box_mm = {
-            'units': 'mm3',
+            'units': 'mm',
             'x': tmp_bounding_box[0] * ret_spacing['x'],
             'y': tmp_bounding_box[1] * ret_spacing['y'],
             'z': tmp_bounding_box[2] * ret_spacing['z'],
@@ -240,7 +240,7 @@ def prepareLungSizeInfo(mskLungs, niiHeader, isInStrings=False):
             'z': -1,
         }
         bounding_box_mm = {
-            'units': 'mm3',
+            'units': 'mm',
             'x': -1,
             'y': -1,
             'z': -1,
