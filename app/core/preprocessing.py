@@ -599,7 +599,7 @@ def makePreview4LesionV2(dataImg, dataMsk, dataLes, sizPrv=256, nx=4, ny=3, pad=
             timgRGB = (255. * timgRGB).astype(np.uint8)
             timgRGB = np.pad(timgRGB, pad_width=[[pad],[pad],[0]], mode='constant')
             # tmpH.append(timgRGB[:, ::-1])
-            tmpH.append(timgRGB[:, ::-1])
+            tmpH.append(timgRGB)
         imgH = np.hstack(tmpH)
         tmpV.append(imgH)
     imgV = np.vstack(tmpV)
