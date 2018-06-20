@@ -9,7 +9,11 @@ from app.backend import utils as utils
 from app.core.dataentry_v1 import DBWatcher
 
 from xhtml2pdf import pisa
-from cStringIO import StringIO
+try:
+    from cStringIO import StringIO
+except:
+    import io
+    # import io as StringIO
 
 import json
 
@@ -63,10 +67,10 @@ def report_helper(case_id, patient_id, study_uid, series_uid, root_url, url_basi
         is_ok = True
         str_error = ''
         if not ptr_series.isDownloaded():
-            is_ok = False
+            is_ok = True#False
             str_error = 'data for requested series has not yet been downloaded'
         if not ptr_series.isConverted():
-            is_ok = False
+            is_ok = True#False
             str_error = 'DICOM data for requested series downloaded, but has not yet been converted to Nifti'
         if not ptr_series.isPostprocessed():
             is_ok = False
@@ -82,6 +86,7 @@ def report_helper(case_id, patient_id, study_uid, series_uid, root_url, url_basi
                 return Response(json.dumps(get_response(result=ret), indent=4), mimetype='application/json')
             except Exception as err:
                 str_error = 'db-report error: {0}'.format(err)
+                print(str_error)
     else:
         str_error = 'Cant find requested series in DB: case_id={0}, study_uid={1}, series_uid={2}' \
             .format(case_id, study_uid, series_uid)
@@ -143,13 +148,14 @@ def data_load():
 def data_pdf_load(case_id, patient_id, study_uid, series_uid):
     try:
         jsonResponse = report_helper(case_id=case_id, patient_id=None, study_uid=study_uid, series_uid=series_uid, root_url="")
-        retJson = json.loads(jsonResponse.get_data())
+        retJson = json.loads(jsonResponse.get_data().decode('utf-8'))
         retJson = retJson['responce']
         tmpImgPath = retJson['preview_images'][0]['url']
         retJson['preview_images'][0]['url'] = '{0}/{1}'.format(dir_data(), tmpImgPath)
         strHTML = render_template('templates/template_pdf.html', dataJson = retJson)
-        pdf = StringIO()
-        pisa.CreatePDF(StringIO(strHTML), pdf)
+        # pdf = StringIO()
+        pdf = io.BytesIO()
+        pisa.CreatePDF(io.StringIO(strHTML), pdf)
         retResponse = make_response(pdf.getvalue())
         retResponse.headers['Content-Sispositions'] = "attachment; filename='crdf-report.pdf'"
         retResponse.mimetype = 'application/pdf'

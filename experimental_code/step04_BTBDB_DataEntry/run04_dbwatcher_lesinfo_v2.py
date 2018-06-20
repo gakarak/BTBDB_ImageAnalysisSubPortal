@@ -8,7 +8,8 @@ import app.core.segmct as segm
 ###############################
 if __name__ == '__main__':
     pathModelLung = '../../experimental_data/models/fcnn_ct_lung_segm_2.5d_tf/'
-    pathModelLesion = '../../experimental_data/models/fcnn_ct_lesion_segm_3d_tf/'
+    # pathModelLesion = '../../experimental_data/models/fcnn_ct_lesion_segm_3d_tf/'
+    pathModelLesion = '../../experimental_data/models/fcnn_ct_lesion_segm_3dv2_tf/'
     dataDir = '../../experimental_data/dataentry_test0'
     dbWatcher = DBWatcher(pdir=dataDir)
     dbWatcher.load(dataDir, isDropEmpty=True, isDropBadSeries=True)

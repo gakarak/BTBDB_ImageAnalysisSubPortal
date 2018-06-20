@@ -113,13 +113,13 @@
             <tr>
                 <td><b>Upper Sextant (%)</b></td>
                 {% if dataJson.lesions.left is defined %}
-                    {% set tval = dataJson.lesions.left[0] * 100.0 %}
+                    {% set tval = dataJson.lesions.left[2] * 100.0 %}
                     <td>{{ '%0.1f' % tval }}</td>
                 {% else %}
                     <td>...</td>
                 {% endif %}
                 {% if dataJson.lesions.right is defined %}
-                    {% set tval = dataJson.lesions.right[0] * 100.0 %}
+                    {% set tval = dataJson.lesions.right[2] * 100.0 %}
                     <td>{{ '%0.1f' % tval }}</td>
                 {% else %}
                     <td>...</td>
@@ -143,13 +143,13 @@
             <tr>
                 <td><b>Lower Sextant (%)</b></td>
                 {% if dataJson.lesions.left is defined %}
-                    {% set tval = dataJson.lesions.left[2] * 100.0 %}
+                    {% set tval = dataJson.lesions.left[0] * 100.0 %}
                     <td>{{ '%0.1f' % tval }}</td>
                 {% else %}
                     <td>...</td>
                 {% endif %}
                 {% if dataJson.lesions.right is defined %}
-                    {% set tval = dataJson.lesions.right[2] * 100.0 %}
+                    {% set tval = dataJson.lesions.right[0] * 100.0 %}
                     <td>{{ '%0.1f' % tval }}</td>
                 {% else %}
                     <td>...</td>

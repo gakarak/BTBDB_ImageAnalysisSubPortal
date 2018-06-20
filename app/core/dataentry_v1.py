@@ -7,7 +7,7 @@ import glob
 import json
 import numpy as np
 import nibabel as nib
-import utils
+from app.core import utils
 
 #######################################
 class SeriesInfo:
@@ -114,22 +114,31 @@ class SeriesInfo:
     def pathPostprocLungs(self, isRelative=True):
         if self.isInitialized():
             return '{0}-lungs.nii.gz'.format(self.getDir(isRelative=isRelative))
+    def pathPostprocLungsDiv2(self, isRelative=True):
+        if self.isInitialized():
+            return '{0}-lungs-div2.nii.gz'.format(self.getDir(isRelative=isRelative))
     def pathPostprocLesions(self, isRelative=True):
         if self.isInitialized():
             return '{0}-lesions.nii.gz'.format(self.getDir(isRelative=isRelative))
+    def pathPostprocLesions2(self, isRelative=True):
+        if self.isInitialized():
+            # return '{0}-lesions2.nii.gz'.format(self.getDir(isRelative=isRelative))
+            return '{0}-lesions3.nii.gz'.format(self.getDir(isRelative=isRelative))
     def pathPostprocPreview(self, isRelative=True, previewId=0):
         if self.isInitialized():
-            return '{0}-preview{1}.jpg'.format(self.getDir(isRelative=isRelative), previewId)
+            # return '{0}-preview{1}.jpg'.format(self.getDir(isRelative=isRelative), previewId)
+            return '{0}-preview2.jpg'.format(self.getDir(isRelative=isRelative))
     def pathPostprocReport(self, isRelative=True):
         if self.isInitialized():
-            return '{0}-report.json'.format(self.getDir(isRelative=isRelative))
+            # return '{0}-report.json'.format(self.getDir(isRelative=isRelative))
+            return '{0}-report2.json'.format(self.getDir(isRelative=isRelative))
     def pathPostprocReportPDF(self, isRelative=True):
         if self.isInitialized():
             return '{0}-report.pdf'.format(self.getDir(isRelative=isRelative))
     def isPostprocessed(self):
         if self.isInitialized():
             pathLungs     = self.pathPostprocLungs(isRelative=False)
-            pathLesion    = self.pathPostprocLesions(isRelative=False)
+            pathLesion    = self.pathPostprocLesions2(isRelative=False)
             pathReport    = self.pathPostprocReport(isRelative=False)
             pathReportPDF = self.pathPostprocReportPDF(isRelative=False)
             if not os.path.isfile(pathLungs):
@@ -147,12 +156,28 @@ class SeriesInfo:
         with open(pathReport, 'r') as f:
             jsonData = json.loads(f.read())
             dir_relative = os.path.dirname(self.getDir(isRelative=True))
-            if jsonData.has_key('preview_images'):
+            if 'preview_images' in jsonData:
                 for tmp in jsonData['preview_images']:
                     if root_url is None:
                         tmp['url'] = '/{0}/{1}'.format(dir_relative, os.path.basename(tmp['url']))
                     else:
                         tmp['url'] = '{0}{1}/{2}'.format(root_url, dir_relative, os.path.basename(tmp['url']))
+            #
+            try:
+                tmp_jstree = jsonData['similar_cases']
+                for xx in tmp_jstree:
+                    tcase = xx['case_id']
+                    tsers = xx['series_uid']
+                    tstud = xx['study_id']
+                    for yy in xx['preview_images']:
+                        dir_rel = os.path.dirname(CaseInfo.getRelativeSeriesPath(caseId=tcase, studyId=tstud, seriesUid=tsers, modality=self.modality(), dataDir=None))
+                        if root_url is None:
+                            yy['url'] = '/{}/{}'.format(dir_rel, yy['url'])
+                        else:
+                            yy['url'] = '{}{}/{}'.format(root_url, dir_rel, yy['url'])
+                            # print('-')
+            except Exception as err:
+                print('error: {}'.format(err))
             return jsonData
     @classmethod
     def getInstanceBaseName(cls, instanceId, instanceNum):
@@ -173,6 +198,7 @@ class SeriesInfo:
                 pser = SeriesInfo(ptrCase=caseInfo, studyId=studyID, jsonInfo=seriesJson)
                 skey = pser.getKey()
                 if (not isDropBad) or pser.isGood():
+                    pser.isPostprocessed()
                     ret[skey] = pser
         return ret
     @staticmethod
@@ -181,9 +207,9 @@ class SeriesInfo:
 
 #######################################
 class CaseInfo:
-    # GOOD_MODALITIES = {'CT': 36}
+    GOOD_MODALITIES = {'CT': 36}
     # GOOD_MODALITIES = {'CT': 36, 'XR': 1, 'CR': 1}
-    GOOD_MODALITIES = {'CR': 1}
+    # GOOD_MODALITIES = {'CR': 1}
     #
     JSON_SHORT = 'info-short.json'
     JSON_ALL = 'info-all.json'
@@ -253,7 +279,8 @@ class CaseInfo:
                 tdict = dict()
                 for idx, studyJson in enumerate(self.dictAll['imagingStudies']):
                     dictSeries = SeriesInfo.getAllSeriesForStudy(self, studyJson, isDropBad=isDropBad)
-                    tdict = dict(tdict.items() + dictSeries.items())
+                    # tdict = dict(tdict.items() + dictSeries.items())
+                    tdict = {**tdict, **dictSeries} #FIXME: check this solution for python 3.5+
                     # print ('Case [%s] : #Series = %d' % (self.caseId, len(self.series)))
                 self.series = tdict
     def loadInfo(self, pathCase, isDropBad = False):

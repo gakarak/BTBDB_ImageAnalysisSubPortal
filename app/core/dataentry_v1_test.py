@@ -4,7 +4,7 @@ __author__ = 'ar'
 
 import unittest
 import os
-import dataentry_v1
+from app.core import dataentry_v1
 
 class TestDataEntry(unittest.TestCase):
     def setUp(self):

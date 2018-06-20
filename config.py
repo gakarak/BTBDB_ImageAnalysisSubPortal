@@ -1,7 +1,13 @@
 import os
+from pathlib import Path
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-DATA_DIR_NAME = 'data-real'
+# DATA_DIR_NAME = 'data-real'
+# DATA_DIR_NAME = 'experimental_data/dataentry_test0'
+# DATA_DIR_NAME = '/home/ar/data2/crdf/test_dataentry0'
+# DATA_DIR_NAME = '/home/ar/data2/crdf/@Data_BTBDB_ImageAnalysisSubPortal_s3'
+# DATA_DIR_NAME = '/mnt/s3-imlab.tbportal.org/test_dataentry0'
+DATA_DIR_NAME = os.path.join(str(Path.home()), 'data', 'crdf', '@Data_BTBDB_ImageAnalysisSubPortal_s3')
 
 class Config(object):
     DEBUG = True

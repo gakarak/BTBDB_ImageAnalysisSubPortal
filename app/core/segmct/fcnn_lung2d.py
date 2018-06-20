@@ -32,11 +32,12 @@ from keras.engine import Layer, InputSpec
 from keras import backend as K
 from keras.datasets import mnist
 from keras.models import Sequential, Model
-from keras.layers import Dense, Convolution3D, Activation, MaxPooling3D,\
+from keras.layers import Dense, Convolution2D, Activation, MaxPooling2D,\
     Flatten, BatchNormalization, InputLayer, Dropout, Reshape, Permute, Input, UpSampling3D, Lambda
 from keras.layers.normalization import BatchNormalization
 from keras.utils import np_utils
-from keras.utils.visualize_util import plot as kplot
+# from keras.utils.visualize_util import plot as kplot
+from keras.utils import plot_model as kplot
 
 ######################################################
 def resize_images_interpolated(X, height_factor, width_factor, order, dim_ordering):
@@ -100,7 +101,7 @@ class UpSamplingInterpolated2D(Layer):
         self.order = order
         super(UpSamplingInterpolated2D, self).__init__(**kwargs)
 
-    def get_output_shape_for(self, input_shape):
+    def compute_output_shape(self, input_shape):
         if self.dim_ordering == 'th':
             width = self.size[0] * input_shape[2] if input_shape[2] is not None else None
             height = self.size[1] * input_shape[3] if input_shape[3] is not None else None
@@ -134,6 +135,63 @@ class UpSamplingInterpolated2D(Layer):
 def split_list_by_blocks(lst, psiz):
     tret = [lst[x:x + psiz] for x in range(0, len(lst), psiz)]
     return tret
+
+######################################################
+def buildModelSegNet_InterpolatedUpSampling2D(inpShape=(256, 256, 5), numCls=2, kernelSize=3, order=1):
+    dataInput = Input(shape=inpShape)
+    # -------- Encoder --------
+    # Conv #1
+    x = Convolution2D(nb_filter=16, nb_row=kernelSize, nb_col=kernelSize,
+                      border_mode='same', activation='relu')(dataInput)
+    x = MaxPooling2D(pool_size=(2,2))(x)
+    # Conv #2
+    x = Convolution2D(nb_filter=32, nb_row=kernelSize, nb_col=kernelSize,
+                      border_mode='same', activation='relu')(x)
+    x = MaxPooling2D(pool_size=(2, 2))(x)
+    # Conv #3
+    x = Convolution2D(nb_filter=64, nb_row=kernelSize, nb_col=kernelSize,
+                      border_mode='same', activation='relu')(x)
+    x = MaxPooling2D(pool_size=(2, 2))(x)
+    # Conv #4
+    x = Convolution2D(nb_filter=128, nb_row=kernelSize, nb_col=kernelSize,
+                      border_mode='same', activation='relu')(x)
+    x = MaxPooling2D(pool_size=(2, 2))(x)
+    #
+    # -------- Decoder --------
+    # UpConv #1
+    x = Convolution2D(nb_filter=128, nb_row=kernelSize, nb_col=kernelSize,
+                      border_mode='same', activation='relu')(x)
+    x = UpSamplingInterpolated2D(size=(2, 2), order=order)(x)
+    # UpConv #2
+    x = Convolution2D(nb_filter=64, nb_row=kernelSize, nb_col=kernelSize,
+                      border_mode='same', activation='relu')(x)
+    x = UpSamplingInterpolated2D(size=(2, 2), order=order)(x)
+    # UpConv #3
+    x = Convolution2D(nb_filter=32, nb_row=kernelSize, nb_col=kernelSize,
+                      border_mode='same', activation='relu')(x)
+    x = UpSamplingInterpolated2D(size=(2, 2), order=order)(x)
+    retModel = Model(dataInput, x)
+    # UpConv #4
+    x = Convolution2D(nb_filter=16, nb_row=kernelSize, nb_col=kernelSize,
+                      border_mode='same', activation='relu')(x)
+    x = UpSamplingInterpolated2D(size=(2, 2), order=order)(x)
+    #
+    # 1x1 Convolution: emulation of Dense layer
+    x = Convolution2D(nb_filter=numCls, nb_row=1, nb_col=1,
+                      border_mode='valid', activation='linear')(x)
+    tmpModel = Model(dataInput, x)
+    if K.image_dim_ordering()=='th':
+        tmpShape = tmpModel.output_shape[-2:]
+        sizeReshape = np.prod(tmpShape)
+        x = Reshape([numCls, sizeReshape])(x)
+        x = Permute((2,1))(x)
+    else:
+        tmpShape = tmpModel.output_shape[1:-1]
+        sizeReshape = np.prod(tmpShape)
+        x = Reshape([sizeReshape,numCls])(x)
+    x = Activation('softmax')(x)
+    retModel = Model(dataInput, x)
+    return retModel
 
 ######################################################
 class BatcherCTLung2D:
@@ -349,8 +407,8 @@ class BatcherCTLung2D:
     def precalculateAndLoadMean(self, isRecalculateMean=False):
         if os.path.isfile(self.pathMeanData) and (not isRecalculateMean):
             print (':: found mean-value file, try to load from it [%s] ...' % self.pathMeanData)
-            with open(self.pathMeanData, 'r') as f:
-                self.meanData = pickle.load(f)
+            with open(self.pathMeanData, 'rb') as f:
+                self.meanData = pickle.load(f, encoding='latin1')
             tmpMeanKeys = ('meanImg', 'meanCh', 'meanImgCh')
             for ii in tmpMeanKeys:
                 if ii not in self.meanData.keys():
@@ -527,10 +585,12 @@ class BatcherCTLung2D:
         tpathModelWeights = '%s.h5' % tpathBase
         if not os.path.isfile(tpathModelWeights):
             raise Exception('Cant find h5-Weights-file [%s]' % tpathModelWeights)
-        with open(pathModelJson, 'r') as f:
-            tmpStr = f.read()
-            model = keras.models.model_from_json(tmpStr, custom_objects={'UpSamplingInterpolated2D': UpSamplingInterpolated2D})
-            model.load_weights(tpathModelWeights)
+        # with open(pathModelJson, 'r') as f:
+        #     tmpStr = f.read()
+        #     model = keras.models.model_from_json(tmpStr, custom_objects={'UpSamplingInterpolated2D': UpSamplingInterpolated2D})
+        #     model.load_weights(tpathModelWeights)
+        model = buildModelSegNet_InterpolatedUpSampling2D(inpShape=(256, 256, 5))
+        model.load_weights(tpathModelWeights)
         return model
     def loadModelFromDir(self, pathDirWithModels, paramFilter=None):
         if paramFilter is None:
@@ -562,17 +622,17 @@ class BatcherCTLung2D:
         self.isTheanoShape = (K.image_dim_ordering() == 'th')
         if self.isTheanoShape:
             self.shapeMskSlc = tuple([self.numCls] + list(self.shapeImgSlc[1:]))
-            self.numSlices = (self.model.input_shape[1] - 1) / 2
+            self.numSlices = (self.model.input_shape[1] - 1) // 2
         else:
             self.shapeMskSlc = tuple(list(self.shapeImgSlc[:-1]) + [self.numCls])
-            self.numSlices = (self.model.input_shape[-1] - 1) / 2
+            self.numSlices = (self.model.input_shape[-1] - 1) // 2
     def inference(self, lstData, batchSize=2, isDebug=False):
         if self.model is None:
             raise Exception('Model is not loaded... load model before call inferece()')
         if len(lstData) > 0:
             tmpListOfImg = []
             # (1) load into memory
-            if isinstance(lstData[0], str) or isinstance(lstData[0], unicode):
+            if isinstance(lstData[0], str):# or isinstance(lstData[0], unicode):
                 for ii in lstData:
                     tmpListOfImg.append(nib.load(ii).get_data())
             else:

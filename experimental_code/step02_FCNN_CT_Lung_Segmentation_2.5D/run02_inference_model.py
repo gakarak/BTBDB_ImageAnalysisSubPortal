@@ -143,7 +143,7 @@ if __name__ == '__main__':
     parNumIterPerEpochVal = (batcherVal.numImg * numSlicesProc) / parBatchSizeVal
     stepPrintVal = int(parNumIterPerEpochVal / 5)
     #
-    model = batcherTrn.loadModelFromDir(pathDirWithModels=batcherTrn.wdir,  paramFilter=parExportInfo)
+    model = batcherTrn.loadModelFromDir(dir_with_models=batcherTrn.wdir, paramFilter=parExportInfo)
     # model.compile(loss='categorical_crossentropy', optimizer=parOptimizer, metrics=['accuracy'])
     # model.summary()
     for ii in range(batcherVal.numImg):

@@ -7,7 +7,7 @@ import unittest
 import matplotlib.pyplot as plt
 import nibabel as nib
 from app.core.preprocessing import resizeNii
-from fcnn_lung2d import BatcherCTLung2D
+from app.core.segmct.fcnn_lung2d import BatcherCTLung2D
 from app.core.segmct import segmentLesions3D, segmentLungs25D
 
 class TestCTProcessing(unittest.TestCase):
