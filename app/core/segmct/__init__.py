@@ -322,7 +322,7 @@ def api_generateAllReports(series,
         "ysize": imgPreview.shape[0],
         "url": os.path.basename(pathPreview)
     }
-    lst_legends = [mpatches.Patch(color=lesion_id2rgb[kk], label=vv) for kk, vv in lesion_id2name.items()]
+    lst_legends = [mpatches.Patch(color=lesion_id2rgb[kk], label=vv) for kk, vv in lesion_id2name.items() if kk != 0]
     frame1 = plt.gca()
     frame1.axes.set_axis_off()
     fig = plt.gcf()
@@ -332,7 +332,7 @@ def api_generateAllReports(series,
     DPI = fig.get_dpi()
     fig.set_size_inches(imgPreview.shape[1] / float(DPI), imgPreview.shape[0] / float(DPI))
     plt.imshow(imgPreview)
-    plt.legend(handles=lst_legends)
+    plt.legend(handles=lst_legends, loc='upper_center', bbox_to_anchor=(1.0, 1.00), ncol=len(lst_legends))
     fig.savefig(pathPreview, pad_inches = 0)
     fig.clf()
     fig.clear()

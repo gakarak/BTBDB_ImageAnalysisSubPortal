@@ -14,6 +14,8 @@ import skimage as sk
 import skimage.filters
 import skimage.morphology
 import matplotlib.pyplot as plt
+import cv2
+from copy import deepcopy
 
 #############################################
 def _get_msk_bnd2(pmsk, dilat_siz=2):
@@ -598,6 +600,10 @@ def makePreview4LesionV2(dataImg, dataMsk, dataLes, sizPrv=256, nx=4, ny=3, pad=
             # timgR[tles>1] = tles[tles>1]
             timgRGB = (255. * timgRGB).astype(np.uint8)
             timgRGB = np.pad(timgRGB, pad_width=[[pad],[pad],[0]], mode='constant')
+            timgRGB_ = deepcopy(timgRGB)
+            if (yy != 0) or (xx != 0):
+                cv2.putText(timgRGB_, 'Slice {}'.format(arrZ[cnt-1]), (timgRGB.shape[0] - 110, timgRGB.shape[1] - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 140, 10), 2)
+                cv2.addWeighted(timgRGB_, 0.9, timgRGB, 1 - 0.9, 0, timgRGB)
             # tmpH.append(timgRGB[:, ::-1])
             tmpH.append(timgRGB)
         imgH = np.hstack(tmpH)
