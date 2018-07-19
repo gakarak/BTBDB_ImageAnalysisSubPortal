@@ -14,8 +14,14 @@ import skimage as sk
 import skimage.filters
 import skimage.morphology
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 import cv2
 from copy import deepcopy
+import os
+import json
+import shutil
+import SimpleITK as sitk
+import time
 
 #############################################
 def _get_msk_bnd2(pmsk, dilat_siz=2):
@@ -550,7 +556,34 @@ def makePreview4Lesion(dataImg, dataMsk, dataLes, sizPrv=256, nx=4, ny=3, pad=5,
     return imgV
 
 # generate preview
-def makePreview4LesionV2(dataImg, dataMsk, dataLes, sizPrv=256, nx=4, ny=3, pad=5, lesT=0.7):
+
+def genPreview2D(dataImg_, dataMsk_, dataLes_, pathPreview_, type_, sizPrv=256, nx=4, ny=3, pad=5, lesT=0.7):
+    imgPreview_ = makePreview4LesionV2(dataImg_, dataMsk_, dataLes_, type_, sizPrv, nx, ny, pad, lesT)
+    imgPreviewJson_ = {
+        "description": "CT Lesion preview",
+        "content-type": "image/jpeg",
+        "xsize": imgPreview_.shape[1],
+        "ysize": imgPreview_.shape[0],
+        "url": os.path.basename(pathPreview_)
+    }
+    lst_legends = [mpatches.Patch(color=lesion_id2rgb[kk], label=vv) for kk, vv in lesion_id2name.items() if kk != 0]
+    frame1 = plt.gca()
+    frame1.axes.set_axis_off()
+    fig = plt.gcf()
+    ax = plt.Axes(fig, [0., 0., 1., 1.])
+    ax.set_axis_off()
+    fig.add_axes(ax)
+    DPI = fig.get_dpi()
+    fig.set_size_inches(imgPreview_.shape[1] / float(DPI), imgPreview_.shape[0] / float(DPI))
+    plt.imshow(imgPreview_)
+    plt.legend(handles=lst_legends, loc='best', bbox_to_anchor=(1.0, 1.00), ncol=len(lst_legends))
+    fig.savefig(pathPreview_, pad_inches=0)
+    fig.clf()
+    fig.clear()
+    return imgPreviewJson_
+
+
+def makePreview4LesionV2(dataImg, dataMsk, dataLes, type_=2, sizPrv=256, nx=4, ny=3, pad=5, lesT=0.7):
     shpPrv = (sizPrv, sizPrv, sizPrv)
     dataImgR = resize3D(dataImg, shpPrv)
     dataMskR = resize3D(dataMsk, shpPrv, order=0)
@@ -558,6 +591,40 @@ def makePreview4LesionV2(dataImg, dataMsk, dataLes, sizPrv=256, nx=4, ny=3, pad=
     numXY = nx*ny - 1
     brd = 0.1
     arrZ = np.linspace(brd*sizPrv, (1.-brd)*sizPrv, numXY ).astype(np.int)
+
+    if type_ == 2:
+        print('equidistant Z')
+    if type_ == 3:
+        print('selection of most severely affected slices')
+        svrVals = np.zeros(sizPrv, np.float32)
+        for zz in range(sizPrv):
+            slice_ = deepcopy(dataLesR[ :, :, zz ])
+            slice_[dataMskR[:, :, zz] == 0] = 0
+            for kk, vv in lesion_id2name.items():
+                if kk == 0:  # skip background label
+                    continue
+                if kk == 1:  # weight Foci by 0.2
+                    svrVals[zz] += 0.2*float(np.sum(slice_[:] == kk))
+                else:
+                    svrVals[zz] += float(np.sum(slice_[:] == kk))
+        zzIdx = np.argsort(svrVals)[::-1]
+        arrSvrZ = np.zeros(len(arrZ), np.uint32)
+        arrSvrZ[0] = zzIdx[0]
+        tidx = 1
+        i = 1
+        while i < len(arrSvrZ):
+            fnd = False
+            for ti in range(i):
+                if np.abs(zzIdx[tidx] - arrSvrZ[ti]) <= 5:
+                    fnd = True
+                    break
+            if fnd == False:
+                arrSvrZ[i] = zzIdx[tidx]
+                i += 1
+            tidx += 1
+        arrSvrZ = np.sort(arrSvrZ)
+        arrZ = deepcopy(arrSvrZ)
+
     cnt = 0
     tmpV = []
     for yy in range(ny):
@@ -756,8 +823,8 @@ def vol2dcmRGB(rgb_vol_, rgb_spacing_, study_id_, patient_id_, study_uid_, serie
 
         sop_instance_uid = str(sop_instance_uids_[i + 1])
         fname = fnames_[i + 1]
-        print(sop_instance_uid)
-        print(fname)
+        # print(sop_instance_uid)
+        # print(fname)
         image_slice.SetMetaData("0008|0018", sop_instance_uid)  # set SOPInstanceUID
         # exit()
 
@@ -783,7 +850,7 @@ def niftii2dcm(nii_filename_, study_id_, patient_id_, study_uid_, series_uid_, s
     nii_img_affine = nii_img.affine
     nii_img_shape = nii_img_vol.shape
     nii_img_spacing = [ np.abs(nii_img_affine[i][i]) for i in range(3) ]
-    print(nii_img_spacing)
+    # print(nii_img_spacing)
 
     nii_img_vol = np.transpose(nii_img_vol, (2, 1, 0))
 
@@ -848,9 +915,9 @@ def niftii2dcm(nii_filename_, study_id_, patient_id_, study_uid_, series_uid_, s
         image_slice.SetMetaData("0020|0013", str(i+1))  # Instance Number
 
         sop_instance_uid = str(sop_instance_uids_[ i + 1 ])
-        print(sop_instance_uid)
+        # print(sop_instance_uid)
         fname = fnames_[i + 1]
-        print(fname)
+        # print(fname)
         image_slice.SetMetaData("0008|0018", sop_instance_uid) # set SOPInstanceUID
 
         # Write to the output directory and add the extension dcm, to force writing in DICOM format.
@@ -861,18 +928,16 @@ def niftii2dcm(nii_filename_, study_id_, patient_id_, study_uid_, series_uid_, s
     return
 
 
-def prepareCTpreview(ct_nii_filename_):
-
+def prepareCTpreview(series_):
+    ct_nii_filename_ = series_.pathConvertedNifti(isRelative=False)
     if not os.path.exists(ct_nii_filename_):
         print('File {} not exists'.format(ct_nii_filename_))
         return
+    # msk_nii_filename_ = os.path.dirname(ct_nii_filename_) + '/' + '.'.join(os.path.basename(ct_nii_filename_).split('.')[:-2]) + '-lesions3.nii.gz'
+    msk_nii_filename_ = series_.pathPostprocLesions2(isRelative=False)
 
-    msk_nii_filename_ = os.path.dirname(ct_nii_filename_) + '/' + '.'.join(os.path.basename(ct_nii_filename_).split('.')[:-2]) + '-lesions3.nii.gz'
-    report_filename_ = os.path.dirname(ct_nii_filename_) + '/' + '.'.join(os.path.basename(ct_nii_filename_).split('.')[:-2]) + '-report2.json'
-
-    original_out_dirname_ = os.path.dirname(ct_nii_filename_) + '/original/'
-    lesions_only_out_dirname_ = os.path.dirname(ct_nii_filename_) + '/lesions_only/'
-    lesions_map_out_dirname_ = os.path.dirname(ct_nii_filename_) + '/lesions_map/'
+    # report_filename_ = os.path.dirname(ct_nii_filename_) + '/' + '.'.join(os.path.basename(ct_nii_filename_).split('.')[:-2]) + '-report2.json'
+    report_filename_ = series_.pathPostprocReport(isRelative=False)
 
     if not os.path.exists(msk_nii_filename_):
         print('Lesion map file {} not exists'.format(msk_nii_filename_))
@@ -885,6 +950,10 @@ def prepareCTpreview(ct_nii_filename_):
 
     sop_instance_uids, fnames = get_instance_uids_from_json(all_json_filename_=os.path.dirname(ct_nii_filename_)+'/../info-all.json', patient_id_=patient_id, study_id_=study_id, study_uid_=study_uid, series_uid_=series_uid)
     # exit()
+
+    original_out_dirname_ = os.path.realpath(os.path.dirname(ct_nii_filename_) + '/../../../@viewer/original/' + patient_id + '/' + study_uid + '/' + series_uid )+ '/'
+    lesions_only_out_dirname_ = os.path.realpath(os.path.dirname(ct_nii_filename_) + '/../../../@viewer/lesions_only/' + patient_id + '/' + study_uid + '/' + series_uid )+ '/'
+    lesions_map_out_dirname_ =os.path.realpath(os.path.dirname(ct_nii_filename_) + '/../../../@viewer/lesions_map/' + patient_id + '/' + study_uid + '/' + series_uid )+ '/'
 
     if os.path.exists(original_out_dirname_):
         shutil.rmtree(original_out_dirname_, ignore_errors=True)

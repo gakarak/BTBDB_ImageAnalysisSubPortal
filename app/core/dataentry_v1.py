@@ -126,8 +126,8 @@ class SeriesInfo:
             return '{0}-lesions3.nii.gz'.format(self.getDir(isRelative=isRelative))
     def pathPostprocPreview(self, isRelative=True, previewId=0):
         if self.isInitialized():
-            # return '{0}-preview{1}.jpg'.format(self.getDir(isRelative=isRelative), previewId)
-            return '{0}-preview2.jpg'.format(self.getDir(isRelative=isRelative))
+            return '{0}-preview{1}.jpg'.format(self.getDir(isRelative=isRelative), previewId)
+            # return '{0}-preview2.jpg'.format(self.getDir(isRelative=isRelative))
     def pathPostprocReport(self, isRelative=True):
         if self.isInitialized():
             # return '{0}-report.json'.format(self.getDir(isRelative=isRelative))
