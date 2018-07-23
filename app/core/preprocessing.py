@@ -584,6 +584,21 @@ def genPreview2D(dataImg_, dataMsk_, dataLes_, pathPreview_, type_, sizPrv=256, 
 
 
 def makePreview4LesionV2(dataImg, dataMsk, dataLes, type_=2, sizPrv=256, nx=4, ny=3, pad=5, lesT=0.7):
+
+    if type_ == 4: # Maximum intensity projection
+        print('Maximum intensity projection')
+        new_img = sitk.GetImageFromArray(dataLes)
+        voxel_ = [0, 0, 0]
+        dim = 1
+        voxel_[dim] = (dataLes.shape[dim] - 1) // 2
+        projection = sitk.MaximumProjection(new_img, 0)
+
+        sitk.WriteImage(projection, '/tmp/proj.nii.gz')
+        img_nii = nib.load('/tmp/proj.nii.gz')
+        imgV = img_nii.get_data()
+        imgV = np.reshape(imgV, (imgV.shape[1], imgV.shape[2])).astype(np.uint8)
+        return imgV
+
     shpPrv = (sizPrv, sizPrv, sizPrv)
     dataImgR = resize3D(dataImg, shpPrv)
     dataMskR = resize3D(dataMsk, shpPrv, order=0)

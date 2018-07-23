@@ -266,6 +266,7 @@ def api_generateAllReports(series,
     pathSegmLesions1 = series.pathPostprocLesions2(isRelative=False)
     pathPreview2 = series.pathPostprocPreview(isRelative=False, previewId=2)
     pathPreview3 = series.pathPostprocPreview(isRelative=False, previewId=3)
+    pathPreview4 = series.pathPostprocPreview(isRelative=False, previewId=4)
     pathReport = series.pathPostprocReport(isRelative=False)
     # (1) Lung/Lesions segmentation
     retSegm = api_segmentLungAndLesion(dirModelLung=dirModelLung,
@@ -318,6 +319,7 @@ def api_generateAllReports(series,
 
     imgPreviewJson2 = preproc.genPreview2D(dataImg, dataMsk, dataLes, pathPreview2, 2)
     imgPreviewJson3 = preproc.genPreview2D(dataImg, dataMsk, dataLes, pathPreview3, 3)
+    imgPreviewJson4 = preproc.genPreview2D(dataImg, dataMsk, dataLes, pathPreview4, 4)
 
     # (6) generate & save JSON report
     try:
