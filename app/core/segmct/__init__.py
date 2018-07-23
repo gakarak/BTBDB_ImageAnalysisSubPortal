@@ -319,7 +319,7 @@ def api_generateAllReports(series,
 
     imgPreviewJson2 = preproc.genPreview2D(dataImg, dataMsk, dataLes, pathPreview2, 2)
     imgPreviewJson3 = preproc.genPreview2D(dataImg, dataMsk, dataLes, pathPreview3, 3)
-    imgPreviewJson4 = preproc.genPreview2D(dataImg, dataMsk, dataLes, pathPreview4, 4)
+    # imgPreviewJson4 = preproc.genPreview2D(dataImg, dataMsk, dataLes, pathPreview4, 4)
 
     # (6) generate & save JSON report
     try:

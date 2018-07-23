@@ -836,8 +836,8 @@ def vol2dcmRGB(rgb_vol_, rgb_spacing_, study_id_, patient_id_, study_uid_, serie
         image_slice.SetMetaData("0020|0013", str(i+1))  # Instance Number
 
 
-        sop_instance_uid = str(sop_instance_uids_[i + 1])
-        fname = fnames_[i + 1]
+        sop_instance_uid = str(sop_instance_uids_[image_RGB.GetDepth() - i ])
+        fname = fnames_[image_RGB.GetDepth() - i ]
         # print(sop_instance_uid)
         # print(fname)
         image_slice.SetMetaData("0008|0018", sop_instance_uid)  # set SOPInstanceUID
@@ -929,9 +929,9 @@ def niftii2dcm(nii_filename_, study_id_, patient_id_, study_uid_, series_uid_, s
         image_slice.SetMetaData("0020|0032", '\\'.join(map(str, new_img.TransformIndexToPhysicalPoint((0, 0, i)))))  # Image Position (Patient)
         image_slice.SetMetaData("0020|0013", str(i+1))  # Instance Number
 
-        sop_instance_uid = str(sop_instance_uids_[ i + 1 ])
+        sop_instance_uid = str(sop_instance_uids_[ new_img.GetDepth() - i  ])
         # print(sop_instance_uid)
-        fname = fnames_[i + 1]
+        fname = fnames_[ new_img.GetDepth() - i ]
         # print(fname)
         image_slice.SetMetaData("0008|0018", sop_instance_uid) # set SOPInstanceUID
 
