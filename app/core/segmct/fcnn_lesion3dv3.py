@@ -504,6 +504,36 @@ def run_inference(cfg, model, path_out_nii = None):
         nib.save(nii_val, path_out_val)
     return nii_cls, nii_val
 
+def get_args_obj():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--mode_run',   type=str, required=False, default=Config.modes_run[0],
+                        help='running modes, available modes: {}'.format(Config.modes_run))
+    parser.add_argument('--mode_cls',   type=str, required=False, default='trn',
+                        help='classification modes, available modes: {}'.format(Config.modes_cls))
+    parser.add_argument('--idx_trn',    type=str, required=False,  default=None, help='path to train csv')
+    parser.add_argument('--idx_val',    type=str, required=False, default=None, help='path to validation csv')
+    parser.add_argument('--batch_size', type=int, required=False, default=8, help='batch size')
+    parser.add_argument('--smpl_per_img', type=int, required=False, default=4, help='batch size')
+    parser.add_argument('--epochs',     type=int, required=False, help='#epochs', default=100)
+    parser.add_argument('--iters_per_epoch', type=int, required=False, help='#epochs', default=200)
+    parser.add_argument('--iters_val',  type=int, required=False, help='#epochs', default=500)
+    parser.add_argument('--is_debug',   action='store_true', help='debug mode')
+    parser.add_argument('--is_zerobg',  action='store_true', help='zero loss in non-lung voxels')
+    parser.add_argument('--crop3d',     type=str, required=False, default='96x96x64',
+                        help='input image shape in str-format WidthxHeightxChannels, like 96x96x64')
+    parser.add_argument('--num_wrks',   type=int, required=False, help='#workers', default=3)
+    #
+    parser.add_argument('--infer_shape', type=str, required=False, help='#workers', default='512x512x256')
+    parser.add_argument('--infer_crop',  type=str, required=False, help='#workers', default='128x128x64')
+    parser.add_argument('--infer_pad',   type=int, required=False, help='#workers', default=32)
+    parser.add_argument('--model',       type=str, required=False, help='Model path for inference', default=None)
+    parser.add_argument('--img',         type=str, required=False, help='Input image for processing', default=None)
+    parser.add_argument('--lung',        type=str, required=False, help='Input lungs mask for processing', default=None)
+    parser.add_argument('--infer_out',   type=str, required=False, help='Output path for class-mask', default=None)
+    args = parser.parse_args()
+    return args
+
+
 
 ##################################################
 if __name__ == '__main__':
