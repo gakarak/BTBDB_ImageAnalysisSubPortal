@@ -8,6 +8,7 @@ import json
 import numpy as np
 import nibabel as nib
 from app.core import utils
+import app.backend
 
 #######################################
 class SeriesInfo:
@@ -159,9 +160,14 @@ class SeriesInfo:
             if 'preview_images' in jsonData:
                 for tmp in jsonData['preview_images']:
                     if root_url is None:
-                        tmp['url'] = '/{0}/{1}'.format(dir_relative, os.path.basename(tmp['url']))
+                        tmp['url2'] = '/{0}/{1}'.format(dir_relative, os.path.basename(tmp['url']))
                     else:
-                        tmp['url'] = '{0}{1}/{2}'.format(root_url, dir_relative, os.path.basename(tmp['url']))
+                        tmp['url2'] = '{0}{1}/{2}'.format(root_url, dir_relative, os.path.basename(tmp['url']))
+                    tcase = jsonData['case_id']
+                    tsers = jsonData['series_uid']
+                    tstud = jsonData['study_id']
+                    rel_url = app.backend.config.URL_TEMPLATE_S3_REL.format(tcase, tstud, tsers, self.modality(), 'preview2.jpg')
+                    tmp['url'] = app.backend.config.get_s3_cloud_front_url(rel_url)
             #
             try:
                 tmp_jstree = jsonData['similar_cases']
@@ -172,9 +178,11 @@ class SeriesInfo:
                     for yy in xx['preview_images']:
                         dir_rel = os.path.dirname(CaseInfo.getRelativeSeriesPath(caseId=tcase, studyId=tstud, seriesUid=tsers, modality=self.modality(), dataDir=None))
                         if root_url is None:
-                            yy['url'] = '/{}/{}'.format(dir_rel, yy['url'])
+                            yy['url2'] = '/{}/{}'.format(dir_rel, yy['url'])
                         else:
-                            yy['url'] = '{}{}/{}'.format(root_url, dir_rel, yy['url'])
+                            yy['url2'] = '{}{}/{}'.format(root_url, dir_rel, yy['url'])
+                        rel_url = app.backend.config.URL_TEMPLATE_S3_REL.format(tcase, tstud, tsers, self.modality(), 'preview2.jpg')
+                        yy['url'] = app.backend.config.get_s3_cloud_front_url(rel_url)
                             # print('-')
             except Exception as err:
                 print('error: {}'.format(err))
