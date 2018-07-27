@@ -19,7 +19,7 @@ class Config(object):
     DIR_DATA = os.path.join(BASE_DIR, DATA_DIR_NAME)
     # case-id, stupy-id, series-id, modality-typy(str), file-final part
     URL_S3_CLOUD_FRONT = 'https://imlab.tbportal.org'
-    URL_TEMPLATE_S3_REL = 'crdf/@Data_BTBDB_ImageAnalysisSubPortal_s3/case-{}/study-{}/series-{}-{}-{}'
+    URL_TEMPLATE_S3_REL = 'crdf/@Data_BTBDB_ImageAnalysisSubPortal_s3/case-{}/study-{}/{}'
     if not os.path.isdir(DIR_DATA):
         os.makedirs(DIR_DATA)
     def get_s3_cloud_front_url(self, rel_url):

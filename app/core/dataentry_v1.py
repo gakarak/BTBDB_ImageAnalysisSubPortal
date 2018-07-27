@@ -168,7 +168,7 @@ class SeriesInfo:
                     tcase = jsonData['case_id']
                     tsers = jsonData['series_uid']
                     tstud = jsonData['study_id']
-                    rel_url = app.backend.config.URL_TEMPLATE_S3_REL.format(tcase, tstud, tsers, self.modality(), os.path.basename(tmp['url']))
+                    rel_url = app.backend.config.URL_TEMPLATE_S3_REL.format(tcase, tstud, os.path.basename(tmp['url']))
                     tmp['url'] = app.backend.config.get_s3_cloud_front_url(rel_url)
             #
             try:
@@ -183,7 +183,7 @@ class SeriesInfo:
                             yy['url2'] = '/{}/{}'.format(dir_rel, yy['url'])
                         else:
                             yy['url2'] = '{}{}/{}'.format(root_url, dir_rel, yy['url'])
-                        rel_url = app.backend.config.URL_TEMPLATE_S3_REL.format(tcase, tstud, tsers, self.modality(), os.path.basename(yy['url']))
+                        rel_url = app.backend.config.URL_TEMPLATE_S3_REL.format(tcase, tstud, os.path.basename(yy['url']))
                         yy['url'] = app.backend.config.get_s3_cloud_front_url(rel_url)
                             # print('-')
             except Exception as err:
