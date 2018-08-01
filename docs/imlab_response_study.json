@@ -1,0 +1,917 @@
+{
+    "retcode": 0,
+    "errorstr": "",
+    "series":[
+        {
+            "severity_score": {
+                "description": "good",
+                "value": 5
+            },
+            "visual_collections":[
+                {
+                    "base_url": "https://imlab.tbportal.org/crdf/@viewer/lesions_map/",
+                    "name": "Colored lesions 1"
+                },
+                {
+                    "base_url": "https://imlab.tbportal.org/crdf/@viewer/lesions_only/",
+                    "name": "Colored lesions 2"
+                }
+            ],
+            "lesions": {
+                "left": [
+                    0.0031596680637449026,
+                    0.032689761370420456,
+                    0.4226972758769989
+                ],
+                "left_by_name": [
+                    {
+                        "Plevritis": 0.0,
+                        "Caverns": 0.0,
+                        "Fibrosis": 0.0,
+                        "Atelectasis": 0.0,
+                        "Foci": 0.0031596680637449026,
+                        "Pneumothorax": 0.0
+                    },
+                    {
+                        "Plevritis": 0.0,
+                        "Caverns": 0.0,
+                        "Fibrosis": 0.0,
+                        "Atelectasis": 0.0,
+                        "Foci": 0.032689761370420456,
+                        "Pneumothorax": 0.0
+                    },
+                    {
+                        "Plevritis": 0.0,
+                        "Caverns": 1.0,
+                        "Fibrosis": 0.0,
+                        "Atelectasis": 0.0,
+                        "Foci": 0.4226972758769989,
+                        "Pneumothorax": 0.0
+                    }
+                ],
+                "left_by_id": [
+                    {
+                        "2": 0.0,
+                        "6": 0.0,
+                        "3": 0.0,
+                        "5": 0.0,
+                        "4": 0.0,
+                        "1": 0.0031596680637449026
+                    },
+                    {
+                        "2": 0.0,
+                        "6": 0.0,
+                        "3": 0.0,
+                        "5": 0.0,
+                        "4": 0.0,
+                        "1": 0.032689761370420456
+                    },
+                    {
+                        "2": 1.0,
+                        "6": 0.0,
+                        "3": 0.0,
+                        "5": 0.0,
+                        "4": 0.0,
+                        "1": 0.4226972758769989
+                    }
+                ],
+                "right_by_name": [
+                    {
+                        "Plevritis": 0.0,
+                        "Caverns": 0.0,
+                        "Fibrosis": 0.0,
+                        "Atelectasis": 0.0,
+                        "Foci": 0.0,
+                        "Pneumothorax": 0.0
+                    },
+                    {
+                        "Plevritis": 0.0,
+                        "Caverns": 0.0,
+                        "Fibrosis": 0.0,
+                        "Atelectasis": 0.0,
+                        "Foci": 0.02061319351196289,
+                        "Pneumothorax": 0.0
+                    },
+                    {
+                        "Plevritis": 0.0,
+                        "Caverns": 1.0,
+                        "Fibrosis": 0.0,
+                        "Atelectasis": 0.0,
+                        "Foci": 0.25518864393234253,
+                        "Pneumothorax": 0.0
+                    }
+                ],
+                "right_by_id": [
+                    {
+                        "2": 0.0,
+                        "6": 0.0,
+                        "3": 0.0,
+                        "5": 0.0,
+                        "4": 0.0,
+                        "1": 0.0
+                    },
+                    {
+                        "2": 0.0,
+                        "6": 0.0,
+                        "3": 0.0,
+                        "5": 0.0,
+                        "4": 0.0,
+                        "1": 0.02061319351196289
+                    },
+                    {
+                        "2": 1.0,
+                        "6": 0.0,
+                        "3": 0.0,
+                        "5": 0.0,
+                        "4": 0.0,
+                        "1": 0.25518864393234253
+                    }
+                ],
+                "right": [
+                    0.0,
+                    0.02061319351196289,
+                    0.25518864393234253
+                ]
+            },
+            "volume": {
+                "right": [
+                    {
+                        "units": "voxels",
+                        "value": 2154263
+                    },
+                    {
+                        "units": "mm3",
+                        "value": 2662587.0208740234
+                    }
+                ],
+                "left": [
+                    {
+                        "units": "voxels",
+                        "value": 3162941
+                    },
+                    {
+                        "units": "mm3",
+                        "value": 3909274.612426758
+                    }
+                ],
+                "total": [
+                    {
+                        "units": "voxels",
+                        "value": 5317204
+                    },
+                    {
+                        "units": "mm3",
+                        "value": 6571861.633300781
+                    }
+                ]
+            },
+            "bounding_box": [
+                {
+                    "units": "voxels",
+                    "y": 512,
+                    "x": 512,
+                    "z": 153
+                },
+                {
+                    "units": "mm",
+                    "y": 360.0,
+                    "x": 360.0,
+                    "z": 382.5
+                }
+            ],
+            "detected_lesions": [
+                "Foci",
+                "Caverns"
+            ],
+            "patient_id": "cf8f1719-4960-456f-a831-52325ab39a7d",
+            "asymmetry": [
+                {
+                    "type": "volume",
+                    "value": 0.1897008277282572
+                },
+                {
+                    "type": "texture",
+                    "value": -1
+                }
+            ],
+            "series_uid": "1.3.6.1.4.1.25403.163683357445804.11044.20131119114630.5",
+            "similar_cases": [
+                {
+                    "study_id": "684c20f5-ca28-444e-af95-87ca72d33d71",
+                    "case_id": "349e2f8a-8e73-470b-88b6-e9b95c8546f3",
+                    "preview_images": [
+                        {
+                            "description": "CT Lesion preview",
+                            "ysize": 798,
+                            "content-type": "image/jpeg",
+                            "url": "https://imlab.tbportal.org/crdf/@Data_BTBDB_ImageAnalysisSubPortal_s3/case-349e2f8a-8e73-470b-88b6-e9b95c8546f3/study-684c20f5-ca28-444e-af95-87ca72d33d71/series-1.2.840.113619.2.55.3.2831156813.315.1453441807.976-CT-preview3.jpg",
+                            "xsize": 1064,
+                            "url2": "http://image-analysis-controller-01.tbportal.org/data/?path=case-349e2f8a-8e73-470b-88b6-e9b95c8546f3/study-684c20f5-ca28-444e-af95-87ca72d33d71/series-1.2.840.113619.2.55.3.2831156813.315.1453441807.976-CT-preview3.jpg"
+                        },
+                        {
+                            "description": "CT Lesion preview",
+                            "ysize": 798,
+                            "content-type": "image/jpeg",
+                            "url": "https://imlab.tbportal.org/crdf/@Data_BTBDB_ImageAnalysisSubPortal_s3/case-349e2f8a-8e73-470b-88b6-e9b95c8546f3/study-684c20f5-ca28-444e-af95-87ca72d33d71/series-1.2.840.113619.2.55.3.2831156813.315.1453441807.976-CT-preview2.jpg",
+                            "xsize": 1064,
+                            "url2": "http://image-analysis-controller-01.tbportal.org/data/?path=case-349e2f8a-8e73-470b-88b6-e9b95c8546f3/study-684c20f5-ca28-444e-af95-87ca72d33d71/series-1.2.840.113619.2.55.3.2831156813.315.1453441807.976-CT-preview2.jpg"
+                        }
+                    ],
+                    "patient_id": "80138e6c-180b-42b0-8ff0-50b84bf39421",
+                    "study_uid": "1.2.840.113619.2.55.3.2831156813.315.1453441807.970",
+                    "series_uid": "1.2.840.113619.2.55.3.2831156813.315.1453441807.976"
+                },
+                {
+                    "study_id": "684c20f5-ca28-444e-af95-87ca72d33d71",
+                    "case_id": "349e2f8a-8e73-470b-88b6-e9b95c8546f3",
+                    "preview_images": [
+                        {
+                            "description": "CT Lesion preview",
+                            "ysize": 798,
+                            "content-type": "image/jpeg",
+                            "url": "https://imlab.tbportal.org/crdf/@Data_BTBDB_ImageAnalysisSubPortal_s3/case-349e2f8a-8e73-470b-88b6-e9b95c8546f3/study-684c20f5-ca28-444e-af95-87ca72d33d71/series-1.2.840.113619.2.55.3.2831156813.315.1453441807.976.4-CT-preview3.jpg",
+                            "xsize": 1064,
+                            "url2": "http://image-analysis-controller-01.tbportal.org/data/?path=case-349e2f8a-8e73-470b-88b6-e9b95c8546f3/study-684c20f5-ca28-444e-af95-87ca72d33d71/series-1.2.840.113619.2.55.3.2831156813.315.1453441807.976.4-CT-preview3.jpg"
+                        },
+                        {
+                            "description": "CT Lesion preview",
+                            "ysize": 798,
+                            "content-type": "image/jpeg",
+                            "url": "https://imlab.tbportal.org/crdf/@Data_BTBDB_ImageAnalysisSubPortal_s3/case-349e2f8a-8e73-470b-88b6-e9b95c8546f3/study-684c20f5-ca28-444e-af95-87ca72d33d71/series-1.2.840.113619.2.55.3.2831156813.315.1453441807.976.4-CT-preview2.jpg",
+                            "xsize": 1064,
+                            "url2": "http://image-analysis-controller-01.tbportal.org/data/?path=case-349e2f8a-8e73-470b-88b6-e9b95c8546f3/study-684c20f5-ca28-444e-af95-87ca72d33d71/series-1.2.840.113619.2.55.3.2831156813.315.1453441807.976.4-CT-preview2.jpg"
+                        }
+                    ],
+                    "patient_id": "80138e6c-180b-42b0-8ff0-50b84bf39421",
+                    "study_uid": "1.2.840.113619.2.55.3.2831156813.315.1453441807.970",
+                    "series_uid": "1.2.840.113619.2.55.3.2831156813.315.1453441807.976.4"
+                },
+                {
+                    "study_id": "e24a0839-769d-45cc-9c49-52b62fee8a6f",
+                    "case_id": "8d0d834f-533c-4145-86e9-c4d5f2f99c6b",
+                    "preview_images": [
+                        {
+                            "description": "CT Lesion preview",
+                            "ysize": 798,
+                            "content-type": "image/jpeg",
+                            "url": "https://imlab.tbportal.org/crdf/@Data_BTBDB_ImageAnalysisSubPortal_s3/case-8d0d834f-533c-4145-86e9-c4d5f2f99c6b/study-e24a0839-769d-45cc-9c49-52b62fee8a6f/series-1.3.6.1.4.1.25403.75984511895.34804.20150526025219.17-CT-preview3.jpg",
+                            "xsize": 1064,
+                            "url2": "http://image-analysis-controller-01.tbportal.org/data/?path=case-8d0d834f-533c-4145-86e9-c4d5f2f99c6b/study-e24a0839-769d-45cc-9c49-52b62fee8a6f/series-1.3.6.1.4.1.25403.75984511895.34804.20150526025219.17-CT-preview3.jpg"
+                        },
+                        {
+                            "description": "CT Lesion preview",
+                            "ysize": 798,
+                            "content-type": "image/jpeg",
+                            "url": "https://imlab.tbportal.org/crdf/@Data_BTBDB_ImageAnalysisSubPortal_s3/case-8d0d834f-533c-4145-86e9-c4d5f2f99c6b/study-e24a0839-769d-45cc-9c49-52b62fee8a6f/series-1.3.6.1.4.1.25403.75984511895.34804.20150526025219.17-CT-preview2.jpg",
+                            "xsize": 1064,
+                            "url2": "http://image-analysis-controller-01.tbportal.org/data/?path=case-8d0d834f-533c-4145-86e9-c4d5f2f99c6b/study-e24a0839-769d-45cc-9c49-52b62fee8a6f/series-1.3.6.1.4.1.25403.75984511895.34804.20150526025219.17-CT-preview2.jpg"
+                        }
+                    ],
+                    "patient_id": "89603ee0-d300-4f4e-a04b-436bcec354af",
+                    "study_uid": "1.3.6.1.4.1.25403.75984511895.34804.20150526025219.16",
+                    "series_uid": "1.3.6.1.4.1.25403.75984511895.34804.20150526025219.17"
+                }
+            ],
+            "study_id": "4a709a49-2a97-4484-a10c-b512a98a3513",
+            "pdf_report": {
+                "description": "No comments...",
+                "url": "http://image-analysis-controller-01.tbportal.org/report-pdf/8aec0d20-396a-44b8-85d6-1c503cc98a8a/cf8f1719-4960-456f-a831-52325ab39a7d/1.3.6.1.4.1.25403.163683357445804.11044.20131119114630.4/1.3.6.1.4.1.25403.163683357445804.11044.20131119114630.5"
+            },
+            "spacing": {
+                "z": 2.5,
+                "y": 0.703125,
+                "x": 0.703125
+            },
+            "number_of_slices": 153,
+            "case_id": "8aec0d20-396a-44b8-85d6-1c503cc98a8a",
+            "preview_images": [
+                {
+                    "description": "CT Lesion preview",
+                    "ysize": 798,
+                    "content-type": "image/jpeg",
+                    "url": "https://imlab.tbportal.org/crdf/@Data_BTBDB_ImageAnalysisSubPortal_s3/case-8aec0d20-396a-44b8-85d6-1c503cc98a8a/study-4a709a49-2a97-4484-a10c-b512a98a3513/series-1.3.6.1.4.1.25403.163683357445804.11044.20131119114630.5-CT-preview3.jpg",
+                    "xsize": 1064,
+                    "url2": "http://image-analysis-controller-01.tbportal.org/data/?path=case-8aec0d20-396a-44b8-85d6-1c503cc98a8a/study-4a709a49-2a97-4484-a10c-b512a98a3513/series-1.3.6.1.4.1.25403.163683357445804.11044.20131119114630.5-CT-preview3.jpg"
+                },
+                {
+                    "description": "CT Lesion preview",
+                    "ysize": 798,
+                    "content-type": "image/jpeg",
+                    "url": "https://imlab.tbportal.org/crdf/@Data_BTBDB_ImageAnalysisSubPortal_s3/case-8aec0d20-396a-44b8-85d6-1c503cc98a8a/study-4a709a49-2a97-4484-a10c-b512a98a3513/series-1.3.6.1.4.1.25403.163683357445804.11044.20131119114630.5-CT-preview2.jpg",
+                    "xsize": 1064,
+                    "url2": "http://image-analysis-controller-01.tbportal.org/data/?path=case-8aec0d20-396a-44b8-85d6-1c503cc98a8a/study-4a709a49-2a97-4484-a10c-b512a98a3513/series-1.3.6.1.4.1.25403.163683357445804.11044.20131119114630.5-CT-preview2.jpg"
+                }
+            ],
+            "comment": "No comments...",
+            "study_uid": "1.3.6.1.4.1.25403.163683357445804.11044.20131119114630.4"
+        },
+        {
+            "severity_score": {
+                "description": "good",
+                "value": 5
+            },
+            "visual_collections":[
+                {
+                    "base_url": "https://imlab.tbportal.org/crdf/@viewer/lesions_map/",
+                    "name": "Colored lesions 1"
+                },
+                {
+                    "base_url": "https://imlab.tbportal.org/crdf/@viewer/lesions_only/",
+                    "name": "Colored lesions 2"
+                }
+            ],
+            "lesions": {
+                "left": [
+                    0.1692448854446411,
+                    0.7394869327545166,
+                    0.7048827409744263
+                ],
+                "left_by_name": [
+                    {
+                        "Plevritis": 0.0,
+                        "Caverns": 1.0,
+                        "Fibrosis": 0.0,
+                        "Atelectasis": 0.0,
+                        "Foci": 0.1692448854446411,
+                        "Pneumothorax": 1.0
+                    },
+                    {
+                        "Plevritis": 0.0,
+                        "Caverns": 1.0,
+                        "Fibrosis": 0.0,
+                        "Atelectasis": 0.0,
+                        "Foci": 0.7394869327545166,
+                        "Pneumothorax": 1.0
+                    },
+                    {
+                        "Plevritis": 0.0,
+                        "Caverns": 1.0,
+                        "Fibrosis": 0.0,
+                        "Atelectasis": 0.0,
+                        "Foci": 0.7048827409744263,
+                        "Pneumothorax": 0.0
+                    }
+                ],
+                "left_by_id": [
+                    {
+                        "2": 1.0,
+                        "6": 1.0,
+                        "3": 0.0,
+                        "5": 0.0,
+                        "4": 0.0,
+                        "1": 0.1692448854446411
+                    },
+                    {
+                        "2": 1.0,
+                        "6": 1.0,
+                        "3": 0.0,
+                        "5": 0.0,
+                        "4": 0.0,
+                        "1": 0.7394869327545166
+                    },
+                    {
+                        "2": 1.0,
+                        "6": 0.0,
+                        "3": 0.0,
+                        "5": 0.0,
+                        "4": 0.0,
+                        "1": 0.7048827409744263
+                    }
+                ],
+                "right_by_name": [
+                    {
+                        "Plevritis": 0.0,
+                        "Caverns": 0.0,
+                        "Fibrosis": 0.0,
+                        "Atelectasis": 0.0,
+                        "Foci": 0.01416876818984747,
+                        "Pneumothorax": 0.0
+                    },
+                    {
+                        "Plevritis": 0.0,
+                        "Caverns": 0.0,
+                        "Fibrosis": 0.0,
+                        "Atelectasis": 0.0,
+                        "Foci": 0.14941024780273438,
+                        "Pneumothorax": 0.0
+                    },
+                    {
+                        "Plevritis": 0.0,
+                        "Caverns": 1.0,
+                        "Fibrosis": 0.0,
+                        "Atelectasis": 0.0,
+                        "Foci": 0.46490511298179626,
+                        "Pneumothorax": 0.0
+                    }
+                ],
+                "right_by_id": [
+                    {
+                        "2": 0.0,
+                        "6": 0.0,
+                        "3": 0.0,
+                        "5": 0.0,
+                        "4": 0.0,
+                        "1": 0.01416876818984747
+                    },
+                    {
+                        "2": 0.0,
+                        "6": 0.0,
+                        "3": 0.0,
+                        "5": 0.0,
+                        "4": 0.0,
+                        "1": 0.14941024780273438
+                    },
+                    {
+                        "2": 1.0,
+                        "6": 0.0,
+                        "3": 0.0,
+                        "5": 0.0,
+                        "4": 0.0,
+                        "1": 0.46490511298179626
+                    }
+                ],
+                "right": [
+                    0.01416876818984747,
+                    0.14941024780273438,
+                    0.46490511298179626
+                ]
+            },
+            "volume": {
+                "right": [
+                    {
+                        "units": "voxels",
+                        "value": 2573222
+                    },
+                    {
+                        "units": "mm3",
+                        "value": 1118594.6656577587
+                    }
+                ],
+                "left": [
+                    {
+                        "units": "voxels",
+                        "value": 5963462
+                    },
+                    {
+                        "units": "mm3",
+                        "value": 2592351.838299513
+                    }
+                ],
+                "total": [
+                    {
+                        "units": "voxels",
+                        "value": 8536684
+                    },
+                    {
+                        "units": "mm3",
+                        "value": 3710946.5039572716
+                    }
+                ]
+            },
+            "bounding_box": [
+                {
+                    "units": "voxels",
+                    "y": 512,
+                    "x": 512,
+                    "z": 525
+                },
+                {
+                    "units": "mm",
+                    "y": 426.99981689453125,
+                    "x": 426.99981689453125,
+                    "z": 328.125
+                }
+            ],
+            "detected_lesions": [
+                "Foci",
+                "Caverns",
+                "Pneumothorax"
+            ],
+            "patient_id": "0cbd77b2-e6e1-47fa-b273-2e91ed8a8e32",
+            "asymmetry": [
+                {
+                    "type": "volume",
+                    "value": 0.39713781135625964
+                },
+                {
+                    "type": "texture",
+                    "value": -1
+                }
+            ],
+            "series_uid": "1.2.840.113619.2.55.3.2831156813.833.1454046274.325.3",
+            "similar_cases": [
+                {
+                    "study_id": "51aacc19-d67b-4615-8639-ea562e8a9e82",
+                    "case_id": "9a809c99-1e57-4c4d-8843-c8bc5a8df6d4",
+                    "preview_images": [
+                        {
+                            "description": "CT Lesion preview",
+                            "ysize": 798,
+                            "content-type": "image/jpeg",
+                            "url": "https://imlab.tbportal.org/crdf/@Data_BTBDB_ImageAnalysisSubPortal_s3/case-9a809c99-1e57-4c4d-8843-c8bc5a8df6d4/study-51aacc19-d67b-4615-8639-ea562e8a9e82/series-1.2.840.113619.2.55.3.2831156813.833.1454046274.325.4-CT-preview3.jpg",
+                            "xsize": 1064,
+                            "url2": "http://image-analysis-controller-01.tbportal.org/data/?path=case-9a809c99-1e57-4c4d-8843-c8bc5a8df6d4/study-51aacc19-d67b-4615-8639-ea562e8a9e82/series-1.2.840.113619.2.55.3.2831156813.833.1454046274.325.4-CT-preview3.jpg"
+                        },
+                        {
+                            "description": "CT Lesion preview",
+                            "ysize": 798,
+                            "content-type": "image/jpeg",
+                            "url": "https://imlab.tbportal.org/crdf/@Data_BTBDB_ImageAnalysisSubPortal_s3/case-9a809c99-1e57-4c4d-8843-c8bc5a8df6d4/study-51aacc19-d67b-4615-8639-ea562e8a9e82/series-1.2.840.113619.2.55.3.2831156813.833.1454046274.325.4-CT-preview2.jpg",
+                            "xsize": 1064,
+                            "url2": "http://image-analysis-controller-01.tbportal.org/data/?path=case-9a809c99-1e57-4c4d-8843-c8bc5a8df6d4/study-51aacc19-d67b-4615-8639-ea562e8a9e82/series-1.2.840.113619.2.55.3.2831156813.833.1454046274.325.4-CT-preview2.jpg"
+                        }
+                    ],
+                    "patient_id": "0cbd77b2-e6e1-47fa-b273-2e91ed8a8e32",
+                    "study_uid": "1.2.840.113619.2.55.3.2831156813.833.1454046274.319",
+                    "series_uid": "1.2.840.113619.2.55.3.2831156813.833.1454046274.325.4"
+                },
+                {
+                    "study_id": "51aacc19-d67b-4615-8639-ea562e8a9e82",
+                    "case_id": "9a809c99-1e57-4c4d-8843-c8bc5a8df6d4",
+                    "preview_images": [
+                        {
+                            "description": "CT Lesion preview",
+                            "ysize": 798,
+                            "content-type": "image/jpeg",
+                            "url": "https://imlab.tbportal.org/crdf/@Data_BTBDB_ImageAnalysisSubPortal_s3/case-9a809c99-1e57-4c4d-8843-c8bc5a8df6d4/study-51aacc19-d67b-4615-8639-ea562e8a9e82/series-1.2.840.113619.2.55.3.2831156813.833.1454046274.325-CT-preview3.jpg",
+                            "xsize": 1064,
+                            "url2": "http://image-analysis-controller-01.tbportal.org/data/?path=case-9a809c99-1e57-4c4d-8843-c8bc5a8df6d4/study-51aacc19-d67b-4615-8639-ea562e8a9e82/series-1.2.840.113619.2.55.3.2831156813.833.1454046274.325-CT-preview3.jpg"
+                        },
+                        {
+                            "description": "CT Lesion preview",
+                            "ysize": 798,
+                            "content-type": "image/jpeg",
+                            "url": "https://imlab.tbportal.org/crdf/@Data_BTBDB_ImageAnalysisSubPortal_s3/case-9a809c99-1e57-4c4d-8843-c8bc5a8df6d4/study-51aacc19-d67b-4615-8639-ea562e8a9e82/series-1.2.840.113619.2.55.3.2831156813.833.1454046274.325-CT-preview2.jpg",
+                            "xsize": 1064,
+                            "url2": "http://image-analysis-controller-01.tbportal.org/data/?path=case-9a809c99-1e57-4c4d-8843-c8bc5a8df6d4/study-51aacc19-d67b-4615-8639-ea562e8a9e82/series-1.2.840.113619.2.55.3.2831156813.833.1454046274.325-CT-preview2.jpg"
+                        }
+                    ],
+                    "patient_id": "0cbd77b2-e6e1-47fa-b273-2e91ed8a8e32",
+                    "study_uid": "1.2.840.113619.2.55.3.2831156813.833.1454046274.319",
+                    "series_uid": "1.2.840.113619.2.55.3.2831156813.833.1454046274.325"
+                },
+                {
+                    "study_id": "1f8a5125-5a8a-4c4f-908e-c3c83299de54",
+                    "case_id": "74d6990d-ca97-4134-ba97-46f987a3d80a",
+                    "preview_images": [
+                        {
+                            "description": "CT Lesion preview",
+                            "ysize": 798,
+                            "content-type": "image/jpeg",
+                            "url": "https://imlab.tbportal.org/crdf/@Data_BTBDB_ImageAnalysisSubPortal_s3/case-74d6990d-ca97-4134-ba97-46f987a3d80a/study-1f8a5125-5a8a-4c4f-908e-c3c83299de54/series-1.3.6.1.4.1.25403.75984511895.34804.20150526025140.5-CT-preview3.jpg",
+                            "xsize": 1064,
+                            "url2": "http://image-analysis-controller-01.tbportal.org/data/?path=case-74d6990d-ca97-4134-ba97-46f987a3d80a/study-1f8a5125-5a8a-4c4f-908e-c3c83299de54/series-1.3.6.1.4.1.25403.75984511895.34804.20150526025140.5-CT-preview3.jpg"
+                        },
+                        {
+                            "description": "CT Lesion preview",
+                            "ysize": 798,
+                            "content-type": "image/jpeg",
+                            "url": "https://imlab.tbportal.org/crdf/@Data_BTBDB_ImageAnalysisSubPortal_s3/case-74d6990d-ca97-4134-ba97-46f987a3d80a/study-1f8a5125-5a8a-4c4f-908e-c3c83299de54/series-1.3.6.1.4.1.25403.75984511895.34804.20150526025140.5-CT-preview2.jpg",
+                            "xsize": 1064,
+                            "url2": "http://image-analysis-controller-01.tbportal.org/data/?path=case-74d6990d-ca97-4134-ba97-46f987a3d80a/study-1f8a5125-5a8a-4c4f-908e-c3c83299de54/series-1.3.6.1.4.1.25403.75984511895.34804.20150526025140.5-CT-preview2.jpg"
+                        }
+                    ],
+                    "patient_id": "39d5ccfb-fe11-4fc3-80c6-8293c7cba4d6",
+                    "study_uid": "1.3.6.1.4.1.25403.75984511895.34804.20150526025140.4",
+                    "series_uid": "1.3.6.1.4.1.25403.75984511895.34804.20150526025140.5"
+                }
+            ],
+            "study_id": "51aacc19-d67b-4615-8639-ea562e8a9e82",
+            "pdf_report": {
+                "description": "No comments...",
+                "url": "http://image-analysis-controller-01.tbportal.org/report-pdf/9a809c99-1e57-4c4d-8843-c8bc5a8df6d4/0cbd77b2-e6e1-47fa-b273-2e91ed8a8e32/1.2.840.113619.2.55.3.2831156813.833.1454046274.319/1.2.840.113619.2.55.3.2831156813.833.1454046274.325.3"
+            },
+            "spacing": {
+                "z": 0.625,
+                "y": 0.8339840173721313,
+                "x": 0.8339840173721313
+            },
+            "number_of_slices": 525,
+            "case_id": "9a809c99-1e57-4c4d-8843-c8bc5a8df6d4",
+            "preview_images": [
+                {
+                    "description": "CT Lesion preview",
+                    "ysize": 798,
+                    "content-type": "image/jpeg",
+                    "url": "https://imlab.tbportal.org/crdf/@Data_BTBDB_ImageAnalysisSubPortal_s3/case-9a809c99-1e57-4c4d-8843-c8bc5a8df6d4/study-51aacc19-d67b-4615-8639-ea562e8a9e82/series-1.2.840.113619.2.55.3.2831156813.833.1454046274.325.3-CT-preview3.jpg",
+                    "xsize": 1064,
+                    "url2": "http://image-analysis-controller-01.tbportal.org/data/?path=case-9a809c99-1e57-4c4d-8843-c8bc5a8df6d4/study-51aacc19-d67b-4615-8639-ea562e8a9e82/series-1.2.840.113619.2.55.3.2831156813.833.1454046274.325.3-CT-preview3.jpg"
+                },
+                {
+                    "description": "CT Lesion preview",
+                    "ysize": 798,
+                    "content-type": "image/jpeg",
+                    "url": "https://imlab.tbportal.org/crdf/@Data_BTBDB_ImageAnalysisSubPortal_s3/case-9a809c99-1e57-4c4d-8843-c8bc5a8df6d4/study-51aacc19-d67b-4615-8639-ea562e8a9e82/series-1.2.840.113619.2.55.3.2831156813.833.1454046274.325.3-CT-preview2.jpg",
+                    "xsize": 1064,
+                    "url2": "http://image-analysis-controller-01.tbportal.org/data/?path=case-9a809c99-1e57-4c4d-8843-c8bc5a8df6d4/study-51aacc19-d67b-4615-8639-ea562e8a9e82/series-1.2.840.113619.2.55.3.2831156813.833.1454046274.325.3-CT-preview2.jpg"
+                }
+            ],
+            "comment": "No comments...",
+            "study_uid": "1.2.840.113619.2.55.3.2831156813.833.1454046274.319"
+        },
+        {
+            "severity_score": {
+                "description": "bad",
+                "value": 1
+            },
+            "visual_collections":[
+                {
+                    "base_url": "https://imlab.tbportal.org/crdf/@viewer/lesions_map/",
+                    "name": "Colored lesions 1"
+                },
+                {
+                    "base_url": "https://imlab.tbportal.org/crdf/@viewer/lesions_only/",
+                    "name": "Colored lesions 2"
+                }
+            ],
+            "lesions": {
+                "left": [
+                    0.21832269430160522,
+                    0.7911733984947205,
+                    0.7546025514602661
+                ],
+                "left_by_name": [
+                    {
+                        "Plevritis": 0.0,
+                        "Caverns": 1.0,
+                        "Fibrosis": 0.0,
+                        "Atelectasis": 0.0,
+                        "Foci": 0.21832269430160522,
+                        "Pneumothorax": 1.0
+                    },
+                    {
+                        "Plevritis": 0.0,
+                        "Caverns": 1.0,
+                        "Fibrosis": 0.0,
+                        "Atelectasis": 0.0,
+                        "Foci": 0.7911733984947205,
+                        "Pneumothorax": 0.0
+                    },
+                    {
+                        "Plevritis": 0.0,
+                        "Caverns": 1.0,
+                        "Fibrosis": 0.0,
+                        "Atelectasis": 0.0,
+                        "Foci": 0.7546025514602661,
+                        "Pneumothorax": 0.0
+                    }
+                ],
+                "left_by_id": [
+                    {
+                        "2": 1.0,
+                        "6": 1.0,
+                        "3": 0.0,
+                        "5": 0.0,
+                        "4": 0.0,
+                        "1": 0.21832269430160522
+                    },
+                    {
+                        "2": 1.0,
+                        "6": 0.0,
+                        "3": 0.0,
+                        "5": 0.0,
+                        "4": 0.0,
+                        "1": 0.7911733984947205
+                    },
+                    {
+                        "2": 1.0,
+                        "6": 0.0,
+                        "3": 0.0,
+                        "5": 0.0,
+                        "4": 0.0,
+                        "1": 0.7546025514602661
+                    }
+                ],
+                "right_by_name": [
+                    {
+                        "Plevritis": 0.0,
+                        "Caverns": 0.0,
+                        "Fibrosis": 0.0,
+                        "Atelectasis": 0.0,
+                        "Foci": 0.009080102667212486,
+                        "Pneumothorax": 0.0
+                    },
+                    {
+                        "Plevritis": 0.0,
+                        "Caverns": 0.0,
+                        "Fibrosis": 0.0,
+                        "Atelectasis": 0.0,
+                        "Foci": 0.10991507768630981,
+                        "Pneumothorax": 0.0
+                    },
+                    {
+                        "Plevritis": 0.0,
+                        "Caverns": 1.0,
+                        "Fibrosis": 0.0,
+                        "Atelectasis": 0.0,
+                        "Foci": 0.4800947606563568,
+                        "Pneumothorax": 0.0
+                    }
+                ],
+                "right_by_id": [
+                    {
+                        "2": 0.0,
+                        "6": 0.0,
+                        "3": 0.0,
+                        "5": 0.0,
+                        "4": 0.0,
+                        "1": 0.009080102667212486
+                    },
+                    {
+                        "2": 0.0,
+                        "6": 0.0,
+                        "3": 0.0,
+                        "5": 0.0,
+                        "4": 0.0,
+                        "1": 0.10991507768630981
+                    },
+                    {
+                        "2": 1.0,
+                        "6": 0.0,
+                        "3": 0.0,
+                        "5": 0.0,
+                        "4": 0.0,
+                        "1": 0.4800947606563568
+                    }
+                ],
+                "right": [
+                    0.009080102667212486,
+                    0.10991507768630981,
+                    0.4800947606563568
+                ]
+            },
+            "volume": {
+                "right": [
+                    {
+                        "units": "voxels",
+                        "value": 583160
+                    },
+                    {
+                        "units": "mm3",
+                        "value": 1014012.2620201111
+                    }
+                ],
+                "left": [
+                    {
+                        "units": "voxels",
+                        "value": 1466240
+                    },
+                    {
+                        "units": "mm3",
+                        "value": 2549532.4423217773
+                    }
+                ],
+                "total": [
+                    {
+                        "units": "voxels",
+                        "value": 2049400
+                    },
+                    {
+                        "units": "mm3",
+                        "value": 3563544.7043418884
+                    }
+                ]
+            },
+            "bounding_box": [
+                {
+                    "units": "voxels",
+                    "y": 512,
+                    "x": 512,
+                    "z": 132
+                },
+                {
+                    "units": "mm",
+                    "y": 426.99981689453125,
+                    "x": 426.99981689453125,
+                    "z": 330.0
+                }
+            ],
+            "detected_lesions": [
+                "Foci",
+                "Caverns",
+                "Pneumothorax"
+            ],
+            "patient_id": "0cbd77b2-e6e1-47fa-b273-2e91ed8a8e32",
+            "asymmetry": [
+                {
+                    "type": "volume",
+                    "value": 0.43089684785790966
+                },
+                {
+                    "type": "texture",
+                    "value": -1
+                }
+            ],
+            "series_uid": "1.2.840.113619.2.55.3.2831156813.833.1454046274.325",
+            "similar_cases": [
+                {
+                    "study_id": "51aacc19-d67b-4615-8639-ea562e8a9e82",
+                    "case_id": "9a809c99-1e57-4c4d-8843-c8bc5a8df6d4",
+                    "preview_images": [
+                        {
+                            "description": "CT Lesion preview",
+                            "ysize": 798,
+                            "content-type": "image/jpeg",
+                            "url": "https://imlab.tbportal.org/crdf/@Data_BTBDB_ImageAnalysisSubPortal_s3/case-9a809c99-1e57-4c4d-8843-c8bc5a8df6d4/study-51aacc19-d67b-4615-8639-ea562e8a9e82/series-1.2.840.113619.2.55.3.2831156813.833.1454046274.325.4-CT-preview3.jpg",
+                            "xsize": 1064,
+                            "url2": "http://image-analysis-controller-01.tbportal.org/data/?path=case-9a809c99-1e57-4c4d-8843-c8bc5a8df6d4/study-51aacc19-d67b-4615-8639-ea562e8a9e82/series-1.2.840.113619.2.55.3.2831156813.833.1454046274.325.4-CT-preview3.jpg"
+                        },
+                        {
+                            "description": "CT Lesion preview",
+                            "ysize": 798,
+                            "content-type": "image/jpeg",
+                            "url": "https://imlab.tbportal.org/crdf/@Data_BTBDB_ImageAnalysisSubPortal_s3/case-9a809c99-1e57-4c4d-8843-c8bc5a8df6d4/study-51aacc19-d67b-4615-8639-ea562e8a9e82/series-1.2.840.113619.2.55.3.2831156813.833.1454046274.325.4-CT-preview2.jpg",
+                            "xsize": 1064,
+                            "url2": "http://image-analysis-controller-01.tbportal.org/data/?path=case-9a809c99-1e57-4c4d-8843-c8bc5a8df6d4/study-51aacc19-d67b-4615-8639-ea562e8a9e82/series-1.2.840.113619.2.55.3.2831156813.833.1454046274.325.4-CT-preview2.jpg"
+                        }
+                    ],
+                    "patient_id": "0cbd77b2-e6e1-47fa-b273-2e91ed8a8e32",
+                    "study_uid": "1.2.840.113619.2.55.3.2831156813.833.1454046274.319",
+                    "series_uid": "1.2.840.113619.2.55.3.2831156813.833.1454046274.325.4"
+                },
+                {
+                    "study_id": "51aacc19-d67b-4615-8639-ea562e8a9e82",
+                    "case_id": "9a809c99-1e57-4c4d-8843-c8bc5a8df6d4",
+                    "preview_images": [
+                        {
+                            "description": "CT Lesion preview",
+                            "ysize": 798,
+                            "content-type": "image/jpeg",
+                            "url": "https://imlab.tbportal.org/crdf/@Data_BTBDB_ImageAnalysisSubPortal_s3/case-9a809c99-1e57-4c4d-8843-c8bc5a8df6d4/study-51aacc19-d67b-4615-8639-ea562e8a9e82/series-1.2.840.113619.2.55.3.2831156813.833.1454046274.325.3-CT-preview3.jpg",
+                            "xsize": 1064,
+                            "url2": "http://image-analysis-controller-01.tbportal.org/data/?path=case-9a809c99-1e57-4c4d-8843-c8bc5a8df6d4/study-51aacc19-d67b-4615-8639-ea562e8a9e82/series-1.2.840.113619.2.55.3.2831156813.833.1454046274.325.3-CT-preview3.jpg"
+                        },
+                        {
+                            "description": "CT Lesion preview",
+                            "ysize": 798,
+                            "content-type": "image/jpeg",
+                            "url": "https://imlab.tbportal.org/crdf/@Data_BTBDB_ImageAnalysisSubPortal_s3/case-9a809c99-1e57-4c4d-8843-c8bc5a8df6d4/study-51aacc19-d67b-4615-8639-ea562e8a9e82/series-1.2.840.113619.2.55.3.2831156813.833.1454046274.325.3-CT-preview2.jpg",
+                            "xsize": 1064,
+                            "url2": "http://image-analysis-controller-01.tbportal.org/data/?path=case-9a809c99-1e57-4c4d-8843-c8bc5a8df6d4/study-51aacc19-d67b-4615-8639-ea562e8a9e82/series-1.2.840.113619.2.55.3.2831156813.833.1454046274.325.3-CT-preview2.jpg"
+                        }
+                    ],
+                    "patient_id": "0cbd77b2-e6e1-47fa-b273-2e91ed8a8e32",
+                    "study_uid": "1.2.840.113619.2.55.3.2831156813.833.1454046274.319",
+                    "series_uid": "1.2.840.113619.2.55.3.2831156813.833.1454046274.325.3"
+                },
+                {
+                    "study_id": "9a531078-623c-42bd-87df-80b0f48649d9",
+                    "case_id": "e5bc7639-5011-4227-92c5-bd6efba5ffe4",
+                    "preview_images": [
+                        {
+                            "description": "CT Lesion preview",
+                            "ysize": 798,
+                            "content-type": "image/jpeg",
+                            "url": "https://imlab.tbportal.org/crdf/@Data_BTBDB_ImageAnalysisSubPortal_s3/case-e5bc7639-5011-4227-92c5-bd6efba5ffe4/study-9a531078-623c-42bd-87df-80b0f48649d9/series-1.2.840.113704.9.1000.16.1.2016122114132303100020002-CT-preview3.jpg",
+                            "xsize": 1064,
+                            "url2": "http://image-analysis-controller-01.tbportal.org/data/?path=case-e5bc7639-5011-4227-92c5-bd6efba5ffe4/study-9a531078-623c-42bd-87df-80b0f48649d9/series-1.2.840.113704.9.1000.16.1.2016122114132303100020002-CT-preview3.jpg"
+                        },
+                        {
+                            "description": "CT Lesion preview",
+                            "ysize": 798,
+                            "content-type": "image/jpeg",
+                            "url": "https://imlab.tbportal.org/crdf/@Data_BTBDB_ImageAnalysisSubPortal_s3/case-e5bc7639-5011-4227-92c5-bd6efba5ffe4/study-9a531078-623c-42bd-87df-80b0f48649d9/series-1.2.840.113704.9.1000.16.1.2016122114132303100020002-CT-preview2.jpg",
+                            "xsize": 1064,
+                            "url2": "http://image-analysis-controller-01.tbportal.org/data/?path=case-e5bc7639-5011-4227-92c5-bd6efba5ffe4/study-9a531078-623c-42bd-87df-80b0f48649d9/series-1.2.840.113704.9.1000.16.1.2016122114132303100020002-CT-preview2.jpg"
+                        }
+                    ],
+                    "patient_id": "32419571-eef5-44cc-a1a8-6da1971fbf8c",
+                    "study_uid": "1.2.840.113704.9.1000.16.0.20161221141157453",
+                    "series_uid": "1.2.840.113704.9.1000.16.1.2016122114132303100020002"
+                }
+            ],
+            "study_id": "51aacc19-d67b-4615-8639-ea562e8a9e82",
+            "pdf_report": {
+                "description": "No comments...",
+                "url": "http://image-analysis-controller-01.tbportal.org/report-pdf/9a809c99-1e57-4c4d-8843-c8bc5a8df6d4/0cbd77b2-e6e1-47fa-b273-2e91ed8a8e32/1.2.840.113619.2.55.3.2831156813.833.1454046274.319/1.2.840.113619.2.55.3.2831156813.833.1454046274.325"
+            },
+            "spacing": {
+                "z": 2.5,
+                "y": 0.8339840173721313,
+                "x": 0.8339840173721313
+            },
+            "number_of_slices": 132,
+            "case_id": "9a809c99-1e57-4c4d-8843-c8bc5a8df6d4",
+            "preview_images": [
+                {
+                    "description": "CT Lesion preview",
+                    "ysize": 798,
+                    "content-type": "image/jpeg",
+                    "url": "https://imlab.tbportal.org/crdf/@Data_BTBDB_ImageAnalysisSubPortal_s3/case-9a809c99-1e57-4c4d-8843-c8bc5a8df6d4/study-51aacc19-d67b-4615-8639-ea562e8a9e82/series-1.2.840.113619.2.55.3.2831156813.833.1454046274.325-CT-preview3.jpg",
+                    "xsize": 1064,
+                    "url2": "http://image-analysis-controller-01.tbportal.org/data/?path=case-9a809c99-1e57-4c4d-8843-c8bc5a8df6d4/study-51aacc19-d67b-4615-8639-ea562e8a9e82/series-1.2.840.113619.2.55.3.2831156813.833.1454046274.325-CT-preview3.jpg"
+                },
+                {
+                    "description": "CT Lesion preview",
+                    "ysize": 798,
+                    "content-type": "image/jpeg",
+                    "url": "https://imlab.tbportal.org/crdf/@Data_BTBDB_ImageAnalysisSubPortal_s3/case-9a809c99-1e57-4c4d-8843-c8bc5a8df6d4/study-51aacc19-d67b-4615-8639-ea562e8a9e82/series-1.2.840.113619.2.55.3.2831156813.833.1454046274.325-CT-preview2.jpg",
+                    "xsize": 1064,
+                    "url2": "http://image-analysis-controller-01.tbportal.org/data/?path=case-9a809c99-1e57-4c4d-8843-c8bc5a8df6d4/study-51aacc19-d67b-4615-8639-ea562e8a9e82/series-1.2.840.113619.2.55.3.2831156813.833.1454046274.325-CT-preview2.jpg"
+                }
+            ],
+            "comment": "No comments...",
+            "study_uid": "1.2.840.113619.2.55.3.2831156813.833.1454046274.319"
+        }
+    ]
+}
