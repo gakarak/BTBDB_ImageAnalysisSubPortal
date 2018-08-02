@@ -327,7 +327,7 @@ def api_generateAllReports(series,
                                            reportLesionScore=None, #retLesionScoreBin,
                                            reportLesion=cbir_desc_json,
                                            reportLungs=retLungInfo,
-                                           lstImgJson=[imgPreviewJson2, imgPreviewJson3],
+                                           lstImgJson=[imgPreviewJson3, imgPreviewJson2],
                                            reportLesionScoreById = None, #retLesionScoreById,
                                            reportLesionScoreByName = None) #retLesionScoreByName)
         with open(pathReport, 'w') as f:
@@ -339,7 +339,7 @@ def api_generateAllReports(series,
     # (7) generate and save 3 directories with DICOM files, converted from Lesions NifTi
     #     original, lesions_only and lesions_map
     #     file names convention: {S3 bucket name}/viewer/{map_type}/{patientID}/{studyUID}/{seriesUID}/{instanceUID}.{extension}
-    preproc.prepareCTpreview(series)
+    # preproc.prepareCTpreview(series)
 
     # FIXME: append PDF generation in future here
     # (6) generate PDF preview

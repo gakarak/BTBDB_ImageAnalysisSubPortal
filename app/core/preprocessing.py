@@ -166,16 +166,21 @@ def makeLungedMask(timg, parStrElemSize=2, parNumIterMax=9, isDebug=False):
     if timgDiv is None:
         retLbl, retSizSrt, retLblSrt, retCM, _ = labelInfo3D(timg > 0)
         retCM_X = retCM[:2, 1]
-        if retCM_X[retLblSrt[0]-1]<(timg.shape[1]/2):
-            # Left lung
-            retMsk[retLbl == retLblSrt[0]] = 1
+        if retLblSrt[0]-1 >= retCM_X.shape[0]:
+            print(retCM_X.shape)
+            # retMsk = timgDiv
+            isOk = False
         else:
-            # Right lung
-            retMsk[retLbl == retLblSrt[0]] = 2
-        # retMsk[retLbl == retLblSrt[0]] = 3  # 1st component
-        otherData = ((~(retMsk>0)) & (timg > 0))
-        retMsk[otherData] = 4  # other data
-        isOk = False
+            if retCM_X[retLblSrt[0]-1]<(timg.shape[1]/2):
+                # Left lung
+                retMsk[retLbl == retLblSrt[0]] = 1
+            else:
+                # Right lung
+                retMsk[retLbl == retLblSrt[0]] = 2
+            # retMsk[retLbl == retLblSrt[0]] = 3  # 1st component
+            otherData = ((~(retMsk>0)) & (timg > 0))
+            retMsk[otherData] = 4  # other data
+            isOk = False
     else:
         retMsk = timgDiv
         isOk = True
@@ -607,6 +612,8 @@ def makePreview4LesionV2(dataImg, dataMsk, dataLes, type_=2, sizPrv=256, nx=4, n
     brd = 0.1
     arrZ = np.linspace(brd*sizPrv, (1.-brd)*sizPrv, numXY ).astype(np.int)
 
+    frac_ = 1.0*dataLes.shape[2]/sizPrv
+
     if type_ == 2:
         print('equidistant Z')
     if type_ == 3:
@@ -684,7 +691,7 @@ def makePreview4LesionV2(dataImg, dataMsk, dataLes, type_=2, sizPrv=256, nx=4, n
             timgRGB = np.pad(timgRGB, pad_width=[[pad],[pad],[0]], mode='constant')
             timgRGB_ = deepcopy(timgRGB)
             if (yy != 0) or (xx != 0):
-                cv2.putText(timgRGB_, 'Slice {}'.format(arrZ[cnt-1]), (timgRGB.shape[0] - 110, timgRGB.shape[1] - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 140, 10), 2)
+                cv2.putText(timgRGB_, 'Slice {}'.format(int(frac_*(sizPrv - arrZ[cnt-1] - 1))), (timgRGB.shape[0] - 110, timgRGB.shape[1] - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 140, 10), 2)
                 cv2.addWeighted(timgRGB_, 0.9, timgRGB, 1 - 0.9, 0, timgRGB)
             # tmpH.append(timgRGB[:, ::-1])
             tmpH.append(timgRGB)
@@ -799,6 +806,7 @@ def vol2dcmRGB(rgb_vol_, rgb_spacing_, study_id_, patient_id_, study_uid_, serie
     # Use the study/series/frame of reference information given in the meta-data
     # dictionary and not the automatically generated information from the file IO
     writer.KeepOriginalImageUIDOn()
+    writer.UseCompressionOn()
 
     modification_time = time.strftime("%H%M%S")
     modification_date = time.strftime("%Y%m%d")
@@ -891,6 +899,7 @@ def niftii2dcm(nii_filename_, study_id_, patient_id_, study_uid_, series_uid_, s
     # Use the study/series/frame of reference information given in the meta-data
     # dictionary and not the automatically generated information from the file IO
     writer.KeepOriginalImageUIDOn()
+    writer.UseCompressionOn()
 
 
     modification_time = time.strftime("%H%M%S")
@@ -966,9 +975,12 @@ def prepareCTpreview(series_):
     sop_instance_uids, fnames = get_instance_uids_from_json(all_json_filename_=os.path.dirname(ct_nii_filename_)+'/../info-all.json', patient_id_=patient_id, study_id_=study_id, study_uid_=study_uid, series_uid_=series_uid)
     # exit()
 
-    original_out_dirname_ = os.path.realpath(os.path.dirname(ct_nii_filename_) + '/../../../@viewer/original/' + patient_id + '/' + study_uid + '/' + series_uid )+ '/'
-    lesions_only_out_dirname_ = os.path.realpath(os.path.dirname(ct_nii_filename_) + '/../../../@viewer/lesions_only/' + patient_id + '/' + study_uid + '/' + series_uid )+ '/'
-    lesions_map_out_dirname_ =os.path.realpath(os.path.dirname(ct_nii_filename_) + '/../../../@viewer/lesions_map/' + patient_id + '/' + study_uid + '/' + series_uid )+ '/'
+    viewer_dir_root = os.path.realpath(os.path.dirname(ct_nii_filename_) + '/../../../@viewer/)
+    # viewer_dir_root = '/media/data10T_1/datasets/CRDF_viewer/@viewer/'
+
+    original_out_dirname_ = viewer_dir_root + 'original/' + patient_id + '/' + study_uid + '/' + series_uid + '/'
+    lesions_only_out_dirname_ = viewer_dir_root + 'lesions_only/' + patient_id + '/' + study_uid + '/' + series_uid + '/'
+    lesions_map_out_dirname_ = viewer_dir_root + 'lesions_map/' + patient_id + '/' + study_uid + '/' + series_uid + '/'
 
     if os.path.exists(original_out_dirname_):
         shutil.rmtree(original_out_dirname_, ignore_errors=True)
