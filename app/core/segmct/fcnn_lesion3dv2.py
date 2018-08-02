@@ -72,9 +72,9 @@ def get_overlay_msk(img2d, msk_lbl, alpha = 0.5, dct_colors=lesion_id2rgb):
             continue
         tmp_msk = (msk_lbl == kk)
         tmp_msk_rgb = np.tile(tmp_msk[..., np.newaxis], 3)
-        tmp_img_orerlay = alpha * np.array(vv) * tmp_msk_rgb
+        tmp_img_overlay = alpha * np.array(vv) * tmp_msk_rgb
         tmp_img_original = (1 - alpha) * tmp_msk_rgb * img2d
-        ret += tmp_img_orerlay + tmp_img_original
+        ret += tmp_img_overlay + tmp_img_original
     return ret
 
 #############################################

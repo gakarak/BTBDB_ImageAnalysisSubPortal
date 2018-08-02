@@ -249,6 +249,19 @@ def load_descriptors(desc_filename_):
     return shad_idx_list, desc_list
 
 
+def desc_asymmetry(desc_):
+    ret = 0.0
+    left_desc = deepcopy(desc_)
+    right_desc = deepcopy(desc_)
+    for p in range(desc_.shape[1]):
+        for les in range(desc_.shape[2]):
+            right_desc[0][p][les] = right_desc[1][p][les] # move values from right to left
+            right_desc[1][p][les] = 0
+    diff_int, diff_by_les = desc_dist_p(left_desc, right_desc, 'euclidean')
+    ret = diff_int/2.0
+    return ret
+
+
 def desc_to_json(desc_):
     lung_side_by_name = ["left_by_name", "right_by_name"]
     lung_side_by_id = ["left_by_id", "right_by_id"]

@@ -14,6 +14,14 @@ import skimage as sk
 import skimage.filters
 import skimage.morphology
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+import cv2
+from copy import deepcopy
+import os
+import json
+import shutil
+import SimpleITK as sitk
+import time
 
 #############################################
 def _get_msk_bnd2(pmsk, dilat_siz=2):
@@ -158,16 +166,21 @@ def makeLungedMask(timg, parStrElemSize=2, parNumIterMax=9, isDebug=False):
     if timgDiv is None:
         retLbl, retSizSrt, retLblSrt, retCM, _ = labelInfo3D(timg > 0)
         retCM_X = retCM[:2, 1]
-        if retCM_X[retLblSrt[0]-1]<(timg.shape[1]/2):
-            # Left lung
-            retMsk[retLbl == retLblSrt[0]] = 1
+        if retLblSrt[0]-1 >= retCM_X.shape[0]:
+            print(retCM_X.shape)
+            # retMsk = timgDiv
+            isOk = False
         else:
-            # Right lung
-            retMsk[retLbl == retLblSrt[0]] = 2
-        # retMsk[retLbl == retLblSrt[0]] = 3  # 1st component
-        otherData = ((~(retMsk>0)) & (timg > 0))
-        retMsk[otherData] = 4  # other data
-        isOk = False
+            if retCM_X[retLblSrt[0]-1]<(timg.shape[1]/2):
+                # Left lung
+                retMsk[retLbl == retLblSrt[0]] = 1
+            else:
+                # Right lung
+                retMsk[retLbl == retLblSrt[0]] = 2
+            # retMsk[retLbl == retLblSrt[0]] = 3  # 1st component
+            otherData = ((~(retMsk>0)) & (timg > 0))
+            retMsk[otherData] = 4  # other data
+            isOk = False
     else:
         retMsk = timgDiv
         isOk = True
@@ -548,7 +561,49 @@ def makePreview4Lesion(dataImg, dataMsk, dataLes, sizPrv=256, nx=4, ny=3, pad=5,
     return imgV
 
 # generate preview
-def makePreview4LesionV2(dataImg, dataMsk, dataLes, sizPrv=256, nx=4, ny=3, pad=5, lesT=0.7):
+
+def genPreview2D(dataImg_, dataMsk_, dataLes_, pathPreview_, type_, sizPrv=256, nx=4, ny=3, pad=5, lesT=0.7):
+    imgPreview_ = makePreview4LesionV2(dataImg_, dataMsk_, dataLes_, type_, sizPrv, nx, ny, pad, lesT)
+    imgPreviewJson_ = {
+        "description": "CT Lesion preview",
+        "content-type": "image/jpeg",
+        "xsize": imgPreview_.shape[1],
+        "ysize": imgPreview_.shape[0],
+        "url": os.path.basename(pathPreview_)
+    }
+    lst_legends = [mpatches.Patch(color=lesion_id2rgb[kk], label=vv) for kk, vv in lesion_id2name.items() if kk != 0]
+    frame1 = plt.gca()
+    frame1.axes.set_axis_off()
+    fig = plt.gcf()
+    ax = plt.Axes(fig, [0., 0., 1., 1.])
+    ax.set_axis_off()
+    fig.add_axes(ax)
+    DPI = fig.get_dpi()
+    fig.set_size_inches(imgPreview_.shape[1] / float(DPI), imgPreview_.shape[0] / float(DPI))
+    plt.imshow(imgPreview_)
+    plt.legend(handles=lst_legends, loc='best', bbox_to_anchor=(1.0, 1.00), ncol=len(lst_legends))
+    fig.savefig(pathPreview_, pad_inches=0)
+    fig.clf()
+    fig.clear()
+    return imgPreviewJson_
+
+
+def makePreview4LesionV2(dataImg, dataMsk, dataLes, type_=2, sizPrv=256, nx=4, ny=3, pad=5, lesT=0.7):
+
+    if type_ == 4: # Maximum intensity projection
+        print('Maximum intensity projection')
+        new_img = sitk.GetImageFromArray(dataLes)
+        voxel_ = [0, 0, 0]
+        dim = 1
+        voxel_[dim] = (dataLes.shape[dim] - 1) // 2
+        projection = sitk.MaximumProjection(new_img, 0)
+
+        sitk.WriteImage(projection, '/tmp/proj.nii.gz')
+        img_nii = nib.load('/tmp/proj.nii.gz')
+        imgV = img_nii.get_data()
+        imgV = np.reshape(imgV, (imgV.shape[1], imgV.shape[2])).astype(np.uint8)
+        return imgV
+
     shpPrv = (sizPrv, sizPrv, sizPrv)
     dataImgR = resize3D(dataImg, shpPrv)
     dataMskR = resize3D(dataMsk, shpPrv, order=0)
@@ -556,6 +611,42 @@ def makePreview4LesionV2(dataImg, dataMsk, dataLes, sizPrv=256, nx=4, ny=3, pad=
     numXY = nx*ny - 1
     brd = 0.1
     arrZ = np.linspace(brd*sizPrv, (1.-brd)*sizPrv, numXY ).astype(np.int)
+
+    frac_ = 1.0*dataLes.shape[2]/sizPrv
+
+    if type_ == 2:
+        print('equidistant Z')
+    if type_ == 3:
+        print('selection of most severely affected slices')
+        svrVals = np.zeros(sizPrv, np.float32)
+        for zz in range(sizPrv):
+            slice_ = deepcopy(dataLesR[ :, :, zz ])
+            slice_[dataMskR[:, :, zz] == 0] = 0
+            for kk, vv in lesion_id2name.items():
+                if kk == 0:  # skip background label
+                    continue
+                if kk == 1:  # weight Foci by 0.2
+                    svrVals[zz] += 0.2*float(np.sum(slice_[:] == kk))
+                else:
+                    svrVals[zz] += float(np.sum(slice_[:] == kk))
+        zzIdx = np.argsort(svrVals)[::-1]
+        arrSvrZ = np.zeros(len(arrZ), np.uint32)
+        arrSvrZ[0] = zzIdx[0]
+        tidx = 1
+        i = 1
+        while i < len(arrSvrZ):
+            fnd = False
+            for ti in range(i):
+                if np.abs(zzIdx[tidx] - arrSvrZ[ti]) <= 5:
+                    fnd = True
+                    break
+            if fnd == False:
+                arrSvrZ[i] = zzIdx[tidx]
+                i += 1
+            tidx += 1
+        arrSvrZ = np.sort(arrSvrZ)
+        arrZ = deepcopy(arrSvrZ)
+
     cnt = 0
     tmpV = []
     for yy in range(ny):
@@ -598,12 +689,408 @@ def makePreview4LesionV2(dataImg, dataMsk, dataLes, sizPrv=256, nx=4, ny=3, pad=
             # timgR[tles>1] = tles[tles>1]
             timgRGB = (255. * timgRGB).astype(np.uint8)
             timgRGB = np.pad(timgRGB, pad_width=[[pad],[pad],[0]], mode='constant')
+            timgRGB_ = deepcopy(timgRGB)
+            if (yy != 0) or (xx != 0):
+                cv2.putText(timgRGB_, 'Slice {}'.format(int(frac_*(sizPrv - arrZ[cnt-1] - 1))), (timgRGB.shape[0] - 110, timgRGB.shape[1] - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 140, 10), 2)
+                cv2.addWeighted(timgRGB_, 0.9, timgRGB, 1 - 0.9, 0, timgRGB)
             # tmpH.append(timgRGB[:, ::-1])
             tmpH.append(timgRGB)
         imgH = np.hstack(tmpH)
         tmpV.append(imgH)
     imgV = np.vstack(tmpV)
     return imgV
+
+def mkdir_p(path):
+    try:
+        os.makedirs(path)
+    except OSError as exc:  # Python >2.5
+        if exc.errno == errno.EEXIST and os.path.isdir(path):
+            pass
+        else:
+            raise
+
+
+def get_uids_from_json(json_filename_):
+    if not os.path.exists(json_filename_):
+        print('json file {} not exists'.format(json_filename_))
+        return None,None,None,None
+    with open(json_filename_) as f:
+        data = json.load(f)
+        try:
+            study_id = data['study_id']
+            patient_id = data['patient_id']
+            study_uid = data['study_uid']
+            series_uid = data['series_uid']
+
+            return str(study_id), str(patient_id), str(study_uid), str(series_uid)
+        except:
+            print('can not read series_uid and study_uid from {}'.format(json_filename_))
+            return None,None,None,None
+    return None,None,None,None
+
+def get_instance_uids_from_json(all_json_filename_, patient_id_, study_id_, study_uid_, series_uid_):
+    if not os.path.exists(all_json_filename_):
+        print('json file {} not exists'.format(all_json_filename_))
+        return None, None
+    ret_sopinstance_uids = {}
+    ret_fnames = {}
+    with open(all_json_filename_) as f:
+        data = json.load(f)
+        try:
+            patient_data = data['patient']
+            if patient_data['id'] == patient_id_:
+                # print(data['imagingStudies'])
+                imaging_data = data['imagingStudies']
+                for study in imaging_data:
+                    if study['studyUid'] == study_uid_:
+                        # print(study['studyUid'])
+                        for series in study['series']:
+                            if series['uid'] == series_uid_:
+                                instance_data = series['instance']
+                                for instance in instance_data:
+                                    # print(instance['uid'])
+                                    # print(instance['number'])
+                                    # print('')
+                                    ret_sopinstance_uids[instance['number']] = instance['uid']
+                                    ret_fnames[instance['number']] = instance['content']['url'].split('/')[-1]
+            # print(ret_fnames)
+            # print(ret_sopinstance_uids)
+            return ret_sopinstance_uids, ret_fnames
+        except:
+            print('can not read sopinstance_uids {}'.format(all_json_filename_))
+            return None, None
+    return None, None
+
+
+def vol2dcmRGB(rgb_vol_, rgb_spacing_, study_id_, patient_id_, study_uid_, series_uid_, series_desc_, sop_instance_uids_, fnames_, out_dcm_dirname_):
+    if not os.path.exists(out_dcm_dirname_):
+        mkdir_p(out_dcm_dirname_)
+
+    if not isinstance(rgb_vol_, np.ndarray):
+        print('vol2dcmRGB: input parameter should be ndarray')
+        return
+    if rgb_vol_.ndim != 4:
+        print('vol2dcmRGB: dims should be 4')
+        return
+    if rgb_vol_.shape[3] != 3:
+        print('vol2dcmRGB: volume should have 3 channels')
+        return
+    if not isinstance(rgb_vol_[0, 0, 0, 0], np.uint8):
+        print('vol2dcmRGB: volume elements should be uint8 type')
+        return
+
+    nii_img_shape = rgb_vol_.shape
+
+    print(rgb_spacing_)
+
+    image_RGB = sitk.Image([nii_img_shape[2], nii_img_shape[1], nii_img_shape[0]], sitk.sitkVectorUInt8, 3)
+    image_RGB = sitk.GetImageFromArray(rgb_vol_)
+
+    # print(nii_img_shape)
+
+    print('{}x{}x{}'.format(image_RGB.GetWidth(), image_RGB.GetHeight(), image_RGB.GetDepth()))
+
+    image_RGB.SetSpacing(rgb_spacing_)
+
+    # Write the 3D image as a series
+    # IMPORTANT: There are many DICOM tags that need to be updated when you modify an
+    #            original image. This is a delicate opration and requires knowlege of
+    #            the DICOM standard. This example only modifies some. For a more complete
+    #            list of tags that need to be modified see:
+    #                           http://gdcm.sourceforge.net/wiki/index.php/Writing_DICOM
+    #            If it is critical for your work to generate valid DICOM files,
+    #            It is recommended to use David Clunie's Dicom3tools to validate the files
+    #                           (http://www.dclunie.com/dicom3tools.html).
+
+    writer = sitk.ImageFileWriter()
+    # Use the study/series/frame of reference information given in the meta-data
+    # dictionary and not the automatically generated information from the file IO
+    writer.KeepOriginalImageUIDOn()
+    writer.UseCompressionOn()
+
+    modification_time = time.strftime("%H%M%S")
+    modification_date = time.strftime("%Y%m%d")
+
+    # Copy some of the tags and add the relevant tags indicating the change.
+    # For the series instance UID (0020|000e), each of the components is a number, cannot start
+    # with zero, and separated by a '.' We create a unique series ID using the date and time.
+    # tags of interest:
+    direction = image_RGB.GetDirection()
+    series_tag_values = [("0008|0031", modification_time),  # Series Time
+                         ("0008|0021", modification_date),  # Series Date
+                         ("0008|0008", "DERIVED\\LESIONMAP"),  # Image Type
+                         ("0010|0020", patient_id_),  # Patiend ID
+                         ("0020|0010", study_id_),  # Study ID
+                         ("0020|000e", series_uid_),  # Series Instance UID
+                         ("0020|000d", study_uid_),  # Study Instance UID
+                         ("0020|0037", '\\'.join(map(str, (direction[0], direction[3], direction[6],  # Image Orientation (Patient)
+                                                           direction[1], direction[4], direction[7])))),
+                         ("0008|103e", series_desc_)]  # Series Description
+
+    for i in range(image_RGB.GetDepth()):
+        image_slice = image_RGB[:, :, i]
+
+        # Tags shared by the series.
+        for tag, value in series_tag_values:
+            image_slice.SetMetaData(tag, value)
+        # Slice specific tags.
+        image_slice.SetMetaData("0008|0012", time.strftime("%Y%m%d"))  # Instance Creation Date
+        image_slice.SetMetaData("0008|0013", time.strftime("%H%M%S"))  # Instance Creation Time
+        # Setting the type to CT preserves the slice location.
+        image_slice.SetMetaData("0008|0060", "CT")  # set the type to CT so the thickness is carried over
+
+        # (0020, 0032) image position patient determines the 3D spacing between slices.
+        image_slice.SetMetaData("0020|0032", '\\'.join(map(str, image_RGB.TransformIndexToPhysicalPoint((0, 0, i)))))  # Image Position (Patient)
+        image_slice.SetMetaData("0020|0013", str(i+1))  # Instance Number
+
+
+        sop_instance_uid = str(sop_instance_uids_[image_RGB.GetDepth() - i ])
+        fname = fnames_[image_RGB.GetDepth() - i ]
+        # print(sop_instance_uid)
+        # print(fname)
+        image_slice.SetMetaData("0008|0018", sop_instance_uid)  # set SOPInstanceUID
+        # exit()
+
+        # Write to the output directory and add the extension dcm, to force writing in DICOM format.
+        writer.SetFileName(os.path.join('{}{}.dcm'.format(out_dcm_dirname_, fname)))
+        writer.Execute(image_slice)
+        os.rename(os.path.join('{}{}.dcm'.format(out_dcm_dirname_, fname)),
+                  os.path.join('{}{}'.format(out_dcm_dirname_, fname)))
+    return
+
+
+def niftii2dcm(nii_filename_, study_id_, patient_id_, study_uid_, series_uid_, series_desc_, sop_instance_uids_, fnames_, out_dcm_dirname_):
+    if not os.path.exists(nii_filename_):
+        print('Niftii file {} not exists'.format(nii_filename_))
+        return
+    if not os.path.exists(out_dcm_dirname_):
+        mkdir_p(out_dcm_dirname_)
+
+    nii_img = nib.load(nii_filename_)
+    nii_img_vol = nii_img.get_data().astype(np.int16)
+    nii_img_vol = nii_img_vol[:, ::-1, ::]
+    inter_ = nii_img._dataobj._inter
+    slope_ = nii_img._dataobj._slope
+    print('slope = {}, intercept = {}'.format(slope_, inter_))
+    print('min = {}, max = {}'.format(np.min(nii_img_vol), np.max(nii_img_vol)))
+    nii_img_vol[:] = (nii_img_vol[:] - inter_)/slope_
+    print('min = {}, max = {}'.format(np.min(nii_img_vol), np.max(nii_img_vol)))
+
+    nii_img_affine = nii_img.affine
+    nii_img_shape = nii_img_vol.shape
+    nii_img_spacing = [ np.abs(nii_img_affine[i][i]) for i in range(3) ]
+    # print(nii_img_spacing)
+
+    nii_img_vol = np.transpose(nii_img_vol, (2, 1, 0))
+
+    new_img = sitk.GetImageFromArray(nii_img_vol)
+
+    # print(nii_img_shape)
+
+    print('{}x{}x{}'.format(new_img.GetWidth(), new_img.GetHeight(), new_img.GetDepth()))
+
+    new_img.SetSpacing(nii_img_spacing)
+
+    # Write the 3D image as a series
+    # IMPORTANT: There are many DICOM tags that need to be updated when you modify an
+    #            original image. This is a delicate opration and requires knowlege of
+    #            the DICOM standard. This example only modifies some. For a more complete
+    #            list of tags that need to be modified see:
+    #                           http://gdcm.sourceforge.net/wiki/index.php/Writing_DICOM
+    #            If it is critical for your work to generate valid DICOM files,
+    #            It is recommended to use David Clunie's Dicom3tools to validate the files
+    #                           (http://www.dclunie.com/dicom3tools.html).
+
+    writer = sitk.ImageFileWriter()
+    # Use the study/series/frame of reference information given in the meta-data
+    # dictionary and not the automatically generated information from the file IO
+    writer.KeepOriginalImageUIDOn()
+    writer.UseCompressionOn()
+
+    modification_time = time.strftime("%H%M%S")
+    modification_date = time.strftime("%Y%m%d")
+
+    # Copy some of the tags and add the relevant tags indicating the change.
+    # For the series instance UID (0020|000e), each of the components is a number, cannot start
+    # with zero, and separated by a '.' We create a unique series ID using the date and time.
+    # tags of interest:
+    direction = new_img.GetDirection()
+    series_tag_values = [("0008|0031", modification_time),  # Series Time
+                         ("0008|0021", modification_date),  # Series Date
+                         ("0008|0008", "DERIVED\\LESIONMAP"),  # Image Type
+                         ("0010|0020", patient_id_),    # Patiend ID
+                         ("0020|0010", study_id_),   # Study ID
+                         ("0020|000e", series_uid_),  # Series Instance UID
+                         ("0020|000d", study_uid_),  # Study Instance UID
+                         ("0020|0037", '\\'.join(map(str, (direction[0], direction[3], direction[6],  # Image Orientation (Patient)
+                                                           direction[1], direction[4], direction[7])))),
+                         ("0008|103e", series_desc_)]  # Series Description
+
+    for i in range(new_img.GetDepth()):
+        image_slice = new_img[:, :, i]
+
+        # Tags shared by the series.
+        for tag, value in series_tag_values:
+            image_slice.SetMetaData(tag, value)
+        # Slice specific tags.
+        image_slice.SetMetaData("0008|0012", time.strftime("%Y%m%d"))  # Instance Creation Date
+        image_slice.SetMetaData("0008|0013", time.strftime("%H%M%S"))  # Instance Creation Time
+        # Setting the type to CT preserves the slice location.
+        image_slice.SetMetaData("0008|0060", "CT")  # set the type to CT so the thickness is carried over
+
+
+        # (0020, 0032) image position patient determines the 3D spacing between slices.
+        image_slice.SetMetaData("0020|0032", '\\'.join(map(str, new_img.TransformIndexToPhysicalPoint((0, 0, i)))))  # Image Position (Patient)
+        image_slice.SetMetaData("0020|0013", str(i+1))  # Instance Number
+
+        sop_instance_uid = str(sop_instance_uids_[ new_img.GetDepth() - i  ])
+        # print(sop_instance_uid)
+        fname = fnames_[ new_img.GetDepth() - i ]
+        # print(fname)
+        image_slice.SetMetaData("0008|0018", sop_instance_uid) # set SOPInstanceUID
+
+        # Write to the output directory and add the extension dcm, to force writing in DICOM format.
+        writer.SetFileName(os.path.join('{}{}.dcm'.format(out_dcm_dirname_, fname)))
+        writer.Execute(image_slice)
+        os.rename(os.path.join('{}{}.dcm'.format(out_dcm_dirname_, fname)),
+              os.path.join('{}{}'.format(out_dcm_dirname_, fname)))
+    return
+
+
+def prepareCTpreview(series_):
+    ct_nii_filename_ = series_.pathConvertedNifti(isRelative=False)
+    if not os.path.exists(ct_nii_filename_):
+        print('File {} not exists'.format(ct_nii_filename_))
+        return
+    # msk_nii_filename_ = os.path.dirname(ct_nii_filename_) + '/' + '.'.join(os.path.basename(ct_nii_filename_).split('.')[:-2]) + '-lesions3.nii.gz'
+    msk_nii_filename_ = series_.pathPostprocLesions2(isRelative=False)
+
+    # report_filename_ = os.path.dirname(ct_nii_filename_) + '/' + '.'.join(os.path.basename(ct_nii_filename_).split('.')[:-2]) + '-report2.json'
+    report_filename_ = series_.pathPostprocReport(isRelative=False)
+
+    if not os.path.exists(msk_nii_filename_):
+        print('Lesion map file {} not exists'.format(msk_nii_filename_))
+        return
+    if not os.path.exists(report_filename_):
+        print('Metadata file {} not exists'.format(report_filename_))
+        return
+
+    study_id, patient_id, study_uid, series_uid = get_uids_from_json(report_filename_)
+
+    sop_instance_uids, fnames = get_instance_uids_from_json(all_json_filename_=os.path.dirname(ct_nii_filename_)+'/../info-all.json', patient_id_=patient_id, study_id_=study_id, study_uid_=study_uid, series_uid_=series_uid)
+    # exit()
+
+    img_min_ = -1150 # standart lungs min and max values on CT
+    img_max_ = 350
+
+    # viewer_dir_root = os.path.realpath(os.path.dirname(ct_nii_filename_) + '/../../../@viewer/')
+    viewer_dir_root = '/media/data10T_1/datasets/CRDF_viewer/@viewer_debug_es/'
+
+    original_out_dirname_ = viewer_dir_root + 'original/' + patient_id + '/' + study_uid + '/' + series_uid + '/'
+    lesions_only_out_dirname_ = viewer_dir_root + 'lesions_only/' + patient_id + '/' + study_uid + '/' + series_uid + '/'
+    lesions_map_out_dirname_ = viewer_dir_root + 'lesions_map/' + patient_id + '/' + study_uid + '/' + series_uid + '/'
+
+    if os.path.exists(original_out_dirname_):
+        shutil.rmtree(original_out_dirname_, ignore_errors=True)
+    mkdir_p(original_out_dirname_)
+
+    if os.path.exists(lesions_only_out_dirname_):
+        shutil.rmtree(lesions_only_out_dirname_, ignore_errors=True)
+    mkdir_p(lesions_only_out_dirname_)
+
+    if os.path.exists(lesions_map_out_dirname_):
+        shutil.rmtree(lesions_map_out_dirname_, ignore_errors=True)
+    mkdir_p(lesions_map_out_dirname_)
+
+    niftii2dcm(nii_filename_=ct_nii_filename_, study_id_=study_id, patient_id_=patient_id, series_uid_=series_uid, study_uid_=study_uid, series_desc_='Original CT',
+               sop_instance_uids_=sop_instance_uids, fnames_=fnames, out_dcm_dirname_=original_out_dirname_)
+    # niftii2dcm(nii_filename_=msk_nii_filename_, study_id_ = study_id, patient_id_=patient_id, series_uid_=series_uid, study_uid_=study_uid, out_dcm_dirname_=lesions_only_out_dirname_)
+
+    # make mask overlay
+    nii_img = nib.load(ct_nii_filename_)
+    nii_img_vol = nii_img.get_data().astype(np.int16)
+    nii_img_vol = nii_img_vol[:, ::-1, ::]
+    # inter_ = nii_img._dataobj._inter
+    # slope_ = nii_img._dataobj._slope
+    # print('slope = {}, intercept = {}'.format(slope_, inter_))
+    # print('min = {}, max = {}'.format(np.min(nii_img_vol), np.max(nii_img_vol)))
+    # nii_img_vol[:] = nii_img_vol[:]*slope_ + inter_
+    # print('min = {}, max = {}'.format(np.min(nii_img_vol), np.max(nii_img_vol)))
+
+    nii_img_vol[nii_img_vol[:] <= img_min_] = img_min_
+    nii_img_vol[nii_img_vol[:] > img_max_] = img_max_
+
+    nii_msk = nib.load(msk_nii_filename_)
+    nii_msk_vol = nii_msk.get_data().astype(np.int16)
+    nii_msk_vol = nii_msk_vol[:, ::-1, ::]
+
+    nii_img_affine = nii_img.affine
+    nii_img_shape = nii_img_vol.shape
+    nii_img_spacing = [ np.abs(nii_img_affine[i][i]) for i in range(3) ]
+
+    rgb_vol = np.zeros((nii_img_shape[0], nii_img_shape[1], nii_img_shape[2], 3), np.uint8)
+
+    alpha = 0.5
+    for zz in range(nii_img_shape[2]):
+        img_slice_ = deepcopy(nii_img_vol[:, :, zz]).astype(np.float32)
+        msk_slice_ = deepcopy(nii_msk_vol[:, :, zz])
+
+        if img_slice_.max() > 1:
+            img_slice_ = (img_slice_ - img_min_) / (img_max_ - img_min_)
+        if img_slice_.ndim < 3:
+            img_slice_ = np.tile(img_slice_[..., np.newaxis], 3)
+        msk_bin = (msk_slice_ > 0)
+        msk_rgb = np.tile(msk_bin[..., np.newaxis], 3)
+        img_bg = (msk_rgb == False) * img_slice_
+        ret = deepcopy(img_bg)
+        for kk, vv in lesion_id2rgb.items():
+            if kk < 1:
+                continue
+            tmp_msk = (msk_slice_ == kk)
+            tmp_msk_rgb = np.tile(tmp_msk[..., np.newaxis], 3)
+            tmp_img_overlay = alpha * np.array(vv) * tmp_msk_rgb
+            tmp_img_original = (1 - alpha) * tmp_msk_rgb * img_slice_
+            ret += tmp_img_overlay + tmp_img_original
+        rgb_vol[:, :, zz] = (ret * 255).astype(np.uint8)
+
+    rgb_vol = np.transpose(rgb_vol, (2, 1, 0, 3))
+
+    vol2dcmRGB(rgb_vol_=rgb_vol, rgb_spacing_=nii_img_spacing, study_id_=study_id, patient_id_=patient_id, study_uid_=study_uid, series_uid_=series_uid,
+               series_desc_='Lesion Map over original CT', sop_instance_uids_=sop_instance_uids, fnames_=fnames, out_dcm_dirname_=lesions_map_out_dirname_)
+
+    # only rgb lesion map
+    rgb_vol = np.zeros((nii_img_shape[0], nii_img_shape[1], nii_img_shape[2], 3), np.uint8)
+
+
+
+    for zz in range(nii_img_shape[2]):
+        img_slice_ = deepcopy(nii_img_vol[:, :, zz]).astype(np.float32)
+        msk_slice_ = deepcopy(nii_msk_vol[:, :, zz])
+
+        if img_slice_.max() > 1:
+            img_slice_ = (img_slice_ - img_min_) / (img_max_ - img_min_)
+        if img_slice_.ndim < 3:
+            img_slice_ = np.tile(img_slice_[..., np.newaxis], 3)
+        msk_bin = (msk_slice_ > 0)
+        msk_rgb = np.tile(msk_bin[..., np.newaxis], 3)
+        img_bg = 0.0 * img_slice_
+        ret = deepcopy(img_bg)
+        for kk, vv in lesion_id2rgb.items():
+            if kk < 1:
+                continue
+            tmp_msk = (msk_slice_ == kk)
+            tmp_msk_rgb = np.tile(tmp_msk[..., np.newaxis], 3)
+            tmp_img_overlay = 1.0 * np.array(vv) * tmp_msk_rgb
+            tmp_img_original = (1 - alpha) * tmp_msk_rgb * img_slice_
+            ret += tmp_img_overlay
+        rgb_vol[:, :, zz] = (ret * 255).astype(np.uint8)
+
+    rgb_vol = np.transpose(rgb_vol, (2, 1, 0, 3))
+
+    vol2dcmRGB(rgb_vol_=rgb_vol, rgb_spacing_=nii_img_spacing, study_id_=study_id, patient_id_=patient_id, study_uid_=study_uid, series_uid_=series_uid,
+               series_desc_='Lesions Only', sop_instance_uids_=sop_instance_uids, fnames_=fnames, out_dcm_dirname_=lesions_only_out_dirname_)
+
+    return
 
 if __name__ == '__main__':
     pass

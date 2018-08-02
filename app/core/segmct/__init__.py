@@ -264,7 +264,9 @@ def api_generateAllReports(series,
     pathSegmLungsDiv2 = series.pathPostprocLungsDiv2(isRelative=False)
     # pathSegmLesions1 = series.pathPostprocLesions(isRelative=False)
     pathSegmLesions1 = series.pathPostprocLesions2(isRelative=False)
-    pathPreview = series.pathPostprocPreview(isRelative=False)
+    pathPreview2 = series.pathPostprocPreview(isRelative=False, previewId=2)
+    pathPreview3 = series.pathPostprocPreview(isRelative=False, previewId=3)
+    pathPreview4 = series.pathPostprocPreview(isRelative=False, previewId=4)
     pathReport = series.pathPostprocReport(isRelative=False)
     # (1) Lung/Lesions segmentation
     retSegm = api_segmentLungAndLesion(dirModelLung=dirModelLung,
@@ -297,15 +299,19 @@ def api_generateAllReports(series,
         msgErr('Cant evaluate Lesion-score: [{0}], for {1}'.format(err, pathSegmLesions1))
         return False
     # (3.1) calc cbir-descriptor
+    texture_asymmetry = None
     try:
         cbir_desc = ldsc.calc_desc(pathSegmLungsDiv2, pathSegmLesions1)
         cbir_desc_json = ldsc.desc_to_json(cbir_desc)
+        texture_asymmetry = ldsc.desc_asymmetry(desc_=cbir_desc)
     except Exception as err:
         msgErr('Cant evaluate Lesion-score: [{0}], for {1}'.format(err, pathSegmLesions1))
         return False
     # (4) prepare short report about lungs
     try:
         retLungInfo = preproc.prepareLungSizeInfoNii(niiLungDiv)
+        if texture_asymmetry is not None:
+            retLungInfo['asymmetry'][1]["value"] = '%0.3f' % texture_asymmetry
     except Exception as err:
         msgErr('Cant get Lung information : [{0}], for {1}'.format(err, series))
         return False
@@ -314,39 +320,18 @@ def api_generateAllReports(series,
     dataImg = preproc.normalizeCTImage(nib.load(pathNii).get_data())
     dataMsk = niiLung.get_data()
     dataLes = niiLesion.get_data()
-    imgPreview = preproc.makePreview4LesionV2(dataImg, dataMsk, dataLes)
-    imgPreviewJson = {
-        "description": "CT Lesion preview",
-        "content-type": "image/jpeg",
-        "xsize": imgPreview.shape[1],
-        "ysize": imgPreview.shape[0],
-        "url": os.path.basename(pathPreview)
-    }
-    lst_legends = [mpatches.Patch(color=lesion_id2rgb[kk], label=vv) for kk, vv in lesion_id2name.items()]
-    frame1 = plt.gca()
-    frame1.axes.set_axis_off()
-    fig = plt.gcf()
-    ax = plt.Axes(fig, [0., 0., 1., 1.])
-    ax.set_axis_off()
-    fig.add_axes(ax)
-    DPI = fig.get_dpi()
-    fig.set_size_inches(imgPreview.shape[1] / float(DPI), imgPreview.shape[0] / float(DPI))
-    plt.imshow(imgPreview)
-    plt.legend(handles=lst_legends)
-    fig.savefig(pathPreview, pad_inches = 0)
-    fig.clf()
-    fig.clear()
-    # skio.imsave(pathPreview, imgPreview)
-    # except Exception as err:
-    #     msgErr('Cant generate preview image : [{0}], for {1}'.format(err, series))
-    #     return False
-    # (5) generate & save JSON report
+
+    imgPreviewJson2 = preproc.genPreview2D(dataImg, dataMsk, dataLes, pathPreview2, 2)
+    imgPreviewJson3 = preproc.genPreview2D(dataImg, dataMsk, dataLes, pathPreview3, 3)
+  # imgPreviewJson4 = preproc.genPreview2D(dataImg, dataMsk, dataLes, pathPreview4, 4)
+
+    # (6) generate & save JSON report
     try:
         jsonReport = preproc.getJsonReport(series=series,
                                            reportLesionScore=None, #retLesionScoreBin,
                                            reportLesion=cbir_desc_json,
                                            reportLungs=retLungInfo,
-                                           lstImgJson=[imgPreviewJson],
+                                           lstImgJson=[imgPreviewJson3, imgPreviewJson2],
                                            reportLesionScoreById = None, #retLesionScoreById,
                                            reportLesionScoreByName = None) #retLesionScoreByName)
         with open(pathReport, 'w') as f:
@@ -354,6 +339,12 @@ def api_generateAllReports(series,
     except Exception as err:
         msgErr('Cant generate final JSON report : [{0}], for {1}'.format(err, series))
         return False
+
+    # (7) generate and save 3 directories with DICOM files, converted from Lesions NifTi
+    #     original, lesions_only and lesions_map
+    #     file names convention: {S3 bucket name}/viewer/{map_type}/{patientID}/{studyUID}/{seriesUID}/{instanceUID}.{extension}
+    # preproc.prepareCTpreview(series)
+
     # FIXME: append PDF generation in future here
     # (6) generate PDF preview
     return True
