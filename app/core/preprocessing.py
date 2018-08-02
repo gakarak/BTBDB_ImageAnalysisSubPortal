@@ -901,7 +901,6 @@ def niftii2dcm(nii_filename_, study_id_, patient_id_, study_uid_, series_uid_, s
     writer.KeepOriginalImageUIDOn()
     writer.UseCompressionOn()
 
-
     modification_time = time.strftime("%H%M%S")
     modification_date = time.strftime("%Y%m%d")
 
@@ -975,7 +974,7 @@ def prepareCTpreview(series_):
     sop_instance_uids, fnames = get_instance_uids_from_json(all_json_filename_=os.path.dirname(ct_nii_filename_)+'/../info-all.json', patient_id_=patient_id, study_id_=study_id, study_uid_=study_uid, series_uid_=series_uid)
     # exit()
 
-    viewer_dir_root = os.path.realpath(os.path.dirname(ct_nii_filename_) + '/../../../@viewer/)
+    viewer_dir_root = os.path.realpath(os.path.dirname(ct_nii_filename_) + '/../../../@viewer/')
     # viewer_dir_root = '/media/data10T_1/datasets/CRDF_viewer/@viewer/'
 
     original_out_dirname_ = viewer_dir_root + 'original/' + patient_id + '/' + study_uid + '/' + series_uid + '/'
