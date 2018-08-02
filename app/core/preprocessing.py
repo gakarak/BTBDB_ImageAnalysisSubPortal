@@ -869,6 +869,12 @@ def niftii2dcm(nii_filename_, study_id_, patient_id_, study_uid_, series_uid_, s
     nii_img = nib.load(nii_filename_)
     nii_img_vol = nii_img.get_data().astype(np.int16)
     nii_img_vol = nii_img_vol[:, ::-1, ::]
+    inter_ = nii_img._dataobj._inter
+    slope_ = nii_img._dataobj._slope
+    print('slope = {}, intercept = {}'.format(slope_, inter_))
+    print('min = {}, max = {}'.format(np.min(nii_img_vol), np.max(nii_img_vol)))
+    nii_img_vol[:] = (nii_img_vol[:] - inter_)/slope_
+    print('min = {}, max = {}'.format(np.min(nii_img_vol), np.max(nii_img_vol)))
 
     nii_img_affine = nii_img.affine
     nii_img_shape = nii_img_vol.shape
@@ -974,8 +980,11 @@ def prepareCTpreview(series_):
     sop_instance_uids, fnames = get_instance_uids_from_json(all_json_filename_=os.path.dirname(ct_nii_filename_)+'/../info-all.json', patient_id_=patient_id, study_id_=study_id, study_uid_=study_uid, series_uid_=series_uid)
     # exit()
 
-    viewer_dir_root = os.path.realpath(os.path.dirname(ct_nii_filename_) + '/../../../@viewer/')
-    # viewer_dir_root = '/media/data10T_1/datasets/CRDF_viewer/@viewer/'
+    img_min_ = -1150 # standart lungs min and max values on CT
+    img_max_ = 350
+
+    # viewer_dir_root = os.path.realpath(os.path.dirname(ct_nii_filename_) + '/../../../@viewer/')
+    viewer_dir_root = '/media/data10T_1/datasets/CRDF_viewer/@viewer_debug_es/'
 
     original_out_dirname_ = viewer_dir_root + 'original/' + patient_id + '/' + study_uid + '/' + series_uid + '/'
     lesions_only_out_dirname_ = viewer_dir_root + 'lesions_only/' + patient_id + '/' + study_uid + '/' + series_uid + '/'
@@ -1001,6 +1010,15 @@ def prepareCTpreview(series_):
     nii_img = nib.load(ct_nii_filename_)
     nii_img_vol = nii_img.get_data().astype(np.int16)
     nii_img_vol = nii_img_vol[:, ::-1, ::]
+    # inter_ = nii_img._dataobj._inter
+    # slope_ = nii_img._dataobj._slope
+    # print('slope = {}, intercept = {}'.format(slope_, inter_))
+    # print('min = {}, max = {}'.format(np.min(nii_img_vol), np.max(nii_img_vol)))
+    # nii_img_vol[:] = nii_img_vol[:]*slope_ + inter_
+    # print('min = {}, max = {}'.format(np.min(nii_img_vol), np.max(nii_img_vol)))
+
+    nii_img_vol[nii_img_vol[:] <= img_min_] = img_min_
+    nii_img_vol[nii_img_vol[:] > img_max_] = img_max_
 
     nii_msk = nib.load(msk_nii_filename_)
     nii_msk_vol = nii_msk.get_data().astype(np.int16)
@@ -1018,7 +1036,7 @@ def prepareCTpreview(series_):
         msk_slice_ = deepcopy(nii_msk_vol[:, :, zz])
 
         if img_slice_.max() > 1:
-            img_slice_ = (img_slice_ - img_slice_.min()) / (img_slice_.max() - img_slice_.min())
+            img_slice_ = (img_slice_ - img_min_) / (img_max_ - img_min_)
         if img_slice_.ndim < 3:
             img_slice_ = np.tile(img_slice_[..., np.newaxis], 3)
         msk_bin = (msk_slice_ > 0)
@@ -1043,12 +1061,14 @@ def prepareCTpreview(series_):
     # only rgb lesion map
     rgb_vol = np.zeros((nii_img_shape[0], nii_img_shape[1], nii_img_shape[2], 3), np.uint8)
 
+
+
     for zz in range(nii_img_shape[2]):
         img_slice_ = deepcopy(nii_img_vol[:, :, zz]).astype(np.float32)
         msk_slice_ = deepcopy(nii_msk_vol[:, :, zz])
 
         if img_slice_.max() > 1:
-            img_slice_ = (img_slice_ - img_slice_.min()) / (img_slice_.max() - img_slice_.min())
+            img_slice_ = (img_slice_ - img_min_) / (img_max_ - img_min_)
         if img_slice_.ndim < 3:
             img_slice_ = np.tile(img_slice_[..., np.newaxis], 3)
         msk_bin = (msk_slice_ > 0)
