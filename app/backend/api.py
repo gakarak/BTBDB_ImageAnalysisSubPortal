@@ -193,6 +193,11 @@ def db_status():
         ret = get_response(retcode=1, errorstr='db-status *error: {0}'.format(err))
     return Response(json.dumps(ret, indent=4), mimetype='application/json')
 
+@app_flask.route('/db/study-info/', methods=['GET'])
+def study_info():
+    #TODO:  ...
+    pass
+
 @app_flask.route('/db/cases-info/', methods=['GET'])
 def case_info():
     try:
