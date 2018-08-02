@@ -299,15 +299,19 @@ def api_generateAllReports(series,
         msgErr('Cant evaluate Lesion-score: [{0}], for {1}'.format(err, pathSegmLesions1))
         return False
     # (3.1) calc cbir-descriptor
+    texture_asymmetry = None
     try:
         cbir_desc = ldsc.calc_desc(pathSegmLungsDiv2, pathSegmLesions1)
         cbir_desc_json = ldsc.desc_to_json(cbir_desc)
+        texture_asymmetry = ldsc.desc_asymmetry(desc_=cbir_desc)
     except Exception as err:
         msgErr('Cant evaluate Lesion-score: [{0}], for {1}'.format(err, pathSegmLesions1))
         return False
     # (4) prepare short report about lungs
     try:
         retLungInfo = preproc.prepareLungSizeInfoNii(niiLungDiv)
+        if texture_asymmetry is not None:
+            retLungInfo['asymmetry'][1]["value"] = '%0.3f' % texture_asymmetry
     except Exception as err:
         msgErr('Cant get Lung information : [{0}], for {1}'.format(err, series))
         return False
@@ -319,7 +323,7 @@ def api_generateAllReports(series,
 
     imgPreviewJson2 = preproc.genPreview2D(dataImg, dataMsk, dataLes, pathPreview2, 2)
     imgPreviewJson3 = preproc.genPreview2D(dataImg, dataMsk, dataLes, pathPreview3, 3)
-    # imgPreviewJson4 = preproc.genPreview2D(dataImg, dataMsk, dataLes, pathPreview4, 4)
+  # imgPreviewJson4 = preproc.genPreview2D(dataImg, dataMsk, dataLes, pathPreview4, 4)
 
     # (6) generate & save JSON report
     try:
