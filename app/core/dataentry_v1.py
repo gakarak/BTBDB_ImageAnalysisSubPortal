@@ -124,7 +124,7 @@ class SeriesInfo:
     def pathPostprocLesions2(self, isRelative=True):
         if self.isInitialized():
             # return '{0}-lesions2.nii.gz'.format(self.getDir(isRelative=isRelative))
-            return '{0}-lesions4.nii.gz'.format(self.getDir(isRelative=isRelative))
+            return '{0}-lesions5.nii.gz'.format(self.getDir(isRelative=isRelative))
     def pathPostprocPreview(self, isRelative=True, previewId=0):
         if self.isInitialized():
             return '{0}-preview{1}.jpg'.format(self.getDir(isRelative=isRelative), previewId)

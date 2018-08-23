@@ -3,11 +3,14 @@
 __author__ = 'ar'
 
 import os
+import glob
 import numpy as np
 import nibabel as nib
 
 from app.core.segmct.fcnn_lung2d import BatcherCTLung2D
 from app.core.segmct.fcnn_lesion3d import BatcherCTLesion3D
+from app.core.segmct import fcnn_lesion3dv3 as fcn3dv3
+# import app.core.segmct.
 from app.core.segmct.fcnn_lesion3dv2 import Inferencer as InferencerLesion3Dv2, lesion_id2name, lesion_id2rgb, lesion_name2id
 
 import json
@@ -148,10 +151,72 @@ def segmentLesions3Dv2(pathInpNii, dirWithModel, pathOutNii=None, outSize=None, 
     else:
         return outMskNii
 
+
+def segmentLesions3Dv3(nii_img, dir_with_model, nii_lings=None, path_out_nii=None, out_size=None, is_debug=False, threshold=None):
+    # if isinstance(nii_img, str):# or isinstance(pathInpNii, unicode):
+    #     isInpFromFile = True
+    #     if not os.path.isfile(nii_img):
+    #         raise Exception('Cant find input file [%s]' % nii_img)
+    # else:
+    #     isInpFromFile = False
+    if not os.path.isdir(dir_with_model):
+        raise Exception('Cant find directory with model [%s]' % dir_with_model)
+    if path_out_nii is not None:
+        outDir = os.path.dirname(os.path.abspath(path_out_nii))
+        if not os.path.isdir(outDir):
+            raise Exception(
+                'Cant find output directory [%s], create directory for output file before this call' % outDir)
+    data_shape = [512, 512, 256]
+    args = fcn3dv3.get_args_obj()
+    path_model = glob.glob('{}/*.h5'.format(dir_with_model))
+    if len(path_model) < 1:
+        raise FileNotFoundError('Cant find any keras model in diractory [{}] for lesion detection'.format(dir_with_model))
+    args.model = path_model[0]
+    # args.img    = nii_img
+    # args.lung   = nii_lings
+    # args.infer_out = path_msk_out
+    cfg = fcn3dv3.Config(args)
+    model = fcn3dv3.build_model(cfg, inp_shape=list(cfg.infer_crop_pad) + [1])
+    model.summary()
+    model.load_weights(path_model[0], by_name=True)
+    msk_cls, msk_val = fcn3dv3.run_inference_crdf(cfg, model, nii_img, nii_lings)
+    return msk_cls, msk_val
+    # batcherInfer = InferencerLesion3Dv2()
+    # batcherInfer.load_model(path_model=dir_with_model)
+    # if is_debug:
+    #     batcherInfer.model.summary()
+    # ret = batcherInfer.inference([nii_img], batchSize=1)
+    # outMsk = ret[0]
+    # if isInpFromFile:
+    #     tmpNii = nib.load(nii_img)
+    # else:
+    #     tmpNii = nii_img
+    # #
+    # outMskNii = nib.Nifti1Image(outMsk.copy().astype(np.uint8), tmpNii.affine, header=tmpNii.header)
+    # if out_size is not None:
+    #     outMskNii = resizeNii(outMskNii, newSize=out_size, parOrder = 0)
+    # if path_lungs is not None:
+    #     tmp_affine = outMskNii.affine
+    #     tmp_header = outMskNii.header
+    #     msk_lungs = resizeNii(path_lungs, newSize=out_size, parOrder=0).get_data()
+    #     outMsk = outMskNii.get_data().astype(np.uint8)
+    #     outMsk[msk_lungs < 0.5] = 0
+    #     outMskNii = nib.Nifti1Image(outMsk.copy().astype(np.uint8), tmp_affine, header=tmp_header)
+    # # if threshold is not None:
+    # #     outMskNii = nib.Nifti1Image((outMskNii.get_data() > threshold).astype(np.float16),
+    # #                                 outMskNii.affine,
+    # #                                 header=outMskNii.header)
+    # if path_out_nii is not None:
+    #     nib.save(outMskNii, path_out_nii)
+    #     # pathOutNii = '%s-segm.nii.gz' % pathInpNii
+    # else:
+    #     return outMskNii
+
+
 #########################################
 def api_segmentLungAndLesion(dirModelLung, dirModelLesion, series,
                              ptrLogger=None,
-                             shape4Lung = (256, 256, 64), shape4Lesi = (256, 256, 64), gpuMemUsage=0.4):
+                             shape4Lung = (256, 256, 64), shape4Lesi = (512, 512, 256), gpuMemUsage=0.4):
     # (1) msg-helpers
     def msgInfo(msg):
         if ptrLogger is not None:
@@ -197,7 +262,6 @@ def api_segmentLungAndLesion(dirModelLung, dirModelLesion, series,
             dataNii = nib.load(pathNii)
             shapeOrig = dataNii.shape
             niiResiz4Lung = resizeNii(dataNii, shape4Lung)
-            niiResiz4Lesi = resizeNii(dataNii, shape4Lesi)
         except Exception as err:
             msgErr('Cant load and resize input nifti file [{0}] : {1}, for series [{2}]'.format(pathNii, err, series))
             return False
@@ -219,27 +283,39 @@ def api_segmentLungAndLesion(dirModelLung, dirModelLesion, series,
             return False
         # (2.3.3) segment lesions
         try:
-            # lesionMask = segmentLesions3D(niiResiz4Lesi,
-            #                               dirWithModel=dirModelLesion,
-            #                               pathOutNii=None,
-            #                               outSize=shapeOrig,
-            #                               # outSize=shape4Lung,
-            #                               threshold=None)
-            lesionMask = segmentLesions3Dv2(niiResiz4Lesi,
-                                            dirWithModel=dirModelLesion,
-                                            pathOutNii=None,
-                                            outSize=shapeOrig,
-                                            # outSize=shape4Lung,
-                                            threshold=None,
-                                            path_lungs=pathSegmLungs)
+            if not os.path.isfile(pathSegmLesions):
+                # lesionMask = segmentLesions3D(niiResiz4Lesi,
+                #                               dirWithModel=dirModelLesion,
+                #                               pathOutNii=None,
+                #                               outSize=shapeOrig,
+                #                               # outSize=shape4Lung,
+                #                               threshold=None)
+                shape_lesions = [512, 512, 256]
+                nii_lung_resiz4lesion = resizeNii(pathSegmLungs, shape_lesions, parOrder=0)
+                nii_data_resiz4lesion = resizeNii(dataNii, shape_lesions, parOrder=1)
+                lesionMask, lesionMaskVal = segmentLesions3Dv3(nii_data_resiz4lesion,
+                                                dir_with_model=dirModelLesion,
+                                                nii_lings=nii_lung_resiz4lesion,
+                                                path_out_nii=None,
+                                                # outSize=shapeOrig,
+                                                # outSize=shape4Lung,
+                                                threshold=None)
+                # lesionMask = segmentLesions3Dv2(niiResiz4Lesi,
+                #                                 dirWithModel=dirModelLesion,
+                #                                 pathOutNii=None,
+                #                                 outSize=shapeOrig,
+                #                                 # outSize=shape4Lung,
+                #                                 threshold=None,
+                #                                 path_lungs=pathSegmLungs)
+                # (2.3.4) save results
+                try:
+                    lesionMask = resizeNii(lesionMask, shapeOrig, parOrder=0)
+                    nib.save(lesionMask, pathSegmLesions)
+                except Exception as err:
+                    msgErr('Cant save segmentation results to file [{0}] : {1}, for series [{2}]'.format(pathSegmLesions, err, series))
+                    return False
         except Exception as err:
             msgErr('Cant segment lesions for file [{0}] : {1}, for series [{2}]'.format(pathNii, err, series))
-            return False
-        # (2.3.4) save results
-        try:
-            nib.save(lesionMask, pathSegmLesions)
-        except Exception as err:
-            msgErr('Cant save segmentation results to file [{0}] : {1}, for series [{2}]'.format(pathSegmLesions, err, series))
             return False
         return True
 
