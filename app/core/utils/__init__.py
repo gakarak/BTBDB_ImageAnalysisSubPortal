@@ -10,6 +10,12 @@ import distutils
 import distutils.spawn
 import errno
 
+def get_data_dir():
+    this_dir_path = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+    dir_data = os.path.dirname(os.path.dirname(this_dir_path))
+    dir_data = os.path.join(dir_data, 'experimental_data')
+    return dir_data
+
 def checkFileOrDir(ppath, isDir=False, isRaiseException=True):
     if not isDir:
         ret = os.path.isfile(ppath)
