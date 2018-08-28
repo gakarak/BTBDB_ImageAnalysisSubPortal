@@ -117,7 +117,10 @@ def get_lung_part(sgm_img_, total_parts_, part_index_):
     low_limit = int(part_index_*dp_)
     up_limit = int((part_index_+1)*dp_)
 
-    low_ind_ = int(np.percentile(nonzero_ind[2], low_limit)) + 1
+    if part_index_ == 0:
+        low_ind_ = int(np.percentile(nonzero_ind[2], low_limit)) + 60  # TODO: dirty hack to remove caverns from the bottom. Remove after better segmentation
+    else:
+        low_ind_ = int(np.percentile(nonzero_ind[2], low_limit)) + 1
     up_ind_ = int(np.percentile(nonzero_ind[2], up_limit)) + 1
 
     sgm_img_t[:, :, :low_ind_] = 0
@@ -179,7 +182,10 @@ def calc_desc(sgm_filename_, les_filename_, shad_idx_='dummy_idx'):
             sum_les_img_f = np.sum((les_img_f[:] == 1).astype(np.uint8))
             sum_left_parts = len(left_parts[p][0])
 
-            foci_percent = sum_les_img_f / sum_left_parts
+            if sum_left_parts > 0:
+                foci_percent = sum_les_img_f / sum_left_parts
+            else:
+                foci_percent = 0.0
             # print('left: ' + str(p) + ': ' + str(foci_percent))
             desc_[0, p, 0] = foci_percent
 
@@ -198,7 +204,10 @@ def calc_desc(sgm_filename_, les_filename_, shad_idx_='dummy_idx'):
             sum_les_img_f = np.sum((les_img_f[:] == 1).astype(np.uint8))
             sum_right_parts = len(right_parts[p][0])
 
-            foci_percent = sum_les_img_f / sum_right_parts
+            if sum_right_parts > 0:
+                foci_percent = sum_les_img_f / sum_right_parts
+            else:
+                foci_percent = 0.0
             # print('right: ' + str(p) + ': ' + str(foci_percent))
             desc_[1, p, 0] = foci_percent
 

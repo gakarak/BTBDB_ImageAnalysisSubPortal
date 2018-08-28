@@ -394,8 +394,8 @@ def api_generateAllReports(series,
     # (5) generate preview & save preview image
     # try:
     dataImg = preproc.normalizeCTImage(nib.load(pathNii).get_data())
-    dataMsk = niiLung.get_data()
-    dataLes = niiLesion.get_data()
+    dataMsk = np.round(niiLung.get_data()).astype(np.uint8)
+    dataLes = np.round(niiLesion.get_data()).astype(np.uint8)
 
     imgPreviewJson2 = preproc.genPreview2D(dataImg, dataMsk, dataLes, pathPreview2, 2)
     imgPreviewJson3 = preproc.genPreview2D(dataImg, dataMsk, dataLes, pathPreview3, 3)

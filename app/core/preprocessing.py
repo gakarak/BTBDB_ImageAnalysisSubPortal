@@ -924,7 +924,10 @@ def niftii2dcm(nii_filename_, study_id_, patient_id_, study_uid_, series_uid_, s
                          ("0020|000d", study_uid_),  # Study Instance UID
                          ("0020|0037", '\\'.join(map(str, (direction[0], direction[3], direction[6],  # Image Orientation (Patient)
                                                            direction[1], direction[4], direction[7])))),
-                         ("0008|103e", series_desc_)]  # Series Description
+                         ("0008|103e", series_desc_), # Series Description
+                         ("0028|0103", str(0)),       # Pixel Representation
+                         ("0028|1052", str(inter_)),  # Rescale Intercept
+                         ("0028|1053", str(slope_))]  # Rescale Slope
 
     for i in range(new_img.GetDepth()):
         image_slice = new_img[:, :, i]
@@ -983,8 +986,8 @@ def prepareCTpreview(series_):
     img_min_ = -1150 # standart lungs min and max values on CT
     img_max_ = 350
 
-    # viewer_dir_root = os.path.realpath(os.path.dirname(ct_nii_filename_) + '/../../../@viewer/')
-    viewer_dir_root = '/media/data10T_1/datasets/CRDF_viewer/@viewer_debug_es/'
+    viewer_dir_root = os.path.realpath(os.path.dirname(ct_nii_filename_) + '/../../../@viewer/')
+    # viewer_dir_root = '/media/data10T_1/datasets/CRDF_viewer/@viewer_debug_es/'
 
     original_out_dirname_ = viewer_dir_root + 'original/' + patient_id + '/' + study_uid + '/' + series_uid + '/'
     lesions_only_out_dirname_ = viewer_dir_root + 'lesions_only/' + patient_id + '/' + study_uid + '/' + series_uid + '/'
