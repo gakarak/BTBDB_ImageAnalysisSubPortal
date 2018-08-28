@@ -6,17 +6,28 @@ import app
 import app.backend
 from app.core.utils.mproc import SimpleTaskManager
 from app.core.utils.download import RunnerDBDownload
+import argparse
+import logging
+
 
 if __name__ == '__main__':
-    # print(app.backend.config)
-    # data_dir = '/home/ar/data/crdf/test_dataentry0'
-    data_dir = app.backend.config.DIR_DATA
-    runnerDataEntryDonwloader = RunnerDBDownload(data_dir=data_dir, limit=-1)
+    logging.basicConfig(level=logging.INFO)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--path_db', type=str, required=False, default=None, help='path to dataset (CRDF format)')
+    parser.add_argument('--threads', type=int, required=False, default=1, help='#threads for downloading')
+    args = parser.parse_args()
+    logging.info('args = {}'.format(args))
+    if args.path_db is None:
+        db_dir = app.backend.config.DIR_DATA
+    else:
+        db_dir = args.path_db
+    #
+    runnerDataEntryDonwloader = RunnerDBDownload(data_dir=db_dir, limit=-1)
     runnerDataEntryDonwloader.refreshCases()
     print (runnerDataEntryDonwloader)
-
-    runnerDataEntryDonwloader.run()
-
-    # tmDataEntry = SimpleTaskManager(nproc=1, isThreadManager=True)
-    # tmDataEntry.appendTaskRunner(runnerDataEntryDonwloader)
-    # tmDataEntry.waitAll(dt=-1)
+    if (args.threads < 2):
+        runnerDataEntryDonwloader.run()
+    else:
+        processor = SimpleTaskManager(nproc=args.threads, isThreadManager=True)
+        processor.appendTaskRunner(runnerDataEntryDonwloader)
+        processor.waitAll(dt=-1)
