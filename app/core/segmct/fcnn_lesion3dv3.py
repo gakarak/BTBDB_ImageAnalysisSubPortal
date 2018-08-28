@@ -493,7 +493,7 @@ def run_inference(cfg, model, path_out_nii = None):
     if shape0 != msk_lung.shape:
         logging.info('\tresize lungs image {} -> {}'.format(msk_lung.shape, shape0))
         msk_lung = sk.transform.resize(msk_lung, shape0, order=0)
-    map_cls, map_val = inference_probmap(cfg, model, img3d_inp)
+    map_cls, map_val = inference_probmap(cfg, model, img3d_inp, shape_crop=cfg.infer_crop, pad=cfg.infer_pad)
     if map_cls.shape != shape0:
         map_cls = sk.transform.resize(map_cls, shape0, order=0, preserve_range=True).astype(np.uint8)
         map_val = sk.transform.resize(map_val, shape0, order=1, preserve_range=True).astype(np.uint8)
