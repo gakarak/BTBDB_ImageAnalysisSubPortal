@@ -5,7 +5,6 @@ __author__ = 'ar'
 import time
 import app
 import json
-import app.backend
 from app.core.dataentry_v1 import DBWatcher
 from app.core.utils import log as log
 from app.core.utils.report import RunnerMakeReport

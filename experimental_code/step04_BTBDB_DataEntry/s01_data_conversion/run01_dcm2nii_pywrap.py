@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 __author__ = 'ar'
 
+import os
+import shutil
 from app.core.utils.cmd import pydcm2nii
 
 #####################################
