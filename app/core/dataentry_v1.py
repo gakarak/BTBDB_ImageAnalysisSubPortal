@@ -10,7 +10,7 @@ import nibabel as nib
 # from app.core import utils
 from . import utils
 # import app.backend
-from . import config as cfg
+from . import cfg as cfg
 
 #######################################
 class SeriesInfo:
@@ -169,7 +169,7 @@ class SeriesInfo:
                     tsers = jsonData['series_uid']
                     tstud = jsonData['study_id']
                     rel_url = cfg.URL_TEMPLATE_S3_REL.format(tcase, tstud, os.path.basename(tmp['url']))
-                    tmp['url'] = cfg.backend.config.get_s3_cloud_front_url(rel_url)
+                    tmp['url'] = cfg.get_s3_cloud_front_url(rel_url)
             #
             try:
                 tmp_jstree = jsonData['similar_cases']
