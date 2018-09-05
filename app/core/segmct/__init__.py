@@ -268,6 +268,7 @@ def api_segmentLungAndLesion(dirModelLung, dirModelLesion, series,
         # (2.3.2) segment lungs
         try:
             if not os.path.isfile(pathSegmLungs):
+                K.clear_session()
                 lungMask = segmentLungs25D(niiResiz4Lung,
                                            dirWithModel=dirModelLung,
                                            pathOutNii=None,
@@ -290,6 +291,7 @@ def api_segmentLungAndLesion(dirModelLung, dirModelLesion, series,
                 #                               outSize=shapeOrig,
                 #                               # outSize=shape4Lung,
                 #                               threshold=None)
+                K.clear_session()
                 shape_lesions = [512, 512, 256]
                 nii_lung_resiz4lesion = resizeNii(pathSegmLungs, shape_lesions, parOrder=0)
                 nii_data_resiz4lesion = resizeNii(dataNii, shape_lesions, parOrder=1)
