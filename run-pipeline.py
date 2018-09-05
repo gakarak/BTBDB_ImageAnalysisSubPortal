@@ -30,6 +30,8 @@ class Config:
         self.do_convert  = args.do_convert
         self.do_process  = args.do_process
         self.do_cbir     = args.do_cbir
+        #
+        self.limit       = args.limit
     def to_json(self):
         return json.dumps(self.__dict__, indent=4)
 
@@ -37,7 +39,7 @@ class Config:
 ################################################
 def do_download(cfg:Config) -> bool:
     num_threads = cfg.threads_download
-    runnerDataEntryDonwloader = RunnerDBDownload(data_dir=cfg.path_db, limit=-1)
+    runnerDataEntryDonwloader = RunnerDBDownload(data_dir=cfg.path_db, limit=cfg.limit)
     runnerDataEntryDonwloader.refreshCases()
     print(runnerDataEntryDonwloader)
     if (num_threads < 2):
@@ -90,6 +92,8 @@ if __name__ == '__main__':
     parser.add_argument('--do_convert',  action="store_true", help='run data conversion')
     parser.add_argument('--do_process',  action="store_true", help='run data processing')
     parser.add_argument('--do_cbir',     action="store_true", help='run CBIR')
+    #
+    parser.add_argument('--limit', type=int, required=False, default=-1, help='limit for data downloading')
     args = parser.parse_args()
     logging.info('args = {}'.format(args))
     cfg = Config(args)
