@@ -3,6 +3,7 @@
 __author__ = 'ar'
 
 import os
+import sys
 import copy
 import glob
 import math
@@ -255,7 +256,7 @@ def data_generator(cfg, is_train=True, is_randomize=True):
 class Config:
     modes_run = ['train', 'val', 'test', 'infer']
     modes_cls = ['mclass', 'bclass', 'dice']
-    def __init__(self, args):
+    def __init__(self, args, is_readonly = True):
         self.mode_run   = args.mode_run
         self.mode_cls   = args.mode_cls
         self.idx_trn    = args.idx_trn
@@ -303,8 +304,9 @@ class Config:
         logging.info(' :: config:\n\t{}'.format(self.to_json()))
         self.paths_trn  = self._load_idx(self.idx_trn)
         self.paths_val  = self._load_idx(self.idx_val)
-        with open(self.path_config, 'w') as f:
-            f.write(self.to_json())
+        if not is_readonly:
+            with open(self.path_config, 'w') as f:
+                f.write(self.to_json())
     def _load_idx(self, path_idx):
         if path_idx is None:
             return None
@@ -450,6 +452,12 @@ def inference_probmap(cfg, model, img3d, shape_crop=(128, 128, 128), pad=32) -> 
                 pmap_pad[xx-pad:xx-pad+shape_crop_bad[0],
                          yy-pad:yy-pad+shape_crop_bad[1],
                          zz-pad:zz-pad+shape_crop_bad[2]] = ret[0]
+                # if zzi > 1:
+                #     break
+            # if yyi > 1:
+            #     break
+        # if xxi > 1:
+        #     break
     pmap_cls = np.argsort(-pmap_pad, axis=-1)[:, :, :, 0]
     pmap_val = -np.sort(-pmap_pad, axis=-1)[:, :, :, 0]
     pmap_cls = pmap_cls[pad:-pad, pad:-pad, pad:-pad].astype(np.uint8)
@@ -489,7 +497,7 @@ def run_inference(cfg, model, path_out_nii = None):
     if shape0 != msk_lung.shape:
         logging.info('\tresize lungs image {} -> {}'.format(msk_lung.shape, shape0))
         msk_lung = sk.transform.resize(msk_lung, shape0, order=0)
-    map_cls, map_val = inference_probmap(cfg, model, img3d_inp)
+    map_cls, map_val = inference_probmap(cfg, model, img3d_inp, shape_crop=cfg.infer_crop, pad=cfg.infer_pad)
     if map_cls.shape != shape0:
         map_cls = sk.transform.resize(map_cls, shape0, order=0, preserve_range=True).astype(np.uint8)
         map_val = sk.transform.resize(map_val, shape0, order=1, preserve_range=True).astype(np.uint8)
@@ -503,6 +511,42 @@ def run_inference(cfg, model, path_out_nii = None):
         nib.save(nii_cls, path_out_nii)
         nib.save(nii_val, path_out_val)
     return nii_cls, nii_val
+
+
+def run_inference_crdf(cfg, model, nii_img, nii_lung, path_out_nii = None):
+    """
+    :type cfg: Config
+    :type model: keras.models.Model
+    """
+    logging.info(' [*] processing input image [{}]'.format(cfg.path_img))
+    # path_img  = cfg.path_img
+    # path_lung = cfg.path_msk_lung
+    # img3d_inp = _norm_img3d(nib.load(path_img).get_data().astype(np.float32))
+    # msk_lung  = nib.load(path_lung).get_data()
+    img3d_inp = _norm_img3d(nii_img.get_data().astype(np.float32))
+    msk_lung = nii_lung.get_data()
+    # shape0 = img3d_inp.shape
+    # if cfg.infer_shape != shape0:
+    #     logging.info('\tresize input image {} -> {}'.format(img3d_inp.shape, cfg.infer_shape))
+    #     img3d_inp = sk.transform.resize(img3d_inp, cfg.infer_shape, order=2)
+    # if shape0 != msk_lung.shape:
+    #     logging.info('\tresize lungs image {} -> {}'.format(msk_lung.shape, shape0))
+    #     msk_lung = sk.transform.resize(msk_lung, shape0, order=0)
+    map_cls, map_val = inference_probmap(cfg, model, img3d_inp, shape_crop=cfg.infer_crop, pad=cfg.infer_pad)
+    # if map_cls.shape != shape0:
+    #     map_cls = sk.transform.resize(map_cls, shape0, order=0, preserve_range=True).astype(np.uint8)
+    #     map_val = sk.transform.resize(map_val, shape0, order=1, preserve_range=True).astype(np.uint8)
+    map_cls[msk_lung < 0.5] = 0
+    map_val[msk_lung < 0.5] = 0
+    nii_cls = _clone_nifti(map_cls, nii_img)
+    nii_val = _clone_nifti(map_val, nii_img)
+    if path_out_nii is not None:
+        path_out_val = path_out_nii + '-prob.nii.gz'
+        logging.info('\t:: export cls/prob-map data: {}/{}'.format(path_out_nii, path_out_val))
+        nib.save(nii_cls, path_out_nii)
+        nib.save(nii_val, path_out_val)
+    return nii_cls, nii_val
+
 
 def get_args_obj():
     parser = argparse.ArgumentParser()
@@ -530,7 +574,7 @@ def get_args_obj():
     parser.add_argument('--img',         type=str, required=False, help='Input image for processing', default=None)
     parser.add_argument('--lung',        type=str, required=False, help='Input lungs mask for processing', default=None)
     parser.add_argument('--infer_out',   type=str, required=False, help='Output path for class-mask', default=None)
-    args = parser.parse_args()
+    args = parser.parse_args([])
     return args
 
 

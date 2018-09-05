@@ -176,6 +176,9 @@ class RunnerDBDownload(mproc.AbstractRunner):
                     ptrLogger.warning(' [!!!] case downloading limit exceeded [{}/{}], stop process...'.format(self.limit, counter_dwnld))
                     return
             caseId = case['conditionId']
+            # ptrLogger.info('\t\tcase-id = [{}]'.format(caseId))
+            # if caseId.startswith('c5c7a052'):
+            #     print('-')
             ptrLogger.info ('[%d/%d] ' % (icase, numCases))
             if dbWatcher.isHaveCase(caseId):
                 new_case = dbWatcher.cases[caseId]

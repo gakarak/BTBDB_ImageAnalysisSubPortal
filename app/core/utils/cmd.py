@@ -44,19 +44,25 @@ class CommandRunner(object):
 #####################################
 def pydcm2nii(dirDicom, foutNii, pexe='dcm2nii'):
     # (1) check input params
+    dirDicom = os.path.abspath(dirDicom)
     checkFileOrDir(dirDicom, isDir=True)
     checkExeInPath(pexe)
     # (2) check  dir with f*cking DICOMs
     checkDirContainsDicom(dirDicom)
     # (3) convert *.dcm --> *.nii.gz
     tmpDir = tempfile.mkdtemp(prefix='crdf-pydcm2nii-')
-    runCMD = "{0} -m y -z y -r n -o {1} {2}".format(pexe, tmpDir, dirDicom)
+    dir_link_inp = dirDicom
+    dir_link_out = os.path.join(tmpDir, os.path.basename(dirDicom))
+    os.symlink(dir_link_inp, dir_link_out)
+    # runCMD = "{0} -m y -z y -r n -o {1} {2}".format(pexe, tmpDir, dirDicom)
+    runCMD = "{0} -m y -z y -r n -o {1} {2}".format(pexe, tmpDir, dir_link_out)
     cmdRun1 = CommandRunner(runCMD)
     cmdRun1.run()
     cmdRun1.checkIsOk()
     #
     lstNii = sorted(glob.glob('%s/*.nii.gz' % tmpDir))
     if len(lstNii) < 1:
+        shutil.rmtree(tmpDir)
         raise Exception('Cant find Nifti images in dcm2nii output directory [%s]' % tmpDir)
     finpNii = lstNii[0]
     shutil.move(finpNii, foutNii)
