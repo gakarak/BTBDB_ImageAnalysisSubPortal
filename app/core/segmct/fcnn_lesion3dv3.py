@@ -3,6 +3,7 @@
 __author__ = 'ar'
 
 import os
+import sys
 import copy
 import glob
 import math
@@ -570,7 +571,7 @@ def get_args_obj():
     parser.add_argument('--img',         type=str, required=False, help='Input image for processing', default=None)
     parser.add_argument('--lung',        type=str, required=False, help='Input lungs mask for processing', default=None)
     parser.add_argument('--infer_out',   type=str, required=False, help='Output path for class-mask', default=None)
-    args = parser.parse_args()
+    args = parser.parse_args([])
     return args
 
 
