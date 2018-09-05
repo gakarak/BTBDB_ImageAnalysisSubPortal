@@ -452,9 +452,12 @@ def inference_probmap(cfg, model, img3d, shape_crop=(128, 128, 128), pad=32) -> 
                 pmap_pad[xx-pad:xx-pad+shape_crop_bad[0],
                          yy-pad:yy-pad+shape_crop_bad[1],
                          zz-pad:zz-pad+shape_crop_bad[2]] = ret[0]
-                # break
-            # break
-        # break
+                # if zzi > 1:
+                #     break
+            # if yyi > 1:
+            #     break
+        # if xxi > 1:
+        #     break
     pmap_cls = np.argsort(-pmap_pad, axis=-1)[:, :, :, 0]
     pmap_val = -np.sort(-pmap_pad, axis=-1)[:, :, :, 0]
     pmap_cls = pmap_cls[pad:-pad, pad:-pad, pad:-pad].astype(np.uint8)
@@ -529,7 +532,7 @@ def run_inference_crdf(cfg, model, nii_img, nii_lung, path_out_nii = None):
     # if shape0 != msk_lung.shape:
     #     logging.info('\tresize lungs image {} -> {}'.format(msk_lung.shape, shape0))
     #     msk_lung = sk.transform.resize(msk_lung, shape0, order=0)
-    map_cls, map_val = inference_probmap(cfg, model, img3d_inp)
+    map_cls, map_val = inference_probmap(cfg, model, img3d_inp, shape_crop=cfg.infer_crop, pad=cfg.infer_pad)
     # if map_cls.shape != shape0:
     #     map_cls = sk.transform.resize(map_cls, shape0, order=0, preserve_range=True).astype(np.uint8)
     #     map_val = sk.transform.resize(map_val, shape0, order=1, preserve_range=True).astype(np.uint8)
