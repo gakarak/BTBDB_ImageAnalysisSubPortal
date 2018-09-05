@@ -387,7 +387,8 @@ def api_generateAllReports(series,
     try:
         retLungInfo = preproc.prepareLungSizeInfoNii(niiLungDiv)
         if texture_asymmetry is not None:
-            retLungInfo['asymmetry'][1]["value"] = '%0.3f' % texture_asymmetry
+            # retLungInfo['asymmetry'][1]["value"] = '%0.3f' % texture_asymmetry
+            retLungInfo['asymmetry'][1]["value"] = float(texture_asymmetry)
     except Exception as err:
         msgErr('Cant get Lung information : [{0}], for {1}'.format(err, series))
         return False

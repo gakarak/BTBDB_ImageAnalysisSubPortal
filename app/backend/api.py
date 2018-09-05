@@ -144,14 +144,26 @@ def data_load():
         #     return f.read()
     return Response(json.dumps({}), mimetype='application/json')
 
+def _asymmetry_patch(json_data:dict):
+    if 'asymmetry' in json_data:
+        tmp = []
+        for x in json_data['asymmetry']:
+            if 'value' in x:
+                x['value'] = float(x['value'])
+                tmp.append(x)
+        json_data['asymmetry'] = tmp
+    return json_data
+
+
 @app_flask.route('/report-pdf/<string:case_id>/<string:patient_id>/<string:study_uid>/<string:series_uid>/', methods=['GET'])
 def data_pdf_load(case_id, patient_id, study_uid, series_uid):
     try:
         jsonResponse = report_helper(case_id=case_id, patient_id=None, study_uid=study_uid, series_uid=series_uid, root_url="")
         retJson = json.loads(jsonResponse.get_data().decode('utf-8'))
         retJson = retJson['responce']
-        tmpImgPath = retJson['preview_images'][0]['url']
+        tmpImgPath = retJson['preview_images'][0]['url2']
         retJson['preview_images'][0]['url'] = '{0}/{1}'.format(dir_data(), tmpImgPath)
+        retJson = _asymmetry_patch(retJson)
         strHTML = render_template('templates/template_pdf.html', dataJson = retJson)
         # pdf = StringIO()
         pdf = io.BytesIO()
