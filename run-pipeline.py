@@ -86,6 +86,7 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     parser = argparse.ArgumentParser()
     parser.add_argument('--path_db', type=str, required=True,  default=None, help='path to dataset (CRDF format)')
+    parser.add_argument('--path_color_dicom', type=str, required=True, default=None, help='path to colored DICOM')
     parser.add_argument('--threads', type=int, required=False, default=1, help='#threads for processing')
     parser.add_argument('--threads_download', type=int, required=False, default=None, help='#threads for downloading')
     parser.add_argument('--do_download', action="store_true", help='run data downloading')

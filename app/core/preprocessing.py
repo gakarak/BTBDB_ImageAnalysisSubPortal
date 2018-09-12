@@ -960,7 +960,7 @@ def niftii2dcm(nii_filename_, study_id_, patient_id_, study_uid_, series_uid_, s
     return
 
 
-def prepareCTpreview(series_):
+def prepareCTpreview(series_, viewer_dir_root_):
     ct_nii_filename_ = series_.pathConvertedNifti(isRelative=False)
     if not os.path.exists(ct_nii_filename_):
         print('File {} not exists'.format(ct_nii_filename_))
@@ -986,12 +986,12 @@ def prepareCTpreview(series_):
     img_min_ = -1150 # standart lungs min and max values on CT
     img_max_ = 350
 
-    viewer_dir_root = os.path.realpath(os.path.dirname(ct_nii_filename_) + '/../../../@viewer/')
+    # viewer_dir_root = os.path.realpath(os.path.dirname(ct_nii_filename_) + '/../../../@viewer/')
     # viewer_dir_root = '/media/data10T_1/datasets/CRDF_viewer/@viewer_debug_es/'
 
-    original_out_dirname_ = viewer_dir_root + 'original/' + patient_id + '/' + study_uid + '/' + series_uid + '/'
-    lesions_only_out_dirname_ = viewer_dir_root + 'lesions_only/' + patient_id + '/' + study_uid + '/' + series_uid + '/'
-    lesions_map_out_dirname_ = viewer_dir_root + 'lesions_map/' + patient_id + '/' + study_uid + '/' + series_uid + '/'
+    original_out_dirname_ = viewer_dir_root_ + 'original/' + patient_id + '/' + study_uid + '/' + series_uid + '/'
+    lesions_only_out_dirname_ = viewer_dir_root_ + 'lesions_only/' + patient_id + '/' + study_uid + '/' + series_uid + '/'
+    lesions_map_out_dirname_ = viewer_dir_root_ + 'lesions_map/' + patient_id + '/' + study_uid + '/' + series_uid + '/'
 
     if os.path.exists(original_out_dirname_):
         shutil.rmtree(original_out_dirname_, ignore_errors=True)

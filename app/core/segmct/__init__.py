@@ -419,13 +419,21 @@ def api_generateAllReports(series,
         msgErr('Cant generate final JSON report : [{0}], for {1}'.format(err, series))
         return False
 
-    # (7) generate and save 3 directories with DICOM files, converted from Lesions NifTi
-    #     original, lesions_only and lesions_map
-    #     file names convention: {S3 bucket name}/viewer/{map_type}/{patientID}/{studyUID}/{seriesUID}/{instanceUID}.{extension}
-    # preproc.prepareCTpreview(series)
+
 
     # FIXME: append PDF generation in future here
     # (6) generate PDF preview
+    return True
+
+def api_generateColoredDICOM(series, viewer_dir_root):
+    # (7) generate and save 3 directories with DICOM files, converted from Lesions NifTi
+    #     original, lesions_only and lesions_map
+    #     file names convention: {S3 bucket name}/viewer/{map_type}/{patientID}/{studyUID}/{seriesUID}/{instanceUID}.{extension}
+    if not series.isPostprocessed():
+        print('Series {} not processed yet'.format(series.toString()))
+        return False
+
+    preproc.prepareCTpreview(series, viewer_dir_root)
     return True
 
 def api_generateCBIR_BuildDSC(db_watcher, num_threads):
