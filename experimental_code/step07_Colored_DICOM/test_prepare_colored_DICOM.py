@@ -12,8 +12,9 @@ from app.core.dataentry_v1 import DBWatcher
 from app.core.segmct import api_generateColoredDICOM
 
 if __name__ == '__main__':
-    dataDir = '/media/data/datasets/@Data_BTBDB_ImageAnalysisSubPortal_debug_es'
-    viewer_dir_root = dataDir + '_viewer'
+    # dataDir = '/media/data/datasets/@Data_BTBDB_ImageAnalysisSubPortal_debug_es'
+    dataDir = '/home/snezhko/workspace/CRDF_6/@Data_BTBDB_ImageAnalysisSubPortal_debug_es'
+    viewer_dir_root = dataDir + '_viewer/'
     dbWatcher = DBWatcher()
     dbWatcher.load(dataDir, isDropEmpty=True, isDropBadSeries=True)
     dbWatcher.printStat()
