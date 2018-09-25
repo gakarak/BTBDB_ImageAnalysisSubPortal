@@ -117,10 +117,10 @@ def get_lung_part(sgm_img_, total_parts_, part_index_):
     low_limit = int(part_index_*dp_)
     up_limit = int((part_index_+1)*dp_)
 
-    if part_index_ == 0:
-        low_ind_ = int(np.percentile(nonzero_ind[2], low_limit)) + 60  # TODO: dirty hack to remove caverns from the bottom. Remove after better segmentation
-    else:
-        low_ind_ = int(np.percentile(nonzero_ind[2], low_limit)) + 1
+    # if part_index_ == 0:
+    #     low_ind_ = int(np.percentile(nonzero_ind[2], low_limit)) + 60  # TODO: dirty hack to remove caverns from the bottom. Remove after better segmentation
+    # else:
+    low_ind_ = int(np.percentile(nonzero_ind[2], low_limit)) + 1
     up_ind_ = int(np.percentile(nonzero_ind[2], up_limit)) + 1
 
     sgm_img_t[:, :, :low_ind_] = 0
@@ -135,8 +135,8 @@ def get_lung_part(sgm_img_, total_parts_, part_index_):
 def calc_desc(sgm_filename_, les_filename_, shad_idx_='dummy_idx'):
     if os.path.isfile(les_filename_) and os.path.isfile(sgm_filename_):
         print(les_filename_)
-        sgm_img = nib.load(sgm_filename_).get_data()
-        les_img = nib.load(les_filename_).get_data()
+        sgm_img = np.round(nib.load(sgm_filename_).get_data()).astype(np.uint8)
+        les_img = np.round(nib.load(les_filename_).get_data()).astype(np.uint8)
         # left_lung, right_lung = get_left_right_lungs(sgm_img)
         left_lung, right_lung = get_left_right_lungs_ar(sgm_img)
 
@@ -178,6 +178,10 @@ def calc_desc(sgm_filename_, les_filename_, shad_idx_='dummy_idx'):
                 for l in range(len(lesions_classes)):
                     desc_[0, p, l] = 0.0
                 continue
+            if len(left_parts[p][0]) == 0:
+                for l in range(len(lesions_classes)):
+                    desc_[0, p, l] = 0.0
+                continue
             les_img_f = deepcopy(les_img[left_parts[p]])
             sum_les_img_f = np.sum((les_img_f[:] == 1).astype(np.uint8))
             sum_left_parts = len(left_parts[p][0])
@@ -199,6 +203,10 @@ def calc_desc(sgm_filename_, les_filename_, shad_idx_='dummy_idx'):
             if not right_parts[p]:
                 for l in range(len(lesions_classes)):
                     desc_[1, p, l] = 0.0
+                continue
+            if len(right_parts[p][0]) == 0:
+                for l in range(len(lesions_classes)):
+                    desc_[0, p, l] = 0.0
                 continue
             les_img_f = deepcopy(les_img[right_parts[p]])
             sum_les_img_f = np.sum((les_img_f[:] == 1).astype(np.uint8))

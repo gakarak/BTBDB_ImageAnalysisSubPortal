@@ -1025,7 +1025,7 @@ def prepareCTpreview(series_, viewer_dir_root_):
     nii_img_vol[nii_img_vol[:] > img_max_] = img_max_
 
     nii_msk = nib.load(msk_nii_filename_)
-    nii_msk_vol = nii_msk.get_data().astype(np.int16)
+    nii_msk_vol = np.round(nii_msk.get_data()).astype(np.uint8)
     nii_msk_vol = nii_msk_vol[:, ::-1, ::]
 
     nii_img_affine = nii_img.affine
