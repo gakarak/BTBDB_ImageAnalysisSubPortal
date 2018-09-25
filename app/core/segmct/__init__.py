@@ -371,11 +371,11 @@ def api_generateAllReports(series,
     else:
         niiLungDiv = nib.load(pathSegmLungsDiv2)
     # (3) calc lesion score
-    try:
-        retLesionScoreBin, retLesionScoreById, retLesionScoreByName = preproc.prepareLesionDistribInfoV2(niiLung, niiLesion, niiLungDIV2=niiLungDiv)
-    except Exception as err:
-        msgErr('Cant evaluate Lesion-score: [{0}], for {1}'.format(err, pathSegmLesions1))
-        return False
+    # try:
+    #     retLesionScoreBin, retLesionScoreById, retLesionScoreByName = preproc.prepareLesionDistribInfoV2(niiLung, niiLesion, niiLungDIV2=niiLungDiv)
+    # except Exception as err:
+    #     msgErr('Cant evaluate Lesion-score: [{0}], for {1}'.format(err, pathSegmLesions1))
+    #     return False
     # (3.1) calc cbir-descriptor
     texture_asymmetry = None
     try:
@@ -397,7 +397,8 @@ def api_generateAllReports(series,
     # (5) generate preview & save preview image
     # try:
     dataImg = preproc.normalizeCTImage(nib.load(pathNii).get_data())
-    dataMsk = np.round(niiLung.get_data()).astype(np.uint8)
+    # dataMsk = np.round(niiLung.get_data()).astype(np.uint8)
+    dataMsk = np.round(niiLungDiv.get_data()).astype(np.uint8)
     dataLes = np.round(niiLesion.get_data()).astype(np.uint8)
 
     imgPreviewJson2 = preproc.genPreview2D(dataImg, dataMsk, dataLes, pathPreview2, 2)
