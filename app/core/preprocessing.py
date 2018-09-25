@@ -989,9 +989,10 @@ def prepareCTpreview(series_, viewer_dir_root_):
     # viewer_dir_root = os.path.realpath(os.path.dirname(ct_nii_filename_) + '/../../../@viewer/')
     # viewer_dir_root = '/media/data10T_1/datasets/CRDF_viewer/@viewer_debug_es/'
 
-    original_out_dirname_ = viewer_dir_root_ + 'original/' + patient_id + '/' + study_uid + '/' + series_uid + '/'
-    lesions_only_out_dirname_ = viewer_dir_root_ + 'lesions_only/' + patient_id + '/' + study_uid + '/' + series_uid + '/'
-    lesions_map_out_dirname_ = viewer_dir_root_ + 'lesions_map/' + patient_id + '/' + study_uid + '/' + series_uid + '/'
+
+    original_out_dirname_       = os.path.join(viewer_dir_root_, 'original/' + patient_id + '/' + study_uid + '/' + series_uid) + '/'
+    lesions_only_out_dirname_   = os.path.join(viewer_dir_root_, 'lesions_only/' + patient_id + '/' + study_uid + '/' + series_uid) + '/'
+    lesions_map_out_dirname_    = os.path.join(viewer_dir_root_, 'lesions_map/' + patient_id + '/' + study_uid + '/' + series_uid) + '/'
 
     if os.path.exists(original_out_dirname_):
         shutil.rmtree(original_out_dirname_, ignore_errors=True)
