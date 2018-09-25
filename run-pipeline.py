@@ -13,6 +13,7 @@ from app.core.utils.download import RunnerDBDownload
 from app.core.utils.cmd import RunnerDBConvert
 from app.core.utils.report import RunnerMakeReport
 import app.core.lesion_cbir as cbir
+from app.core.utils import color_dicom
 
 this_dir = os.path.dirname(os.path.realpath(__file__))
 dir_models = os.path.join(this_dir, 'experimental_data', 'models')
@@ -96,7 +97,10 @@ def do_cbir(cfg:Config) -> bool:
 
 def do_color_dicom(cfg:Config) -> bool:
     num_threads = cfg.threads
-    cbir.run_precalculate_lesion_dsc_for_db(cfg.path_db, num_threads)
+    if cfg.path_color_dicom is None:
+        logging.error('\tPlease specify DICOM coliring directory (--path_color_dicom), skip DICOM coloring pipeline ...')
+    else:
+        color_dicom.process_color_dicom_for_db(cfg.path_db, cfg.path_color_dicom, num_threads)
     return True
 
 

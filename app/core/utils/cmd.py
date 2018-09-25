@@ -111,6 +111,39 @@ class RunnerDBConvert(mproc.AbstractRunner):
         dbWatcher.reload()
         ptrLogger.info(dbWatcher.toString())
 
+
+
+
+
+class RunnerDICOMColored(mproc.AbstractRunner):
+    def __init__(self, data_dir, dicom_dir):
+        if not os.path.dirname(data_dir):
+            raise FileNotFoundError('data-directory not found [{}]'.format(data_dir))
+        self.data_dir   = data_dir
+        self.dicom_dir  = dicom_dir
+    def getUniqueKey(self):
+        return 'conv-tkey-{0}'.format(datetime.now().strftime('%Y.%m.%d-%H.%M.%S:%f'))
+    def run(self):
+        dirData = self.data_dir
+        mkdir_p(dirData)
+        os.makedirs(self.dicom_dir, exist_ok=True)
+        ptrLogger = log.get_logger(wdir=dirData, logName='s05-color')
+        dbWatcher = DBWatcher(pdir=dirData)
+        ptrLogger.info(dbWatcher.toString())
+        for iser, ser in enumerate(dbWatcher.allSeries()):
+            if ser.isDownloaded() and (not ser.isConverted()) and (not ser.isPostprocessed()):
+                convTask = TaskRunnerConvertSeries(series=ser)
+                try:
+                    tret = convTask.run()
+                    ptrLogger.info('[%d] convert is Ok = %s, %s' % (iser, tret, ser))
+                except Exception as err:
+                    ptrLogger.error('[%d] Cant convert DICOM->Nifti [%s] for series %s' % (iser, err, ser))
+        ptrLogger.info('Conversion is finished. Refresh DB-Info')
+        dbWatcher.reload()
+        ptrLogger.info(dbWatcher.toString())
+
+
+
 #####################################
 if __name__ == '__main__':
     pass

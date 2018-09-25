@@ -426,6 +426,7 @@ def api_generateAllReports(series,
     # (6) generate PDF preview
     return True
 
+
 def api_generateColoredDICOM(series, viewer_dir_root):
     # (7) generate and save 3 directories with DICOM files, converted from Lesions NifTi
     #     original, lesions_only and lesions_map
@@ -436,6 +437,7 @@ def api_generateColoredDICOM(series, viewer_dir_root):
 
     preproc.prepareCTpreview(series, viewer_dir_root)
     return True
+
 
 def api_generateCBIR_BuildDSC(db_watcher, num_threads):
 
