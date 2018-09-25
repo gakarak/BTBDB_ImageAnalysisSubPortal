@@ -22,17 +22,19 @@ dir_models = os.path.join(this_dir, 'experimental_data', 'models')
 class Config:
     def __init__(self, args):
         self.path_db = args.path_db
+        self.path_color_dicom = args.path_color_dicom
         self.threads = args.threads
         self.threads_download = args.threads_download
         self.threads_gpu    = args.threads_gpu
         if self.threads_download is None:
             self.threads_download = self.threads
-        self.do_download = args.do_download
-        self.do_convert  = args.do_convert
-        self.do_process  = args.do_process
-        self.do_cbir     = args.do_cbir
+        self.do_download    = args.do_download
+        self.do_convert     = args.do_convert
+        self.do_process     = args.do_process
+        self.do_cbir        = args.do_cbir
+        self.do_color_dicom = args.do_color_dicom
         #
-        self.limit       = args.limit
+        self.limit          = args.limit
     def to_json(self):
         return json.dumps(self.__dict__, indent=4)
 
@@ -92,12 +94,18 @@ def do_cbir(cfg:Config) -> bool:
     return True
 
 
+def do_color_dicom(cfg:Config) -> bool:
+    num_threads = cfg.threads
+    cbir.run_precalculate_lesion_dsc_for_db(cfg.path_db, num_threads)
+    return True
+
+
 ################################################
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     parser = argparse.ArgumentParser()
     parser.add_argument('--path_db', type=str, required=True,  default=None, help='path to dataset (CRDF format)')
-    parser.add_argument('--path_color_dicom', type=str, required=True, default=None, help='path to colored DICOM')
+    parser.add_argument('--path_color_dicom', type=str, required=False, default=None, help='path to colored DICOM')
     parser.add_argument('--threads', type=int, required=False, default=1, help='#threads for processing')
     parser.add_argument('--threads_download', type=int, required=False, default=None, help='#threads for downloading')
     parser.add_argument('--threads_gpu', type=int, required=False, default=1, help='#threads for GPUs processing')
@@ -105,6 +113,7 @@ if __name__ == '__main__':
     parser.add_argument('--do_convert',  action="store_true", help='run data conversion')
     parser.add_argument('--do_process',  action="store_true", help='run data processing')
     parser.add_argument('--do_cbir',     action="store_true", help='run CBIR')
+    parser.add_argument('--do_color_dicom', action="store_true", help='run DICOM coloring')
     #
     parser.add_argument('--limit', type=int, required=False, default=-1, help='limit for data downloading')
     args = parser.parse_args()
@@ -120,3 +129,5 @@ if __name__ == '__main__':
         do_process(cfg)
     if cfg.do_cbir:
         do_cbir(cfg)
+    if cfg.do_color_dicom:
+        do_color_dicom(cfg)
