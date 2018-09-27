@@ -883,6 +883,11 @@ def niftii2dcm(nii_filename_, study_id_, patient_id_, study_uid_, series_uid_, s
 
     nii_img_vol = np.transpose(nii_img_vol, (2, 1, 0))
 
+    for sp in nii_img_spacing:
+        if np.abs(sp) < 0.0001:
+            print('niftii2dcm(): Not correct case for conversion to DICOM: {}'.format(nii_filename_))
+            return
+
     new_img = sitk.GetImageFromArray(nii_img_vol)
 
     # print(nii_img_shape)
@@ -1031,6 +1036,11 @@ def prepareCTpreview(series_, viewer_dir_root_):
     nii_img_affine = nii_img.affine
     nii_img_shape = nii_img_vol.shape
     nii_img_spacing = [ np.abs(nii_img_affine[i][i]) for i in range(3) ]
+
+    for sp in nii_img_spacing:
+        if np.abs(sp) < 0.0001:
+            print('prepareCTpreview(): Not correct case for conversion to DICOM: {}'.format(ct_nii_filename_))
+            return
 
     rgb_vol = np.zeros((nii_img_shape[0], nii_img_shape[1], nii_img_shape[2], 3), np.uint8)
 
