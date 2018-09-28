@@ -293,7 +293,8 @@ def api_segmentLungAndLesion(dirModelLung, dirModelLesion, series,
                 #                               threshold=None)
                 K.clear_session()
                 shape_lesions = [512, 512, 256]
-                nii_lung_resiz4lesion = resizeNii(pathSegmLungs, shape_lesions, parOrder=0)
+                pathSegmLungsDIV2 = pathSegmLungs.replace('lungs.nii.gz', 'lungs-div2.nii.gz')
+                nii_lung_resiz4lesion = resizeNii(pathSegmLungsDIV2, shape_lesions, parOrder=0)
                 nii_data_resiz4lesion = resizeNii(dataNii, shape_lesions, parOrder=1)
                 lesionMask, lesionMaskVal = segmentLesions3Dv3(nii_data_resiz4lesion,
                                                 dir_with_model=dirModelLesion,
