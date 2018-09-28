@@ -1011,9 +1011,14 @@ def prepareCTpreview(series_, viewer_dir_root_):
         shutil.rmtree(lesions_map_out_dirname_, ignore_errors=True)
     mkdir_p(lesions_map_out_dirname_)
 
-    niftii2dcm(nii_filename_=ct_nii_filename_, study_id_=study_id, patient_id_=patient_id, series_uid_=series_uid, study_uid_=study_uid, series_desc_='Original CT',
-               sop_instance_uids_=sop_instance_uids, fnames_=fnames, out_dcm_dirname_=original_out_dirname_)
-    # niftii2dcm(nii_filename_=msk_nii_filename_, study_id_ = study_id, patient_id_=patient_id, series_uid_=series_uid, study_uid_=study_uid, out_dcm_dirname_=lesions_only_out_dirname_)
+    try:
+        niftii2dcm(nii_filename_=ct_nii_filename_, study_id_=study_id, patient_id_=patient_id, series_uid_=series_uid, study_uid_=study_uid, series_desc_='Original CT',
+                   sop_instance_uids_=sop_instance_uids, fnames_=fnames, out_dcm_dirname_=original_out_dirname_)
+        # niftii2dcm(nii_filename_=msk_nii_filename_, study_id_ = study_id, patient_id_=patient_id, series_uid_=series_uid, study_uid_=study_uid, out_dcm_dirname_=lesions_only_out_dirname_)
+    except Exception as e:
+        print('prepareCTpreview(): excepton during niftii2dcm() call for {}'.format(ct_nii_filename_))
+        return
+
 
     # make mask overlay
     nii_img = nib.load(ct_nii_filename_)
@@ -1069,8 +1074,12 @@ def prepareCTpreview(series_, viewer_dir_root_):
 
     rgb_vol = np.transpose(rgb_vol, (2, 1, 0, 3))
 
-    vol2dcmRGB(rgb_vol_=rgb_vol, rgb_spacing_=nii_img_spacing, study_id_=study_id, patient_id_=patient_id, study_uid_=study_uid, series_uid_=series_uid,
+    try:
+        vol2dcmRGB(rgb_vol_=rgb_vol, rgb_spacing_=nii_img_spacing, study_id_=study_id, patient_id_=patient_id, study_uid_=study_uid, series_uid_=series_uid,
                series_desc_='Lesion Map over original CT', sop_instance_uids_=sop_instance_uids, fnames_=fnames, out_dcm_dirname_=lesions_map_out_dirname_)
+    except Exception as e:
+        print('prepareCTpreview(): excepton during vol2dcmRGB() call')
+        return
 
     # only rgb lesion map
     rgb_vol = np.zeros((nii_img_shape[0], nii_img_shape[1], nii_img_shape[2], 3), np.uint8)
@@ -1101,8 +1110,12 @@ def prepareCTpreview(series_, viewer_dir_root_):
 
     rgb_vol = np.transpose(rgb_vol, (2, 1, 0, 3))
 
-    vol2dcmRGB(rgb_vol_=rgb_vol, rgb_spacing_=nii_img_spacing, study_id_=study_id, patient_id_=patient_id, study_uid_=study_uid, series_uid_=series_uid,
+    try:
+        vol2dcmRGB(rgb_vol_=rgb_vol, rgb_spacing_=nii_img_spacing, study_id_=study_id, patient_id_=patient_id, study_uid_=study_uid, series_uid_=series_uid,
                series_desc_='Lesions Only', sop_instance_uids_=sop_instance_uids, fnames_=fnames, out_dcm_dirname_=lesions_only_out_dirname_)
+    except Exception as e:
+        print('prepareCTpreview(): excepton during vol2dcmRGB() call')
+        return
 
     return
 
