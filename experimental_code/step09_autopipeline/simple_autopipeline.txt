@@ -1,0 +1,26 @@
+source /home/kalinovskya/pyenv/py35/bin/activate
+
+cd ~/github.com/BTBDB_ImageAnalysisSubPortal.git
+
+#1
+python run-pipeline.py --path_db=/home/ar/data/crdf/@Data_BTBDB_ImageAnalysisSubPortal \
+--threads=8 \
+--do_download \
+--do_convert \
+--path_color_dicom=/media/data10T_1/datasets/CRDF_viewer/@viewer_test
+
+#2
+python run-pipeline.py --path_db=/home/ar/data/crdf/@Data_BTBDB_ImageAnalysisSubPortal \
+--threads_gpu=1 \
+--do_process \
+--path_color_dicom=/media/data10T_1/datasets/CRDF_viewer/@viewer_test
+
+#3
+python run-pipeline.py --path_db=/home/ar/data/crdf/@Data_BTBDB_ImageAnalysisSubPortal \
+--threads=8 \
+--do_cbir \
+--do_color_dicom \
+--path_color_dicom=/media/data10T_1/datasets/CRDF_viewer/@viewer_test
+
+#4
+sudo poweroff
