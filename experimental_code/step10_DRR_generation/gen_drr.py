@@ -15,12 +15,15 @@ from datetime import datetime
 import calendar
 from scipy.ndimage import interpolation
 from copy import deepcopy
+from app.core.utils.cmd import pydcm2nii
 
 url_get_list = "https://data.tbportals.niaid.nih.gov/api/cases?since=2017-02-01&provider=RSPCPT&take=%d&skip=%d"
 url_case_info = "https://data.tbportals.niaid.nih.gov/api/cases/%s"
 # PATIENT_ID - CASE_ID - STUDY_ID - STUDY_UID - SERIES_UID - INSTANCE_UID
 # url_dicom_file = "https://data.tbportals.niaid.nih.gov/patient/%s/case/%s/imaging/study/%s/%s/series/%s/%s.dcm"
 url_dicom_file = "https://imagery.tbportal.org/%s/%s/%s/%s.dcm"
+url_imlab_ct_nii_file = "https://imlab.tbportal.org/crdf/@Data_BTBDB_ImageAnalysisSubPortal_s3/case-%s/study-%s/series-%s-CT.nii.gz"
+url_imlab_les_nii_file = "https://imlab.tbportal.org/crdf/@Data_BTBDB_ImageAnalysisSubPortal_s3/case-%s/study-%s/series-%s-CT-%s.nii.gz"
 
 
 lesion_id2rgb = {
@@ -103,6 +106,14 @@ def get_dicom_file_url(patient_id, case_id, study_id, study_uid, series_uid, ins
     return url_dicom_file % (patient_id, study_uid, series_uid, instance_uid)
 
 
+def get_imlab_ct_nii_file_url(case_id, study_id, series_uid):
+    return url_imlab_ct_nii_file % (case_id, study_id, series_uid)
+
+
+def get_imlab_les_nii_file_url(case_id, study_id, series_uid, les_suffix):
+    return url_imlab_les_nii_file % (case_id, study_id, series_uid, les_suffix)
+
+
 def process_request(url_request):
     tmp_ret = requests.get(url_request)
     if tmp_ret.status_code == 200:
@@ -163,6 +174,7 @@ def get_random_pair_tb(data_dir_, pair_list_):
         if status == 'final':
             json_info_case_all = get_case_info(condition_id=case_id)
             image_study_info = json_info_case_all['imagingStudies']
+
             if image_study_info is None:
                 print('\t*** no image studies')
             else:
@@ -208,34 +220,52 @@ def get_random_pair_tb(data_dir_, pair_list_):
                         for series_idx, image_series in enumerate(image_study['series']):
                             tmp_image_series_uid = image_series['uid']
                             tmp_modality = image_series['modality']['code']
-                            number_of_instances = image_series['numberOfInstances']
-                            image_series_out_dir_raw = '%s/study-%s/series-%s/raw' % (case_out_dir, tmp_image_study_id, tmp_image_series_uid)
-                            mkdir_p(image_series_out_dir_raw)
-                            # numI = len(imageSeries['instance'])
-                            print('\t\t[%d/%d * %d/%d] #Series = %d ...' % (study_idx, num_study, series_idx, number_of_series, number_of_instances), end='')
-                            for imageInstance in image_series['instance']:
-                                tmp_instance_uid = imageInstance['uid']
+
+                            if tmp_modality == 'CR' or tmp_modality == 'CT':
+                                number_of_instances = image_series['numberOfInstances']
+                                image_series_out_dir_raw = '%s/study-%s/series-%s/raw' % (case_out_dir, tmp_image_study_id, tmp_image_series_uid)
+                                mkdir_p(image_series_out_dir_raw)
+                                # numI = len(imageSeries['instance'])
+                                print('\t\t[%d/%d * %d/%d] #Series = %d ...' % (study_idx, num_study, series_idx, number_of_series, number_of_instances), end='')
+                                for imageInstance in image_series['instance']:
+                                    tmp_instance_uid = imageInstance['uid']
+                                    try:
+                                        instance_number = imageInstance['number']
+                                    except Exception as err:
+                                        instance_number = 0
+                                    current_dicom_url = get_dicom_file_url(tmp_patient_id,
+                                                                      tmp_case_id,
+                                                                      tmp_image_study_id,
+                                                                      tmp_image_study_uid,
+                                                                      tmp_image_series_uid,
+                                                                      tmp_instance_uid)
+                                    try:
+                                        out_dcm_file = '%s/instance-%s-%s.dcm' % (image_series_out_dir_raw, tmp_modality, tmp_instance_uid)
+                                        if os.path.isfile(out_dcm_file):
+                                            continue
+                                        data = download_dicom(current_dicom_url)
+                                    except Exception as err:
+                                        break
+                                    with open(out_dcm_file, 'wb') as f:
+                                        f.write(data.getvalue())
+
+                                if tmp_modality == 'CR':
+                                    pydcm2nii(dirDicom=image_series_out_dir_raw, foutNii='{}/cxr.nii.gz'.format(case_out_dir))
+                                if tmp_modality == 'CT':
+                                    pydcm2nii(dirDicom=image_series_out_dir_raw, foutNii='{}/CT.nii.gz'.format(case_out_dir))
+
+                            if tmp_modality == 'CT':
+                                image_series_out_dir_raw = '%s/study-%s' % (case_out_dir, tmp_image_study_id)
+                                mkdir_p(image_series_out_dir_raw)
+                                current_les_nii_url = get_imlab_les_nii_file_url(tmp_case_id, tmp_image_study_id, tmp_image_series_uid, 'lesions5')
+                                out_les_nii_file = '{}/lesions5.nii.gz'.format(case_out_dir, tmp_image_series_uid)
                                 try:
-                                    instance_number = imageInstance['number']
-                                except Exception as err:
-                                    instance_number = 0
-                                current_dicom_url = get_dicom_file_url(tmp_patient_id,
-                                                                  tmp_case_id,
-                                                                  tmp_image_study_id,
-                                                                  tmp_image_study_uid,
-                                                                  tmp_image_series_uid,
-                                                                  tmp_instance_uid)
-                                try:
-                                    out_dcm_file = '%s/instance-%s-%s.dcm' % (image_series_out_dir_raw, tmp_modality, tmp_instance_uid)
-                                    if os.path.isfile(out_dcm_file):
-                                        continue
-                                    data = download_dicom(current_dicom_url)
+                                    data = download_dicom(current_les_nii_url)
                                 except Exception as err:
                                     break
-                                with open(out_dcm_file, 'wb') as f:
+                                with open(out_les_nii_file, 'wb') as f:
                                     f.write(data.getvalue())
-                                # print ('---')
-                            # print ('\t\t[%d/%d * %d/%d] : dT ~ %0.3f (s)' % (iiStudy, numStudy, iiSeries, iiSeries, dT))
+
         exit()
 
     return None, None
