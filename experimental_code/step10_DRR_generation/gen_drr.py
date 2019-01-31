@@ -14,6 +14,8 @@ import io
 from datetime import datetime
 import calendar
 from scipy.ndimage import interpolation
+from scipy.ndimage.morphology import *
+from scipy.ndimage import label
 from copy import deepcopy
 from app.core.utils.cmd import pydcm2nii
 
@@ -38,6 +40,53 @@ lesion_id2rgb = {
 }
 
 
+def calc_ct_body_mask(src_filename_, dst_filename_):
+    if not os.path.isfile(src_filename_):
+        print('File {} not exists'.format(src_filename_))
+        return None
+    img_ = nib.load(src_filename_)
+    img_affine_ = img_.affine
+    img_vol_ = img_.get_data()
+
+    res_img_vol_ = np.zeros(img_vol_.shape, np.uint8)
+    res_img_vol_[img_vol_[:] > -700] = 1
+
+    res_img_vol_ = binary_erosion(res_img_vol_, iterations=3)
+    # res_img_vol_[:, :, 0] = 1
+    # res_img_vol_[:, :, res_img_vol_.shape[2] - 1] = 1
+    for zz in range(res_img_vol_.shape[2]):
+        res_img_vol_[:, :, zz] = binary_fill_holes(res_img_vol_[:, :, zz])
+    # res_img_vol_[:, :, 0] = 0
+    # res_img_vol_[:, :, res_img_vol_.shape[2] - 1] = 0
+
+
+    # resampling -old
+    # spacings = [np.fabs(img_affine_[0, 0]), np.fabs(img_affine_[1, 1]), np.fabs(img_affine_[2, 2])]
+    # resize_factor = np.asarray([1.0, 1.0, 1.0])
+    # resize_factor[2] = spacings[2] / spacings[0]
+    #
+    # res_img_vol_ = (interpolation.zoom(img_vol_, resize_factor, mode='nearest', prefilter=False)).astype(np.int16)
+
+    labeled_array, num_features = label(res_img_vol_)
+    max_lbl_cnt = 0
+    max_lbl_idx = -1
+    for idx in range(num_features):
+        cur_cnt = np.sum(labeled_array[:] == idx)
+        if cur_cnt > max_lbl_cnt and np.sum(res_img_vol_[labeled_array[:] == idx]) > 0:
+            max_lbl_cnt = cur_cnt
+            max_lbl_idx = idx
+    res_img_vol_[labeled_array[:] != max_lbl_idx] = 0
+    res_img_vol_[labeled_array[:] == max_lbl_idx] = 1
+
+    res_img_vol_ = res_img_vol_.astype(np.uint8)
+    img_vol_[res_img_vol_[:] == 0] = -2000
+
+    img_vol_ = np.flip(img_vol_, axis=0)
+    dst_img_ = nib.Nifti1Image(img_vol_, np.eye(4))
+    nib.save(dst_img_, dst_filename_)
+
+
+
 def gen_drr(volume_):
     dummy_ret = np.zeros((1, 1), np.int16)
     if volume_.ndim != 3:
@@ -59,7 +108,8 @@ def gen_drr_2(volume_):
         return dummy_ret
 
     proj_vol = np.zeros((volume_.shape[0], volume_.shape[2]), np.float32)
-    volume_valid_ = (volume_[:] > -2000).astype(np.int8)
+    volume_valid_ = (volume_[:] > -1000).astype(np.int8) + (volume_[:] < 300).astype(np.int8)
+    # volume_valid_ = (volume_[:] > 300).astype(np.int8)
     volume_valid_proj_ = np.sum(volume_valid_, axis=1)
     volume_valid_proj_mask_ = (volume_valid_proj_ > 0)
 
@@ -272,38 +322,39 @@ def get_random_pair_tb(data_dir_, pair_list_):
 
 
 if __name__ == '__main__':
+    #
+    # public_cases_list_ = {}
+    # with open('./CR_CT_desc.csv') as csvfile:
+    #     reader = csv.DictReader(csvfile)
+    #     for row in reader:
+    #         if row['hasCXR'] == '1' and row['hasCTR'] == '1':
+    #             date_cxr = datetime.strptime(row['DateCXR'], '%d/%m/%Y')
+    #             date_ctr = datetime.strptime(row['DateCTR'], '%d/%m/%Y')
+    #             # print(row['PublicCaseID'], row['LocalCaseID'], row['DateCXR'], row['DateCTR'], date_cxr, date_ctr)
+    #             current_case_ = {}
+    #             current_case_['date_cxr'] = date_cxr
+    #             current_case_['date_ctr'] = date_ctr
+    #             public_cases_list_[row['PublicCaseID']] = current_case_
+    #
+    # get_random_pair_tb(data_dir_='../../experimental_data/data_ct_xray_transfer/', pair_list_ =public_cases_list_)
+    # exit()
 
-    public_cases_list_ = {}
-    with open('./CR_CT_desc.csv') as csvfile:
-        reader = csv.DictReader(csvfile)
-        for row in reader:
-            if row['hasCXR'] == '1' and row['hasCTR'] == '1':
-                date_cxr = datetime.strptime(row['DateCXR'], '%d/%m/%Y')
-                date_ctr = datetime.strptime(row['DateCTR'], '%d/%m/%Y')
-                # print(row['PublicCaseID'], row['LocalCaseID'], row['DateCXR'], row['DateCTR'], date_cxr, date_ctr)
-                current_case_ = {}
-                current_case_['date_cxr'] = date_cxr
-                current_case_['date_ctr'] = date_ctr
-                public_cases_list_[row['PublicCaseID']] = current_case_
-
-    get_random_pair_tb(data_dir_='../../experimental_data/data_ct_xray_transfer/', pair_list_ =public_cases_list_)
-    exit()
-
-    ct_dirname = '../../experimental_data/data_ct_xray_transfer/'
+    ct_dirname = '../../experimental_data/data_ct_xray_transfer/case-3f3771da-7b2d-4ccf-842c-37e41ba0d05f/'
+    # ct_dirname = '../../experimental_data/data_ct_xray_transfer/'
     ct_filename_ = ct_dirname + 'CT.nii.gz'
     les_filename_ = ct_dirname + 'lesions5.nii.gz'
 
-    # cxr_filename_1 = './1_init.png'
-    # cxr_filename_2 = './2_init.png'
+    # calc_ct_body_mask(ct_dirname + 'CT_res.nii.gz', ct_dirname + 'CT_body.nii.gz')
+    # exit()
 
-    ct_img = nib.load(filename=ct_filename_)
+    ct_img = nib.load(ct_dirname + 'CT_body.nii.gz')
     ct_vol_ = ct_img.get_data()
     ct_affine = ct_img.affine
     spacings = [np.fabs(ct_affine[0, 0]), np.fabs(ct_affine[1, 1]), np.fabs(ct_affine[2, 2])]
     resize_factor = np.asarray([1.0, 1.0])
     resize_factor[1] = spacings[2] / spacings[0]
     ct_proj_ = (gen_drr_2(volume_=ct_vol_)).astype(np.int16)
-    ct_proj_ = interpolation.zoom(ct_proj_, resize_factor, mode='nearest', prefilter=False)
+    ct_proj_ = interpolation.zoom(ct_proj_, resize_factor, mode='nearest', prefilter=False).astype(np.int16)
 
     les_img = nib.load(filename=les_filename_)
     les_vol_ = les_img.get_data()
@@ -322,20 +373,25 @@ if __name__ == '__main__':
     # les_proj_[les_msk_] = 1
 
     nib_image = nib.load(ct_dirname + 'cxr.nii.gz')
-    cxr_proj_ = nib_image.get_data()[:, :, 0, 0].astype(np.float32)
+    cxr_proj_ = nib_image.get_data()[:, :, 0].astype(np.int16)
 
-    ct_proj_[:] = (ct_proj_[:] - np.min(ct_proj_))
-   # ct_proj_[:] = (1024.0*(ct_proj_[:] - np.mean(ct_proj_)) / np.std(ct_proj_)).astype(np.int16)
-    # cxr_proj_[:] = (1024.0*(cxr_proj_[:] - np.mean(cxr_proj_)) / np.std(cxr_proj_))
+    # ct_proj_[:] = (ct_proj_[:] - np.min(ct_proj_))
+    # cxr_proj_[:] = (cxr_proj_[:] - np.min(cxr_proj_))
+
+    # ct_proj_[:] = (1024.0*(ct_proj_[:] - np.mean(ct_proj_)) / np.std(ct_proj_)).astype(np.int16)
+    # cxr_proj_[:] = (1024.0*(cxr_proj_[:] - np.mean(cxr_proj_)) / np.std(cxr_proj_)).astype(np.int16)
 
     #
-    # ct_proj_[:] = (256.0 * (ct_proj_[:] - np.min(ct_proj_)) / (np.max(ct_proj_) - np.min(ct_proj_))).astype(np.uint8)
-    # cxr_proj_[:] = (256.0 * (cxr_proj_[:] - np.min(cxr_proj_)) / (np.max(cxr_proj_) - np.min(cxr_proj_))).astype(np.uint8)
+    ct_proj_[:] = (256.0 * (ct_proj_[:] - np.min(ct_proj_)) / (np.max(ct_proj_) - np.min(ct_proj_))).astype(np.int16)
+    cxr_proj_[:] = (256.0 * (cxr_proj_[:] - np.min(cxr_proj_)) / (np.max(cxr_proj_) - np.min(cxr_proj_))).astype(np.int16)
     #
     #
     res_factor = 1.0 * ct_proj_.shape[1] / cxr_proj_.shape[1]
     cxr_proj_2_x = int(res_factor * cxr_proj_.shape[0])
     cxr_proj_ = cv2.resize(cxr_proj_, dsize=(ct_proj_.shape[1], cxr_proj_2_x), interpolation=cv2.INTER_CUBIC).astype(np.int16)
+
+    ct_proj_ = deepcopy(ct_proj_[(ct_proj_.shape[0] - cxr_proj_.shape[0] ) // 2:(ct_proj_.shape[0] + cxr_proj_.shape[0] ) // 2, :])
+    les_proj_ = deepcopy(les_proj_[(les_proj_.shape[0] - cxr_proj_.shape[0]) // 2:(les_proj_.shape[0] + cxr_proj_.shape[0]) // 2, :])
 
     ct_proj_basename_ = './proj_1_ct.nii.gz'
     nib_image = nib.Nifti1Image(ct_proj_, np.eye(4))
@@ -350,10 +406,11 @@ if __name__ == '__main__':
     nib.save(img=nib_image, filename=cxr_proj_basename_)
 
     paramMap = sitk.GetDefaultParameterMap("affine")
+    # paramMap['Transform'] = ['AffineTransform']
     # paramMap['Transform'] = ['BSplineTransform']
-    # paramMap['NumberOfResolutions'] = ['8']
-    # paramMap['FinalBSplineInterpolationOrder'] = ['2']
-    # paramMap['MaximumNumberOfIterations'] = ['512']
+    paramMap['NumberOfResolutions'] = ['5']
+    # paramMap['FinalBSplineInterpolationOrder'] = ['1']
+    paramMap['MaximumNumberOfIterations'] = ['512']
 
     imageFilter = sitk.ElastixImageFilter()
     imageFilter.SetFixedImage(sitk.ReadImage(cxr_proj_basename_))
@@ -392,3 +449,4 @@ if __name__ == '__main__':
     nib_image.to_filename(les_deformed_rgb_basename)
 
     print('Gen DRR OK')
+
